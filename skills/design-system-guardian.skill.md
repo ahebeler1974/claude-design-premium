@@ -22,7 +22,7 @@ the foundation skill that almost every other skill builds on.
 1. Read `BOUND_DS.json` to resolve the active binding: `root`, `namespace`, `globalCssPaths`,
    `components`, and `bundle`.
 2. Load `DESIGN.md` and the bound DS token CSS as non-negotiable constraints. Build by loading
-   `BOUND_DS.json` → `bundle` and composing `BOUND_DS.json` → `namespace` components.
+   `BOUND_DS.json` -> `bundle` and composing `BOUND_DS.json` -> `namespace` components.
 3. Treat the bound DS token CSS as the runtime source of truth; there is no JSON token runtime in
    the canvas.
 4. For every color decision, use a token from the active token CSS (prefer semantic tokens:

@@ -1,22 +1,20 @@
 #!/usr/bin/env node
 /**
- * detect-bound-ds.mjs
+ * detect-bound-ds.mjs (detect-host-ds)
  *
- * Discovers the bound design system under ./_ds/ and returns a machine-readable
- * binding object. Works with any Claude Design export that ships _ds_manifest.json
- * and _ds_bundle.js (Academia, Forja, future DS bundles).
+ * Discovers the active design system in two host modes:
+ * - builder: DS project root (_ds_manifest.json + _ds_bundle.js at ./)
+ * - consumer: exported bundle under ./_ds/<bundle>/
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { safeRead } from './file-snapshot.mjs';
 
 const DS_DIR = '_ds';
+const MANIFEST = '_ds_manifest.json';
+const BUNDLE = '_ds_bundle.js';
 
-const DEFAULT_CHROME_SELECTORS = [
-  '.es-nav',
-  '.fx-rail',
-  '.as-overlay',
-];
+const DEFAULT_CHROME_SELECTORS = ['.es-nav', '.fx-rail', '.as-overlay'];
 
 function exists(root, rel) {
   return fs.existsSync(path.join(root, rel));
@@ -29,12 +27,16 @@ function read(root, rel) {
 function readJson(root, rel) {
   try {
     return JSON.parse(read(root, rel));
-  } catch {
-    return null;
+  } catch (err) {
+    throw new Error(`Failed to parse ${rel}: ${err.message}`);
   }
 }
 
-function listDsCandidates(root) {
+function posix(rel) {
+  return rel.replace(/\\/g, '/');
+}
+
+function listConsumerCandidates(root) {
   const abs = path.join(root, DS_DIR);
   if (!fs.existsSync(abs)) return [];
   return fs
@@ -43,9 +45,12 @@ function listDsCandidates(root) {
     .map((ent) => path.join(DS_DIR, ent.name))
     .filter(
       (rel) =>
-        exists(root, path.join(rel, '_ds_manifest.json')) &&
-        exists(root, path.join(rel, '_ds_bundle.js')),
+        exists(root, path.join(rel, MANIFEST)) && exists(root, path.join(rel, BUNDLE)),
     );
+}
+
+function hasBuilderRootFiles(root) {
+  return exists(root, MANIFEST) && exists(root, BUNDLE);
 }
 
 function humanNameFromFolder(folderName) {
@@ -62,6 +67,21 @@ function humanNameFromFolder(folderName) {
       return part.charAt(0).toUpperCase() + part.slice(1);
     })
     .join(' ');
+}
+
+function nameFromReadme(readmeText) {
+  const heading = readmeText.match(/^#\s+(.+)/m)?.[1]?.trim();
+  if (!heading) return null;
+  return heading.replace(/\s*[—–-]\s*v?\d.*$/i, '').trim();
+}
+
+function humanNameFromNamespace(namespace) {
+  if (!namespace) return 'Design System';
+  const base = namespace.replace(/_[0-9a-f]+$/i, '').replace(/DesignSystem$/i, '');
+  return base
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/_/g, ' ')
+    .trim() || 'Design System';
 }
 
 function detectIconLibrary(manifest, bundleText) {
@@ -92,8 +112,8 @@ function detectChromeSelectors(bundleText) {
 
 function findReadme(root, dsRoot) {
   for (const name of ['readme.md', 'README.md', 'Readme.md']) {
-    const rel = path.join(dsRoot, name);
-    if (exists(root, rel)) return rel;
+    const rel = dsRoot === '.' ? name : path.join(dsRoot, name);
+    if (exists(root, rel)) return posix(rel);
   }
   return null;
 }
@@ -105,10 +125,9 @@ function tokenDirFromPaths(globalCssPaths = []) {
 }
 
 function loadExistingBinding(root) {
-  const rel = 'BOUND_DS.json';
-  if (!exists(root, rel)) return null;
+  if (!exists(root, 'BOUND_DS.json')) return null;
   try {
-    return JSON.parse(read(root, rel));
+    return JSON.parse(read(root, 'BOUND_DS.json'));
   } catch {
     return null;
   }
@@ -155,22 +174,109 @@ export function resolveDsCandidate(candidates, opts = {}) {
   };
 }
 
-/**
- * @param {string} [cwd]
- * @param {{ bundleFlag?: string, allowMulti?: boolean }} [options]
- */
-export function detectBoundDs(cwd = process.cwd(), options = {}) {
-  const candidates = listDsCandidates(cwd);
+function buildBindingFromDsRoot(root, dsRoot, manifest, bundleText, extra = {}) {
+  const folderName = dsRoot === '.' ? 'project-root' : path.basename(dsRoot);
+  const manifestPath = dsRoot === '.' ? MANIFEST : path.join(dsRoot, MANIFEST);
+  const bundlePath = dsRoot === '.' ? BUNDLE : path.join(dsRoot, BUNDLE);
+  const readmePath = findReadme(root, dsRoot);
+  const readmeText = readmePath ? read(root, readmePath) : '';
+  const globalCssPaths = manifest.globalCssPaths ?? [];
+  const components = (manifest.components ?? []).map((c) => c.name);
+  const componentMeta = (manifest.components ?? []).map((c) => ({
+    name: c.name,
+    sourcePath: c.sourcePath ?? null,
+    group: c.sourcePath?.split('/')?.[1] ?? null,
+  }));
 
-  if (!candidates.length) {
+  const name =
+    nameFromReadme(readmeText) ||
+    humanNameFromFolder(folderName === 'project-root' ? 'ds' : folderName) ||
+    humanNameFromNamespace(manifest.namespace);
+
+  return {
+    version: 2,
+    detectedAt: new Date().toISOString(),
+    name,
+    folder: folderName,
+    root: posix(dsRoot),
+    bundle: posix(bundlePath),
+    manifest: posix(manifestPath),
+    namespace: manifest.namespace,
+    components,
+    componentCount: components.length,
+    globalCssPaths,
+    tokenDir: tokenDirFromPaths(globalCssPaths),
+    readme: readmePath,
+    iconLibrary: detectIconLibrary(manifest, bundleText),
+    chromeSelectors: detectChromeSelectors(bundleText),
+    cards: (manifest.cards ?? []).map((c) => c.name ?? c.path ?? String(c)),
+    cardMeta: (manifest.cards ?? []).map((c) =>
+      typeof c === 'string'
+        ? { name: c }
+        : {
+            name: c.name ?? c.path ?? 'Specimen',
+            path: c.path ?? null,
+            group: c.group ?? null,
+            subtitle: c.subtitle ?? null,
+            viewport: c.viewport ?? null,
+          },
+    ),
+    componentMeta,
+    startingPoints: (manifest.startingPoints ?? []).map((s) => ({
+      name: s.name ?? s.path ?? 'Starting point',
+      path: s.path ?? null,
+      previewPath: s.previewPath ?? null,
+      kind: s.kind ?? null,
+      section: s.section ?? null,
+      subtitle: s.subtitle ?? null,
+      viewport: s.viewport ?? null,
+    })),
+    tokens: manifest.tokens ?? [],
+    themes: manifest.themes ?? [],
+    brandFonts: manifest.brandFonts ?? [],
+    templates: (manifest.templates ?? []).map((t) => t.name ?? String(t)),
+    selectedBundle: posix(dsRoot),
+    ...extra,
+  };
+}
+
+function detectBuilderHost(root, existingBinding) {
+  if (!hasBuilderRootFiles(root)) return null;
+
+  let manifest;
+  try {
+    manifest = readJson(root, MANIFEST);
+  } catch (err) {
+    return { ok: false, error: err.message, hostMode: 'builder', candidates: [] };
+  }
+  const bundleText = read(root, BUNDLE);
+
+  if (!manifest?.namespace) {
     return {
       ok: false,
-      error: `No bound design system found under ${DS_DIR}/. Expected one folder with _ds_manifest.json and _ds_bundle.js.`,
+      error: `${MANIFEST} at project root is missing a namespace field.`,
+      hostMode: 'builder',
       candidates: [],
     };
   }
 
-  const existingBinding = loadExistingBinding(cwd);
+  const binding = buildBindingFromDsRoot(root, '.', manifest, bundleText, {
+    hostMode: 'builder',
+    bindingSource: 'native-root',
+    selectionMethod: existingBinding?.hostMode === 'builder' ? 'cache' : 'native-root',
+  });
+
+  return { ok: true, binding, hostMode: 'builder', candidates: ['.'], warning: null };
+}
+
+function detectConsumerHost(root, options = {}) {
+  const candidates = listConsumerCandidates(root);
+
+  if (!candidates.length) {
+    return null;
+  }
+
+  const existingBinding = options.existingBinding ?? loadExistingBinding(root);
   const resolved = resolveDsCandidate(candidates, {
     bundleFlag: options.bundleFlag,
     existingBinding,
@@ -181,72 +287,119 @@ export function detectBoundDs(cwd = process.cwd(), options = {}) {
       return {
         ok: false,
         error: `Bundle "${options.bundleFlag}" not found under ${DS_DIR}/.`,
+        hostMode: 'consumer',
         candidates,
       };
     }
     return {
       ok: false,
-      error: `No bound design system found under ${DS_DIR}/.`,
+      error: `No consumer bundle found under ${DS_DIR}/.`,
+      hostMode: 'consumer',
       candidates,
     };
   }
 
-  if (resolved.multiBundle && !options.allowMulti && !options.bundleFlag && !existingBinding?.root) {
-    const sorted = [...candidates].sort();
+  if (
+    resolved.multiBundle &&
+    !options.allowMulti &&
+    !options.bundleFlag &&
+    !existingBinding?.root
+  ) {
     return {
       ok: false,
-      error: `Multiple design systems found under ${DS_DIR}/. Pass --bundle <folder> or keep one bundle.`,
-      candidates: sorted,
+      error: `Multiple design systems found under ${DS_DIR}/. Pass --bundle <folder> or --allow-multi.`,
+      hostMode: 'consumer',
+      candidates: [...candidates].sort(),
     };
   }
 
   const dsRoot = resolved.root;
-  const folderName = path.basename(dsRoot);
-  const manifestPath = path.join(dsRoot, '_ds_manifest.json');
-  const bundlePath = path.join(dsRoot, '_ds_bundle.js');
-  const manifest = readJson(cwd, manifestPath);
-  const bundleText = read(cwd, bundlePath);
+  let manifest;
+  try {
+    manifest = readJson(root, path.join(dsRoot, MANIFEST));
+  } catch (err) {
+    return { ok: false, error: err.message, hostMode: 'consumer', candidates };
+  }
+  const bundleText = read(root, path.join(dsRoot, BUNDLE));
 
   if (!manifest?.namespace) {
     return {
       ok: false,
-      error: `${manifestPath} is missing a namespace field.`,
+      error: `${path.join(dsRoot, MANIFEST)} is missing a namespace field.`,
+      hostMode: 'consumer',
       candidates,
     };
   }
 
-  const globalCssPaths = manifest.globalCssPaths ?? [];
-  const components = (manifest.components ?? []).map((c) => c.name);
-  const readmePath = findReadme(cwd, dsRoot);
-  const iconLibrary = detectIconLibrary(manifest, bundleText);
-  const chromeSelectors = detectChromeSelectors(bundleText);
-
-  const binding = {
-    version: 1,
-    detectedAt: new Date().toISOString(),
-    name: humanNameFromFolder(folderName),
-    folder: folderName,
-    root: dsRoot.replace(/\\/g, '/'),
-    bundle: bundlePath.replace(/\\/g, '/'),
-    manifest: manifestPath.replace(/\\/g, '/'),
-    namespace: manifest.namespace,
-    components,
-    componentCount: components.length,
-    globalCssPaths,
-    tokenDir: tokenDirFromPaths(globalCssPaths),
-    readme: readmePath ? readmePath.replace(/\\/g, '/') : null,
-    iconLibrary,
-    chromeSelectors,
-    cards: (manifest.cards ?? []).map((c) => c.name),
-    templates: (manifest.templates ?? []).map((t) => t.name),
-    selectedBundle: dsRoot.replace(/\\/g, '/'),
+  const binding = buildBindingFromDsRoot(root, dsRoot, manifest, bundleText, {
+    hostMode: 'consumer',
+    bindingSource: 'exported-bundle',
     selectionMethod: resolved.selectedBy,
-  };
+  });
 
   if (resolved.warning) binding.multiBundleWarning = resolved.warning;
   if (resolved.alternates?.length) binding.alternateBundles = resolved.alternates;
 
-  return { ok: true, binding, candidates, warning: resolved.warning };
+  return { ok: true, binding, hostMode: 'consumer', candidates, warning: resolved.warning };
+}
+
+/**
+ * @param {string} [cwd]
+ * @param {{ bundleFlag?: string, allowMulti?: boolean, mode?: 'builder'|'consumer'|'auto' }} [options]
+ */
+export function detectHostDs(cwd = process.cwd(), options = {}) {
+  const mode = options.mode ?? 'auto';
+  const existingBinding = loadExistingBinding(cwd);
+
+  if (mode === 'builder') {
+    const builder = detectBuilderHost(cwd, existingBinding);
+    if (builder) return builder;
+    return {
+      ok: false,
+      error: `Builder mode requires ${MANIFEST} and ${BUNDLE} at project root.`,
+      hostMode: 'builder',
+      candidates: [],
+    };
+  }
+
+  if (mode === 'consumer') {
+    const consumer = detectConsumerHost(cwd, { ...options, existingBinding });
+    if (consumer) return consumer;
+    return {
+      ok: false,
+      error: `Consumer mode requires ./_ds/<bundle>/ with ${MANIFEST} and ${BUNDLE}.`,
+      hostMode: 'consumer',
+      candidates: [],
+    };
+  }
+
+  // auto: respect cached hostMode, else builder root wins, else consumer
+  if (existingBinding?.hostMode === 'consumer') {
+    const consumer = detectConsumerHost(cwd, { ...options, existingBinding });
+    if (consumer?.ok) return consumer;
+  }
+
+  if (existingBinding?.hostMode === 'builder' || hasBuilderRootFiles(cwd)) {
+    const builder = detectBuilderHost(cwd, existingBinding);
+    if (builder?.ok) return builder;
+    if (builder && !builder.ok) return builder;
+  }
+
+  const consumer = detectConsumerHost(cwd, { ...options, existingBinding });
+  if (consumer) return consumer;
+
+  return {
+    ok: false,
+    error:
+      'No design system detected. Builder: place _ds_manifest.json + _ds_bundle.js at project root. Consumer: place ./_ds/<bundle>/ with the same files.',
+    hostMode: null,
+    candidates: [],
+  };
+}
+
+/** @deprecated alias — use detectHostDs */
+export function detectBoundDs(cwd = process.cwd(), options = {}) {
+  return detectHostDs(cwd, options);
 }
 
 import { pathToFileURL } from 'node:url';
@@ -259,8 +412,15 @@ if (isMain) {
   const bundleIdx = args.indexOf('--bundle');
   const bundleFlag = bundleIdx >= 0 ? args[bundleIdx + 1] : undefined;
   const allowMulti = args.includes('--allow-multi');
+  const modeIdx = args.indexOf('--mode');
+  const modeArg = modeIdx >= 0 ? args[modeIdx + 1] : 'auto';
 
-  const result = detectBoundDs(process.cwd(), { bundleFlag, allowMulti });
+  const result = detectHostDs(process.cwd(), {
+    bundleFlag,
+    allowMulti,
+    mode: modeArg === 'builder' || modeArg === 'consumer' ? modeArg : 'auto',
+  });
+
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   process.exit(result.ok ? 0 : 1);
 }

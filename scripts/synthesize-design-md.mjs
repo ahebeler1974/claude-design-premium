@@ -2,7 +2,7 @@
 /**
  * synthesize-design-md.mjs
  *
- * Deterministic DESIGN.md synthesis — mirrors harness-auto-setup Phase 5.
+ * Deterministic DESIGN.md synthesis - mirrors harness-auto-setup Phase 5.
  * Source priority: readme > manifest > token CSS > voice defaults.
  * When readme and tokens disagree, tokens win (noted inline).
  */
@@ -30,11 +30,26 @@ function extractBullets(readmeText, heading) {
 
 function extractAntiReferences(readmeText) {
   const negatives = [];
-  for (const m of readmeText.matchAll(/no\s+([^.!\n]{8,80})/gi)) negatives.push(m[0].trim());
+
+  for (const m of readmeText.matchAll(/\*\*\s*(no\s+[^*]+?)\s*\*\*/gi)) {
+    const series = m[1]
+      .split(/,\s*no\s+/i)
+      .map((item, index) => (index === 0 ? item : `no ${item}`));
+    for (const item of series) negatives.push(item.trim());
+  }
+
+  for (const m of readmeText.matchAll(/^\s*[-*]\s+(No\s+.+)$/gmi)) {
+    negatives.push(m[1].trim());
+  }
+
   for (const m of readmeText.matchAll(/\*\*Don't\*\*[\s\S]*?(?=\n##|\n\*\*Do\*\*|$)/gi)) {
     for (const b of m[0].matchAll(/^\s*[-*]\s+(.+)$/gm)) negatives.push(b[1].trim());
   }
-  return [...new Set(negatives)].slice(0, 6);
+
+  return [...new Set(negatives)]
+    .map((item) => plainAsciiPunctuation(item.replace(/\*\*/g, '').replace(/\s+/g, ' ').trim()))
+    .map((item) => item.replace(/^no\s+/i, 'No '))
+    .slice(0, 6);
 }
 
 function listAsMarkdown(items, fallback) {
@@ -47,6 +62,18 @@ function tokenList(vars, fallback) {
   return vars.map((v) => `\`${v}\``).join(', ');
 }
 
+function plainAsciiPunctuation(text) {
+  return text
+    .replaceAll('—', ' - ')
+    .replaceAll('–', ' - ')
+    .replaceAll('→', '->')
+    .replaceAll('…', '...')
+    .replaceAll('“', '"')
+    .replaceAll('”', '"')
+    .replaceAll('‘', "'")
+    .replaceAll('’', "'");
+}
+
 /**
  * @param {object} binding
  * @param {object} voice
@@ -54,6 +81,10 @@ function tokenList(vars, fallback) {
  * @param {object} [tokenSummary]
  */
 export function synthesizeDesignMd(binding, voice, cwd = process.cwd(), tokenSummary = null) {
+  if (!binding?.namespace || !binding?.name) {
+    throw new Error('BOUND_DS missing namespace or name; cannot synthesize DESIGN.md');
+  }
+
   const tokens = tokenSummary ?? extractDsTokens(binding, cwd);
   const readmeText = binding.readme ? read(cwd, binding.readme) : '';
   const name = binding.name;
@@ -66,7 +97,7 @@ export function synthesizeDesignMd(binding, voice, cwd = process.cwd(), tokenSum
 
   const themeNote =
     tokens.themeDefault && voice.themeDefault !== tokens.themeDefault
-      ? `> **Token mismatch:** readme implies \`${voice.themeDefault}\` default; token CSS suggests \`${tokens.themeDefault}\`. **CSS wins** — use token theme.\n\n`
+      ? `> **Token mismatch:** readme implies \`${voice.themeDefault}\` default; token CSS suggests \`${tokens.themeDefault}\`. **CSS wins** - use token theme.\n\n`
       : '';
 
   const antiRefs = extractAntiReferences(readmeText);
@@ -88,11 +119,11 @@ export function synthesizeDesignMd(binding, voice, cwd = process.cwd(), tokenSum
   ];
 
   const lines = [
-    `# DESIGN.md — ${name}`,
+    `# DESIGN.md - ${name}`,
     '',
-    `> Active visual constraint for **${name}**. Synthesized by \`scripts/synthesize-design-md.mjs\`.`,
+    `> Active visual constraint for **${name}** (\`${binding.hostMode ?? 'consumer'}\` host). Synthesized by \`scripts/synthesize-design-md.mjs\`.`,
     `> Token **values** live in \`${binding.root}\` (re-exported by root \`styles.css\`). This file is the interpretive layer.`,
-    `> When this file disagrees with token CSS, **the CSS wins** — flag mismatches inline, then proceed with tokens.`,
+    `> When this file disagrees with token CSS, **the CSS wins** - flag mismatches inline, then proceed with tokens.`,
     '',
     themeNote.trimEnd(),
     `Read \`BOUND_DS.json\` for machine binding (\`namespace\`: \`${ns}\`, \`${components.length}\` components).`,
@@ -106,9 +137,9 @@ export function synthesizeDesignMd(binding, voice, cwd = process.cwd(), tokenSum
     voice.productDescription ? `\n${voice.productDescription}` : '',
     '',
     '**Surface registers**',
-    `- **Brand** — marketing, heroes, campaigns, editorial (${surfaces[0] ?? 'landing'})`,
-    `- **Product** — app UI, dashboards, workflows (${surfaces[1] ?? 'app'})`,
-    `- **System** — specimens, tokens, documentation, this harness`,
+    `- **Brand** - marketing, heroes, campaigns, editorial (${surfaces[0] ?? 'landing'})`,
+    `- **Product** - app UI, dashboards, workflows (${surfaces[1] ?? 'app'})`,
+    `- **System** - specimens, tokens, documentation, this harness`,
     '',
     '**Anti-references** (do not drift into):',
     listAsMarkdown(
@@ -127,7 +158,7 @@ export function synthesizeDesignMd(binding, voice, cwd = process.cwd(), tokenSum
     `Use the bound token scale only. Sample spacing/radius tokens: ${tokenList(tokens.spacing, '`--spacing-*`, `--radius-*`')}.`,
     '',
     '### Components',
-    `Namespace \`${ns}\`. Compose bound components — never recreate markup. Inventory: ${components.slice(0, 12).join(', ')}${components.length > 12 ? `, +${components.length - 12} more` : ''}.`,
+    `Namespace \`${ns}\`. Compose bound components - never recreate markup. Inventory: ${components.slice(0, 12).join(', ')}${components.length > 12 ? `, +${components.length - 12} more` : ''}.`,
     '',
     '### Responsiveness',
     'Mobile-first; touch targets ≥ 44px. Document shell/nav collapse per surface.',
@@ -154,7 +185,7 @@ export function synthesizeDesignMd(binding, voice, cwd = process.cwd(), tokenSum
     'Per `--radius-*` scale. Do not invent radii outside the system.',
     '',
     '### Motion',
-    `Duration/easing: ${tokenList(tokens.motion, '`--duration-*`, easing tokens from effects CSS`')}. Respect \`prefers-reduced-motion\`.`,
+    `Duration/easing: ${tokenList(tokens.motion, '`--duration-*`, easing tokens from effects CSS')}. Respect \`prefers-reduced-motion\`.`,
     '',
     '### Iconography',
     binding.iconLibrary?.type === 'iconoir'
@@ -178,9 +209,9 @@ export function synthesizeDesignMd(binding, voice, cwd = process.cwd(), tokenSum
     `All components mount from \`${ns}\` after loading \`${binding.bundle}\`.`,
     '',
     'Major inventory:',
-    ...components.slice(0, 20).map((c) => `- **${c}** — use manifest/readme voice; see \`Starter.dc.html\` gallery when present.`),
+    ...components.slice(0, 20).map((c) => `- **${c}** - use manifest/readme voice; see intro DC gallery (\`${binding.introDc ?? 'comece-por-aqui.dc.html'}\`) when present.`),
     components.length > 20 ? `- *+${components.length - 20} additional components in \`BOUND_DS.json\`.*` : '',
-    cards.length ? `\nSpecimen cards: ${cards.join(', ')}.` : '',
+    cards.length ? `\nSpecimen cards: ${cards.map(plainAsciiPunctuation).join(', ')}.` : '',
     '',
     '---',
     '',
@@ -199,15 +230,15 @@ export function synthesizeDesignMd(binding, voice, cwd = process.cwd(), tokenSum
     '',
     '## 7. Framework Handoff',
     '',
-    '- **Astro** — marketing, editorial, mostly-static content',
-    '- **Vite** — interactive app/dashboard prototypes',
-    '- **Next** — SSR / SEO-heavy routes / team conventions',
+    '- **Astro** - marketing, editorial, mostly-static content',
+    '- **Vite** - interactive app/dashboard prototypes',
+    '- **Next** - SSR / SEO-heavy routes / team conventions',
     '',
     'Produce a framework-neutral component inventory first (`skills/framework-handoff.skill.md`); target a framework only after canvas direction is approved.',
     '',
   ];
 
-  return `${lines.filter((l) => l !== undefined).join('\n')}\n`;
+  return `${plainAsciiPunctuation(lines.filter((l) => l !== undefined).join('\n'))}\n`;
 }
 
 /**
@@ -229,7 +260,7 @@ const isMain =
 if (isMain) {
   const bindingPath = path.join(process.cwd(), 'BOUND_DS.json');
   if (!fs.existsSync(bindingPath)) {
-    process.stderr.write('BOUND_DS.json missing — run bootstrap-harness.mjs first.\n');
+    process.stderr.write('BOUND_DS.json missing - run bootstrap-harness.mjs first.\n');
     process.exit(3);
   }
   const binding = JSON.parse(fs.readFileSync(bindingPath, 'utf8'));

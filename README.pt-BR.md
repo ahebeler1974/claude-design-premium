@@ -1,6 +1,8 @@
 # Claude Design Premium
 
-Harness para **Claude Design Web**. Detecta o design system do projeto (`_ds/`), configura sozinho e guia a criação de interfaces.
+Harness para **Claude Design Web**. Funciona em **dois modos**: consumir um DS exportado (`_ds/`) ou
+construir um design system na raiz do projeto (`_ds_manifest.json` + tokens). Configura sozinho e guia
+a criação de interfaces.
 
 > Comunidade · não oficial · sem afiliação com a Anthropic.
 
@@ -12,11 +14,14 @@ Harness para **Claude Design Web**. Detecta o design system do projeto (`_ds/`),
 
 ### 1. Baixar
 
-[Baixe o ZIP](https://github.com/oalanicolas/claude-design-premium/archive/refs/heads/main.zip) (Code → Download ZIP).
+[Baixe o ZIP](https://github.com/oalanicolas/claude-design-premium/archive/refs/heads/main.zip) (Code -> Download ZIP).
 
 ### 2. Enviar no Claude Design
 
-No seu projeto Claude Design (que **já tem** a pasta `_ds/` com o design system), faça upload do ZIP.
+Faça upload do ZIP no seu projeto Claude Design:
+
+- **Consumer**  -  app/landing que já tem `_ds/<bundle>/`
+- **Builder**  -  projeto de design system com `_ds_manifest.json` na raiz
 
 ### 3. Subir para a raiz
 
@@ -24,10 +29,10 @@ Na mesma conversa, peça ao Claude:
 
 ```text
 Copie todos os arquivos da pasta de upload para a raiz do projeto.
-Não apague a pasta _ds/.
+Mantenha o design system existente (_ds/ ou manifest + tokens na raiz).
 ```
 
-### 4. Nova guia → GO
+### 4. Nova guia -> GO
 
 Abra uma **nova guia** no mesmo projeto e envie:
 
@@ -35,10 +40,10 @@ Abra uma **nova guia** no mesmo projeto e envie:
 GO
 ```
 
-Pronto. O harness executa o pipeline de scripts + skills: lê `_ds/`, gera `DESIGN.md`, personaliza os
-`*.dc.html` e pergunta qual superfície desenhar primeiro.
+Pronto. O auto-setup detecta **builder** ou **consumer**, gera `DESIGN.md`, materializa
+`design-system.dc.html` e pergunta qual superfície desenhar primeiro.
 
-**Não precisa** de npm, git nem terminal. Os `scripts/*.mjs` rodam **dentro do canvas** — Claude lê e
+**Não precisa** de npm, git nem terminal. Os `scripts/*.mjs` rodam **dentro do canvas**  -  Claude lê e
 aplica a lógica JavaScript (pareado com as skills na ordem certa).
 
 ---
@@ -47,22 +52,24 @@ aplica a lógica JavaScript (pareado com as skills na ordem certa).
 
 | Item | Função |
 |---|---|
-| `CLAUDE.md` | Protocolo, roteamento, ordem scripts → skills |
+| `CLAUDE.md` | Protocolo, roteamento, ordem scripts -> skills |
 | `DESIGN.md` | Identidade visual (gerado no passo 4) |
 | `skills/` | Auditorias, polish, handoff (pareadas com scripts) |
-| `scripts/` | Pipeline determinístico JS — **base do harness no canvas** |
-| `*.dc.html` | Templates de superfície |
-| `support.js`, `deck-stage.js` | Runtime browser dos DCs |
+| `scripts/` | Pipeline determinístico JS  -  **base do harness no canvas** |
+| `design-system.dc.html` | Página specimen com tokens, componentes, superfícies e cards reais do manifesto |
+| `support.js` | Runtime browser dos DCs |
 
 Ordem: [`docs/script-pipeline.md`](docs/script-pipeline.md)
 
-O harness **não traz** `_ds/` — isso já está no seu projeto.
+O harness **não traz** `_ds/`  -  isso já está no seu projeto.
 
 ---
 
 ## Mais detalhes
 
+- Fluxo ponta a ponta: [`PLAYBOOK.md`](PLAYBOOK.md)
 - Pipeline scripts + skills: [`docs/script-pipeline.md`](docs/script-pipeline.md)
+- Handoff de frameworks: [`docs/adapters/`](docs/adapters/)
 - Limitações: [`LIMITATIONS.md`](LIMITATIONS.md)
 - Runtime do canvas: [`docs/canvas-runtime.md`](docs/canvas-runtime.md)
-- Versão antiga (greenfield): [`_archive/v1/`](_archive/v1/)
+- Exports legados: [`docs/legacy-claude-design-exports.md`](docs/legacy-claude-design-exports.md)

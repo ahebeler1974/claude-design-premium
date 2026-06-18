@@ -1,5 +1,71 @@
 # Changelog
 
+## 2.3.3 — 2026-06-18
+
+### Added
+
+- `scripts/binding-drift.mjs` — compares cached `BOUND_DS.json` vs live DS detection
+- `fixtures/builder-ds/` — committed builder fixture for CI (`test-builder-bootstrap.mjs`)
+
+### Fixed
+
+- `bootstrap-harness.mjs` — re-binds on binding drift (not only missing/stale cache)
+- `context-signals.mjs` — `bindingOutOfSync` signal; root-only `dcCount`
+- CI — builder bootstrap promoted from advisory to gate
+
+### Changed
+
+- Local-only reference material gitignored and removed from published tree
+- Docs/skills — removed product-generation and archive path references
+- `docs/validation-method.md` — gates vs advisory expectations documented honestly
+
+## 2.3.2 — 2026-06-18
+
+### Fixed
+
+- `context-signals.mjs` - `needsAutoSetup` false positive from `scripts/templates/dc/` placeholders
+- `detect-canvas-antipatterns.mjs` - skip local-only dirs and `scripts/`; exempt HTML fragments (e.g. `ds-helmet.snippet.html`)
+- DC templates - logo `src` uses `{{BOUND_DS_LOGO_PATH}}` (no hardcoded bundle path)
+- `unbind-harness.mjs` - dual-mode UNBOUND comment; reverse `voice.logoPath` on unbind
+- `harness-auto-setup.skill.md` / `CLAUDE.md` - stale binding metadata triggers setup
+
+### Changed
+
+- Anti em-dash pass on protocol docs (`CLAUDE.md`, README, PLAYBOOK, skills)
+- `docs/canvas-runtime.md` - dual-mode bootstrap as primary path
+- `README.md` - links to PLAYBOOK, adapters, legacy exports
+
+## 2.3.1 — 2026-06-18
+
+### Added
+
+- `scripts/test-builder-bootstrap.mjs` — CI fixture for builder-mode E2E bootstrap
+- `docs/adapters/{astro,vite,next}.md` — framework handoff adapters at repo root
+- `PLAYBOOK.md` — dual-mode workflow at repo root
+- `docs/legacy-claude-design-exports.md` — legacy export migration guide
+
+### Changed
+
+- `bootstrap-harness.mjs` — re-binds when `BOUND_DS.json` schema is stale (version < 2 or missing `hostMode`)
+- `LIMITATIONS.md` — dual-mode token sources; removed stale `validate-cdp.mjs` / `starter-kit/static/tokens.css` refs
+- `framework-handoff.skill.md` — links to `docs/adapters/` and archive reference patterns
+- CI — advisory `test-builder-bootstrap.mjs` step
+
+## 2.3.0 — 2026-06-18
+
+### Added
+
+- **Dual host mode**: `builder` (DS at project root) + `consumer` (`_ds/<bundle>/`)
+- `detectHostDs()` in `detect-bound-ds.mjs` — auto, `--mode builder|consumer`
+- `scripts/ds-paths.mjs` — correct asset/import paths when `root` is `.`
+- `BOUND_DS.json` fields: `hostMode`, `bindingSource`, `version: 2`
+
+### Changed
+
+- `bootstrap-harness.mjs`, `harness-auto-setup`, `CLAUDE.md`, README — document both flows
+- `extract-ds-tokens.mjs` — reads token CSS via `binding.root` (fixes consumer path bug)
+- `context-signals.mjs` — reports `hostMode`, `builderReady`, `consumerReady`
+
 ## 2.2.0 — 2026-06-18
 
 ### Added
@@ -29,7 +95,7 @@
 ### Fixed
 
 - Corrigido erro documental: `scripts/` **não** são "só fora do canvas" — rodam no canvas (Claude
-  executa a lógica JS), pareados com skills na ordem v1
+  executa a lógica JS), pareados com skills na ordem documentada
 - Novo [`docs/script-pipeline.md`](docs/script-pipeline.md) — pipeline scripts → skills
 - `CLAUDE.md`: roteamento, `SCRIPTS APPLIED`, guardrails
 - Skills de auditoria voltam a exigir `detect-*` **antes** do julgamento
@@ -53,7 +119,7 @@
 ### Changed
 
 - README reduzido ao fluxo de 4 passos (ZIP → upload → copiar → GO)
-- `_archive/v1/` marcado como legado — ignorar para uso brownfield
+- Documentação brownfield como fluxo principal; material greenfield legado fora do repositório publicado
 
 ## 2.0.0 — 2026-06-18
 
@@ -62,7 +128,7 @@
 - Repositório simplificado: harness brownfield agnóstico como distribuição principal.
 - Auto-setup no canvas (`harness-auto-setup`) — primeira mensagem ou `GO` configura tudo.
 - Fluxo humano: baixar ZIP → upload → copiar para raiz → nova guia → `GO`.
-- Starter greenfield (`starter-kit/`, `templates/`, `components/`) movido para `_archive/v1/`.
+- Starter greenfield (`starter-kit/`, `templates/`, `components/`) removido da distribuição publicada.
 
 ### Added
 

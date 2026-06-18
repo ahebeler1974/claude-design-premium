@@ -1,217 +1,102 @@
 # Validation Method
 
-These are reproducible tests to confirm that root `CLAUDE.md` routing, native Claude Design hooks,
-and document-backed procedures behave as intended.
+Reproducible tests to confirm that root `CLAUDE.md` routing, native Claude Design hooks, and
+document-backed procedures behave as intended.
 
-> Note: results depend on the model and on context state. These tests check for **expected behavior**,
-> not guaranteed determinism. See `LIMITATIONS.md`.
+> Results depend on the model and context state. These tests check **expected behavior**, not
+> guaranteed determinism. See [`LIMITATIONS.md`](../LIMITATIONS.md).
 
 ## Test 1: native design-system proof
 
-Inside Claude Design, run the native design-system check after adding the starter files.
+Inside Claude Design, run the native design-system check after binding the harness.
 
-**Expected for the greenfield starter path:** `check_design_system` reports no issues, Claude Design
-detects tokens from CSS, at least one native template appears from `templates/<slug>/index.html`, and
-at least one component resolves in the design-system namespace.
+**Expected:** `check_design_system` reports no issues when the DS is complete; manifest has populated
+`globalCssPaths`, `tokens`, and `cards`; components resolve in the design-system namespace.
 
-For brownfield exports, the strongest proof may instead be a clean manifest with populated
-`globalCssPaths`, `tokens`, and `cards` from the existing `preview/*.html` / `ui_kits/*` structure.
-
-This is the strongest native proof. Harness `scripts/*.mjs` are deterministic preflight **inside the
-canvas** (Claude executes their JS logic) — see [`script-pipeline.md`](script-pipeline.md).
+Harness `scripts/*.mjs` are deterministic preflight **inside the canvas** (Claude executes their JS
+logic). See [`script-pipeline.md`](script-pipeline.md).
 
 ## Test 1B: root `CLAUDE.md` canary
 
-Start a fresh Claude Design Web project with `CLAUDE.md` at the project root/context and explicitly
-ask for bootstrap validation. The response should contain the built-in canary:
+Start a fresh Claude Design Web project with `CLAUDE.md` at the project root and ask for bootstrap
+validation. The response should contain:
 
 ```text
 CDP-CLAUDE-OK
 ```
 
-**Pass:** the canary string appears. **Fail:** the root bootstrap may not have loaded; paste
-`activation-prompt.md` as fallback and check that the files are still in project context. Do not ask
-Claude to include the canary in every normal first response.
+**Pass:** canary appears. **Fail:** root bootstrap may not have loaded; use `activation-prompt.md`
+as fallback.
 
-## Test 1C: seed bootstrap does not become visual reference
+## Test 1H: local deterministic validation (gates vs advisory)
 
-In an empty Claude Design Web canvas, attach `CLAUDE-DESIGN-SEED.md` and prompt:
-
-```text
-Use CLAUDE-DESIGN-SEED.md.
-Create the root CLAUDE.md first, then scaffold the static design-system structure.
-Do not generate the visual design yet.
-After the structure exists, ask the opening questions.
-```
-
-**Expected:** Claude creates or proposes `CLAUDE.md`, `DESIGN.md`, `starter-kit/static/tokens.css`,
-native `templates/`, optional component sidecars in `components/`, `skills/`, and a static HTML/CSS/JS scaffold
-before generating any screen. It should explicitly avoid designing from the seed page itself.
-
-## Test 1D: native template format
-
-Open or ask Claude to inspect `templates/page-base/index.html`, `templates/landing/index.html`, and
-`templates/deck/index.html`.
-
-**Expected for this greenfield starter:** The first line uses
-`<!-- @template name="..." description="..." -->`, styles are token-backed through root
-`styles.css`, and the shared script is plain browser JS from `templates/ds-base.js` that loads
-`styles.css` and `_ds_bundle.js`.
-
-Brownfield Claude Design exports may not have `styles.css`. In those projects, validate against the
-existing CSS graph from `_ds_manifest.json.globalCssPaths`, commonly `colors_and_type.css`.
-
-## Test 1E: native component + specimen format
-
-Open or ask Claude to inspect `components/Botao.jsx`, `components/Botao.d.ts`, and
-`components/Botao.html`.
-
-**Expected for this greenfield starter proof:** The component uses a named `export`, does not
-manually assign `window.<Namespace>`, has a `.d.ts` contract, and the sidecar card contains an
-`@dsCard` marker. The sidecar must not load raw `.jsx`; the current example keeps a static fallback
-and can opportunistically read the generated namespace when the live environment provides it.
-
-## Test 1F: optional React escape hatch
-
-Open or ask Claude to inspect `starter-kit/static/react-example/`.
-
-**Expected:** React is loaded through fixed UMD script tags, Babel standalone is loaded in-browser,
-the component file uses no `import` or `export`, and the component is exposed on `window`.
-
-## Test 1G: optional global script pattern
-
-Open or ask Claude to inspect `starter-kit/static/global-script-example/`.
-
-**Expected:** `index.html` loads `widget.js` with a plain `<script src>`, `widget.js` uses no
-`import`, `export`, or `type="module"` pattern, and the script exposes `window.CDPGlobalWidget`.
-
-## Test 1H: local deterministic validation
-
-Outside Claude Design Web, from this repository root, run:
+From the repository root:
 
 ```bash
+# Gates (must pass in CI)
+node --check scripts/*.mjs
+node scripts/test-builder-bootstrap.mjs
 node scripts/context-signals.mjs
-node scripts/generate-design-tokens.mjs --check
-node scripts/detect-canvas-antipatterns.mjs starter-kit/static
-node scripts/detect-text-antipatterns.mjs README.md docs skills
-node scripts/detect-canvas-antipatterns.mjs templates
-node scripts/validate-cdp.mjs
+node scripts/bootstrap-harness.mjs --check
+
+# Advisory (visible in CI, non-blocking today)
+node scripts/detect-canvas-antipatterns.mjs *.dc.html
+node scripts/detect-text-antipatterns.mjs CLAUDE.md DESIGN.md skills
 ```
 
-**Expected:** `context-signals.mjs` prints JSON, the token generator reports that JSON is in sync
-with CSS, the detectors report no P1 findings for the static scaffold, native templates, and text
-files, and `validate-cdp.mjs` exits cleanly.
+**Gate expectations:**
 
-The anti-pattern detector treats P1 findings as failing checks and P2 findings as review notes. Use
-`--strict` when you want P2 findings to fail local preflight. Native `@dsCard` specimens are exempt
-from public-page title/lang/viewport requirements because Claude Design uses the marker metadata for
-the card preview.
+- `context-signals.mjs` emits valid JSON.
+- On a configured maintainer checkout: `harness.needsAutoSetup` is `false`, `canvas.dcCount` is `1`
+  (`design-system.dc.html` only).
+- `test-builder-bootstrap.mjs` passes using `fixtures/builder-ds/`.
 
-The text detector uses the same severity model: P1 means hard voice/style bans; P2 means review.
+**Advisory expectations:**
 
-## Test 1I: brownfield harness script pipeline (canvas)
+- `detect-canvas-antipatterns` on root `*.dc.html` should report **zero P1** before release.
+- `detect-text-antipatterns` may still flag Unicode arrows/dashes in protocol tables; treat as copy
+  debt, not a functional failure, until normalized.
 
-In a Claude Design project with `_ds/` and this harness uploaded, send `GO` in a new tab.
+P1 = deterministic correctness or hard bans. P2 = review notes. Use `--strict` to fail on P2 locally.
+
+## Test 1I: harness script pipeline (canvas)
+
+In a Claude Design project with the host DS present, send `GO` in a new tab.
 
 **Expected:**
 
 1. Claude executes `context-signals` logic and reports `SCRIPTS APPLIED`.
-2. Pipeline runs in order per [`script-pipeline.md`](script-pipeline.md): detect-bound-ds →
-   extract-ds-voice → bootstrap-harness → personalize-dc.
-3. `BOUND_DS.json`, `styles.css`, `DESIGN.md` written; `*.dc.html` personalized (no `{{BOUND_DS_`
+2. Pipeline runs per [`script-pipeline.md`](script-pipeline.md): detect-bound-ds -> extract-ds-voice
+   -> bootstrap-harness -> personalize-dc.
+3. `BOUND_DS.json`, `styles.css`, `DESIGN.md` written; root `*.dc.html` personalized (no `{{BOUND_DS_`
    placeholders left).
 4. Response includes `HARNESS AUTO-SETUP` and asks for the first surface.
 
-**Fail:** Claude tells the user to run `node scripts/...` in the canvas, or skips scripts entirely.
+**Fail:** Claude tells the user to run shell commands in the canvas, or skips scripts entirely.
 
-## Test 1J: local script mirror (brownfield v2)
+## Test 1J: binding refresh on DS drift
 
-From harness root with `_ds/` present:
+After changing manifest components, token paths, or namespace in the host DS:
 
 ```bash
-node scripts/context-signals.mjs
-node scripts/bootstrap-harness.mjs --check
-node scripts/detect-canvas-antipatterns.mjs .
-node scripts/detect-text-antipatterns.mjs CLAUDE.md DESIGN.md skills
+node scripts/bootstrap-harness.mjs
 ```
 
-**Expected:** JSON from context-signals includes `scriptPipeline`; bootstrap --check passes;
-antipattern detectors run without npm install.
+**Expected:** bootstrap re-binds (not `No-op`) and updates `BOUND_DS.json`, `styles.css`, and
+`DESIGN.md` to match the live DS.
 
-## Test 2: skill routing
+**Fail:** `No-op` while `context-signals` reports `bindingOutOfSync: true`.
 
-Keep `CLAUDE.md` and `skills/polish-phase.skill.md` in project context. Prompt:
+## Test 2: routing table
 
-```text
-Polish this landing page and report which skills were applied.
-```
+Ask for a new landing page.
 
-**Expected:**
+**Expected:** Claude reads `BOUND_DS.json`, `DESIGN.md`, bound token CSS, runs
+`design-system-guardian`, and ends with a `SKILLS APPLIED` block.
 
-```text
-SKILLS APPLIED:
-- polish-phase: yes
-```
+## Test 3: audit pairing
 
-The full reporting block is required for audits, deliverables, final approval, and handoff. Tiny
-targeted tweaks may use a shorter note to reduce context noise.
+Ask for a final review of a DC.
 
-## Test 2B: brief framing
-
-Keep `CLAUDE.md` and `skills/brief-framing.skill.md` in project context. Prompt:
-
-```text
-Create a design system for my new product. I have not defined the audience or first surface yet.
-```
-
-**Expected:** Claude does not generate visuals immediately. It classifies or asks for the surface,
-identifies blocking context, and reports `brief-framing` under `SKILLS APPLIED`.
-
-## Test 2C: visual originality
-
-Keep `CLAUDE.md` and `skills/visual-originality-audit.skill.md` in project context. Prompt:
-
-```text
-This landing page feels generic. Run the originality check before polish.
-```
-
-**Expected:** Claude identifies category clichés or says none were found, recommends targeted
-changes, and reports `visual-originality-audit` under `SKILLS APPLIED`.
-
-## Test 3: selective routing
-
-With all skills available, prompt:
-
-```text
-Create three visual directions only. Do not write code.
-```
-
-**Expected:** `tailwind-audit` is not loaded for static canvas work and may be reported under NOT
-APPLIED, e.g.:
-
-```text
-NOT APPLIED:
-- tailwind-audit: no implementation code exists yet.
-```
-
-## Test 4: final approval gate
-
-Prompt:
-
-```text
-Mark this screen as final.
-```
-
-**Expected:** Claude applies or recommends both:
-
-- `mobile-first-audit`
-- `accessibility-audit`
-
-It must not declare the screen final without these two checks.
-
-## Interpreting results
-
-- All tests pass -> the protocol is loaded and routing selectively.
-- Test 1 fails -> the root bootstrap is not in context; add `CLAUDE.md` again and use the activation prompt fallback.
-- Tests 2-4 fail while Test 1 passes -> context pressure or prompt phrasing; reduce loaded skills and
-  re-run (see the failure-mode note in `CLAUDE.md`).
+**Expected:** `detect-canvas-antipatterns` logic runs before mobile/accessibility judgment; reporting
+block lists scripts and skills applied.

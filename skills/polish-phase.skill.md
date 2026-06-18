@@ -6,13 +6,13 @@ Polish Phase
 
 ## Purpose
 
-Elevate a screen from "functional" to "premium" through microcopy, alignment, spacing refinement,
+Refine a screen from "functional" to "premium" through microcopy, alignment, spacing,
 button hierarchy, considered states, and subtle motion: without redesigning what already works.
 
 ## When to use
 
 - After a direction or implementation exists and has passed basic audits.
-- When elevating a screen from "functional" to "premium" feel.
+- When a complete screen needs premium feel without structural redesign.
 - Before final review / production handoff.
 - For micro-interactions, empty states, loading states, and error states.
 

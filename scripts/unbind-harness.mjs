@@ -14,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { FileSnapshot } from './file-snapshot.mjs';
+import { removeLegacyDcFiles } from './intro-dc.mjs';
 
 const root = process.cwd();
 const args = process.argv.slice(2);
@@ -22,15 +23,17 @@ const dryRun = args.includes('--dry-run');
 const GENERATED = ['BOUND_DS.json', 'ds-helmet.snippet.html'];
 
 const UNBOUND_STYLES = `/* =============================================================================
-   styles.css — root canvas token entry (UNBOUND)
+   styles.css - root canvas token entry (UNBOUND)
 
-   This harness ships without a design system. After placing exactly one ./_ds/
-   bundle in this folder, run:
+   This harness ships without a bound design system. After the host DS is present:
 
-     node scripts/bootstrap-harness.mjs
+   Builder: ./_ds_manifest.json + ./_ds_bundle.js at project root
+   Consumer: ./_ds/<bundle>/ with the same files
 
-   Until then, Claude reads _ds/*/_ds_manifest.json → globalCssPaths at runtime.
-   Do NOT add token values here — edit them in the bound DS.
+   Run: node scripts/bootstrap-harness.mjs
+
+   Until then, Claude reads manifest globalCssPaths at runtime.
+   Do NOT add token values here - edit them in the bound DS.
    ============================================================================= */
 `;
 
@@ -91,6 +94,13 @@ function buildDynamicPatterns(binding) {
     ]);
   }
 
+  if (binding?.voice?.logoPath) {
+    patterns.push([
+      new RegExp(escapeRe(binding.voice.logoPath), 'g'),
+      '{{BOUND_DS_LOGO_PATH}}',
+    ]);
+  }
+
   return patterns;
 }
 
@@ -116,9 +126,9 @@ function restoreDesignTemplate() {
     return;
   }
 
-  const unconfigured = `# DESIGN.md — Bound Design System
+  const unconfigured = `# DESIGN.md - Bound Design System
 
-<!-- CDP:UNCONFIGURED — harness-auto-setup will replace this file on first session -->
+<!-- CDP:UNCONFIGURED - harness-auto-setup will replace this file on first session -->
 
 > Template stub. Run node scripts/bootstrap-harness.mjs after ./_ds/ is present.
 `;
@@ -149,7 +159,6 @@ function main() {
 
   const binding = loadBinding();
   const dcFiles = listRootDcFiles();
-  const templateDir = path.join(root, 'scripts/templates/dc');
 
   if (dryRun) {
     process.stdout.write(
@@ -157,8 +166,9 @@ function main() {
         '[dry-run] Would reset harness to unbound state.',
         '  would remove: BOUND_DS.json, ds-helmet.snippet.html',
         '  would reset: styles.css, DESIGN.md',
-        `  would restore: ${dcFiles.length} *.dc.html from scripts/templates/dc/ when available`,
+        `  would remove intro/legacy DCs: ${dcFiles.length ? dcFiles.join(', ') : '(none)'}`,
         '  would keep: _ds/ (not touched)',
+        '  next bootstrap materializes intro from scripts/templates/intro.dc.html',
       ].join('\n') + '\n',
     );
     process.exit(0);
@@ -177,18 +187,7 @@ function main() {
       fs.writeFileSync(path.join(root, 'styles.css'), UNBOUND_STYLES);
       restoreDesignTemplate();
 
-      for (const rel of dcFiles) {
-        const abs = path.join(root, rel);
-        const templatePath = path.join(templateDir, path.basename(rel));
-        if (fs.existsSync(templatePath)) {
-          fs.copyFileSync(templatePath, abs);
-          continue;
-        }
-        let content = fs.readFileSync(abs, 'utf8');
-        content = resetHelmet(content);
-        content = applyUnbindPatterns(content, binding);
-        fs.writeFileSync(abs, content);
-      }
+      removeLegacyDcFiles(root);
 
       process.stdout.write(
         [

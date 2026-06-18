@@ -16,6 +16,9 @@ Thumbs.db
 # (see README "The harness does NOT ship _ds/" + CLAUDE.md "ships without a pre-bound design system")
 /_ds/
 
+# Local-only archive (reference material, not published with the harness)
+/_archive/
+
 # Logs / temp
 *.log
 .tmp/

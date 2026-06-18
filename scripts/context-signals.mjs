@@ -1,7 +1,14 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
-import { detectBoundDs } from './detect-bound-ds.mjs';
+import { detectHostDs } from './detect-bound-ds.mjs';
+import {
+  bindingDrifted,
+  bindingSchemaStale,
+  loadCachedBinding,
+} from './binding-drift.mjs';
+import { listKnownIntroFiles } from './intro-dc.mjs';
+import { showcaseNeedsAssembly } from './showcase-brief.mjs';
 
 const root = process.cwd();
 
@@ -17,24 +24,38 @@ function read(rel) {
   }
 }
 
+const SKIP_DIRS = new Set(['node_modules', '.git', '_archive', 'scripts/templates']);
+
 function walk(dir, files = []) {
   const abs = path.join(root, dir);
   if (!fs.existsSync(abs)) return files;
   for (const ent of fs.readdirSync(abs, { withFileTypes: true })) {
-    if (ent.name === 'node_modules' || ent.name === '.git') continue;
+    if (SKIP_DIRS.has(ent.name)) continue;
     const rel = path.join(dir, ent.name);
-    if (ent.isDirectory()) walk(rel, files);
-    else files.push(rel);
+    if (ent.isDirectory()) {
+      if (rel === 'scripts/templates' || rel.startsWith('scripts/templates/')) continue;
+      walk(rel, files);
+    } else files.push(rel);
   }
   return files;
+}
+
+function listRootDcFiles() {
+  return walk('.').filter(
+    (f) => f.endsWith('.dc.html') && !f.startsWith('scripts/'),
+  );
 }
 
 const claude = read('CLAUDE.md');
 const design = read('DESIGN.md');
 const bound = read('BOUND_DS.json');
 const skillFiles = walk('skills').filter((file) => file.endsWith('.skill.md'));
-const dcFiles = walk('.').filter((file) => file.endsWith('.dc.html'));
-const dsDetection = detectBoundDs(root);
+const dcFiles = listRootDcFiles();
+const dsDetection = detectHostDs(root);
+const cachedBinding = loadCachedBinding(root);
+const detectedBinding = dsDetection.binding ?? null;
+const schemaStale = bindingSchemaStale(cachedBinding);
+const bindingOutOfSync = bindingDrifted(cachedBinding, detectedBinding);
 
 const signals = {
   protocol: {
@@ -58,10 +79,13 @@ const signals = {
     })(),
     hasHelmetSnippet: exists('ds-helmet.snippet.html'),
     dsDetected: dsDetection.ok,
+    hostMode: dsDetection.hostMode ?? dsDetection.binding?.hostMode ?? null,
     dsName: dsDetection.binding?.name ?? null,
     dsNamespace: dsDetection.binding?.namespace ?? null,
     dsComponentCount: dsDetection.binding?.componentCount ?? 0,
     dsError: dsDetection.ok ? null : dsDetection.error,
+    builderReady: exists('_ds_manifest.json') && exists('_ds_bundle.js'),
+    consumerReady: dsDetection.candidates?.some((c) => c.startsWith('_ds/')) ?? false,
   },
   design: {
     hasDesignMd: exists('DESIGN.md'),
@@ -73,18 +97,29 @@ const signals = {
     needsAutoSetup:
       read('styles.css').includes('UNBOUND') ||
       !exists('BOUND_DS.json') ||
+      schemaStale ||
+      bindingOutOfSync ||
       design.includes('CDP:UNCONFIGURED') ||
-      walk('.').some((f) => f.endsWith('.dc.html') && read(f).includes('{{DS_HELMET_BLOCK}}')),
+      listRootDcFiles().some((f) => {
+        const t = read(f);
+        return t.includes('{{DS_HELMET_BLOCK}}') || t.includes('{{INTRO_');
+      }) ||
+      (cachedBinding?.introDc && !exists(cachedBinding.introDc)),
+    bindingSchemaStale: schemaStale,
+    bindingOutOfSync,
   },
   canvas: {
     dcCount: dcFiles.length,
-    hasStarter: exists('Starter.dc.html'),
+    introDc: cachedBinding?.introDc ?? null,
+    hasIntroDc: listKnownIntroFiles().some((f) => exists(f)),
+    needsShowcaseAssembly: showcaseNeedsAssembly(root, cachedBinding),
+    hasShowcaseBrief: exists('.cdp/showcase-brief.json'),
     hasRootStyles: exists('styles.css'),
     stylesGenerated: read('styles.css').includes('bootstrap-harness.mjs'),
     stylesUnbound: read('styles.css').includes('UNBOUND'),
   },
   maintenance: {
-    hasDetectBoundDs: exists('scripts/detect-bound-ds.mjs'),
+    hasDetectHostDs: exists('scripts/detect-bound-ds.mjs'),
     hasBootstrap: exists('scripts/bootstrap-harness.mjs'),
     hasUnbind: exists('scripts/unbind-harness.mjs'),
     hasCanvasAntipatterns: exists('scripts/detect-canvas-antipatterns.mjs'),
@@ -110,7 +145,7 @@ const signals = {
       ]
     : [
         'node scripts/unbind-harness.mjs  # only if resetting',
-        '# add ./_ds/<bundle>/ then: node scripts/bootstrap-harness.mjs',
+        '# builder: root manifest+bundle OR consumer: ./_ds/<bundle>/ then bootstrap',
         'node scripts/detect-canvas-antipatterns.mjs .',
       ],
 };

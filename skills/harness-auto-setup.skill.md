@@ -8,7 +8,7 @@ Harness Auto-Setup
 
 On the first interaction in Claude Design Web, automatically analyze the host canvas folder,
 discover the bound design system, write all binding artifacts, synthesize a real `DESIGN.md`,
-and patch every unbound template — without asking the user to run scripts or confirm each step.
+and patch every unbound template  -  without asking the user to run scripts or confirm each step.
 
 ## When to use (mandatory)
 
@@ -17,96 +17,112 @@ Run **before interpreting the user's message** when ANY setup signal is true:
 - `styles.css` contains `UNBOUND`
 - `BOUND_DS.json` is missing or lacks a `namespace` field
 - `DESIGN.md` contains `CDP:UNCONFIGURED` or §1 template filler (`Describe the product's visual register`)
-- Any `*.dc.html` still contains `{{DS_HELMET_BLOCK}}` or `{{BOUND_DS_`
+- Any root `*.dc.html` still contains `{{DS_HELMET_BLOCK}}` or `{{BOUND_DS_`
+- `context-signals` reports `bindingSchemaStale` or `bindingOutOfSync`
 
 Skip only when **all** pass:
 
-- `BOUND_DS.json` exists with valid `namespace`, `root`, `globalCssPaths`, `components`
+- `BOUND_DS.json` exists with `hostMode`, `bindingSource`, valid `namespace`, `root`, `globalCssPaths`, `components`, and matches live DS detection
 - `DESIGN.md` is populated with project-specific philosophy (not template stubs)
 - `styles.css` has `@import` lines pointing at the bound DS
 - All `*.dc.html` helmets are patched (no `{{` placeholders)
 
-## Procedure (canvas — execute script pipeline)
+## Procedure (canvas  -  execute script pipeline)
 
 Per [`docs/script-pipeline.md`](../docs/script-pipeline.md) and [`docs/canvas-runtime.md`](../docs/canvas-runtime.md):
-Claude Design supports JavaScript. **Read and execute** each script's logic against project files —
-do not skip scripts or hand-wave their outputs. No `git`, `npm`, or `node` shell — apply the JS
+Claude Design supports JavaScript. **Read and execute** each script's logic against project files  -
+do not skip scripts or hand-wave their outputs. No `git`, `npm`, or `node` shell  -  apply the JS
 algorithms directly. Local `node scripts/*.mjs` mirrors the same contract for maintainers.
 
-### Phase 0 — Context signals
+### Phase 0  -  Context signals
 
 Execute `scripts/context-signals.mjs` logic first. If `harness.needsAutoSetup` is false and binding
 is valid, skip to the user's message (report scripts applied).
 
-### Phase 1 — Repository inventory
+### Phase 1  -  Repository inventory + host mode
 
-1. List every file and folder at the project root.
-2. Note existing `*.dc.html`, `skills/`, `scripts/`, `styles.css`, `DESIGN.md`, `BOUND_DS.json`.
-3. Locate `./_ds/` — expect at least one bundle subfolder with `_ds_manifest.json` and
-   `_ds_bundle.js`. If zero: stop setup, tell user the host folder must include `_ds/<bundle>/`.
-   If multiple: use `BOUND_DS.json` → `root` / `selectedBundle` when it matches a candidate;
-   otherwise default to the **first bundle alphabetically**, persist `selectedBundle` in
-   `BOUND_DS.json`, and note alternates in the setup report. Ask the user which bundle only when
-   they explicitly need to switch (do not block setup on silence).
+Execute `scripts/detect-bound-ds.mjs` logic (`detectHostDs`). Two valid hosts:
 
-### Phase 2 — Design system discovery
+**Builder** (`hostMode: builder`): `./_ds_manifest.json` + `./_ds_bundle.js` at project root (DS
+under construction). `root` is `.`.
 
-Read, in order:
+**Consumer** (`hostMode: consumer`): `./_ds/<bundle>/` with manifest + bundle (app using exported DS).
 
-1. `_ds/<bundle>/_ds_manifest.json` — `namespace`, `globalCssPaths`, `components`, `cards`, `templates`
-2. `_ds/<bundle>/readme.md` or `README.md` (if present) — brand, voice, philosophy, anti-patterns
-3. First 2–3 token CSS files from `globalCssPaths` — sample colors, typography, spacing tokens
-4. Skim `_ds_bundle.js` for chrome class names (`.es-nav`, `.fx-rail`, etc.) and icon library hints
+If neither: stop and explain both shapes. If consumer has multiple bundles: default alphabetical,
+persist `selectedBundle`, note alternates  -  do not block on silence.
 
-Build a mental binding object:
+### Phase 2  -  Design system discovery
 
-- `name` — human name from folder (e.g. `academia-ds-uuid` → "Academia DS")
-- `root` — `_ds/<bundle>/`
-- `bundle` — `_ds/<bundle>/_ds_bundle.js`
-- `manifest` — `_ds/<bundle>/_ds_manifest.json`
-- `namespace` — from manifest
-- `components` — component names from manifest
-- `componentCount` — length of components
-- `globalCssPaths` — from manifest
-- `readme` — path if found
-- `iconLibrary` — `{ type: "iconoir", cdn: "..." }` if Icon component or iconoir refs exist; else `{ type: "none" }`
-- `chromeSelectors` — detected chrome classes to suppress in DC helmets
-- `configuredAt` — ISO timestamp
+Read from `binding.root` (`.` or `_ds/<bundle>/`):
 
-### Phase 3 — Write binding artifacts
+1. `_ds_manifest.json`  -  `namespace`, `globalCssPaths`, `components`, `cards`, `templates`
+2. `readme.md` / `README.md`  -  brand, voice, philosophy, anti-patterns
+3. Token CSS from `globalCssPaths` (paths relative to `binding.root`)
+4. `_ds_bundle.js`  -  chrome selectors, icon library hints
 
-**Write `BOUND_DS.json`** with the binding object above plus `version: 1`, `configured: true`, and a
+Build binding object (mirror script output):
+
+- `hostMode`  -  `builder` | `consumer`
+- `bindingSource`  -  `native-root` | `exported-bundle`
+- `name`  -  from readme heading or folder/namespace
+- `root`  -  `.` or `_ds/<bundle>/`
+- `bundle`  -  `_ds_bundle.js` (project-relative path)
+- `manifest`  -  `_ds_manifest.json` (project-relative path)
+- `namespace`  -  from manifest
+- `components`  -  component names from manifest
+- `componentCount`  -  length of components
+- `globalCssPaths`  -  from manifest
+- `readme`  -  path if found
+- `iconLibrary`  -  `{ type: "iconoir", cdn: "..." }` if Icon component or iconoir refs exist; else `{ type: "none" }`
+- `chromeSelectors`  -  detected chrome classes to suppress in DC helmets
+- `configuredAt`  -  ISO timestamp
+
+### Phase 3  -  Write binding artifacts
+
+**Write `BOUND_DS.json`** with the binding object above plus `version: 2` (binding cache format), `configured: true`, and a
 `voice` object (tagline, heroHeadline, heroSubhead, badge, ctaPrimary, ctaSecondary, themeLabel,
 surfaces, areaSuffix, searchPlaceholder, logoPath, footerNote, docTitle, docLead, deckCoverHeadline,
 deckCoverSubhead, welcomeEyebrow, welcomeHeadline, welcomeSubhead, closingEyebrow, closingHeadline).
-Derive `voice` from DS readme + token CSS + manifest — mirror `scripts/extract-ds-voice.mjs` and
+Derive `voice` from DS readme + token CSS + manifest  -  mirror `scripts/extract-ds-voice.mjs` and
 `scripts/extract-ds-tokens.mjs` logic.
 
-**Write `styles.css`** — header comment + one `@import` per `globalCssPaths` entry:
+**Write `styles.css`**  -  header comment + one `@import` per `globalCssPaths` entry:
 
 ```css
+/* consumer: paths prefixed with binding.root */
 @import "_ds/<bundle>/tokens/fonts.css";
-/* ... every path from globalCssPaths ... */
+/* builder: paths relative to root (.) */
+@import "tokens/fonts.css";
+/* ... one @import per globalCssPaths entry via ds-paths importPath() */
 ```
 
-**Write `ds-helmet.snippet.html`** — copy-paste block:
+**Write `ds-helmet.snippet.html`**  -  copy-paste block:
 
 - `<link rel="stylesheet">` for each `globalCssPaths` entry (prefixed with `root`)
 - Icon CDN link if `iconLibrary.cdn` exists
 - `<script src="[bundle]">`
 - `<style>[chromeSelectors]{display:none !important;}</style>` if chrome detected
 
-### Phase 4 — Patch + personalize templates
+### Phase 4  -  Materialize design-system DC (scaffold only)
 
-For **every** `*.dc.html`, apply **technical binding** then **voice + DS personalization**:
+Materialize **one** page from `scripts/templates/intro.dc.html` (not surface templates).
+**JS writes scaffold + brief only** — the active model assembles the full vitrine in Phase 4b.
 
-**4a — Technical binding**
+1. Detect document language from `CLAUDE.md`, README, `DESIGN.md`, and DS readme
+   (`scripts/intro-dc.mjs` -> `detectDocLanguage`).
+2. Choose filename: `design-system.dc.html` for every language.
+3. Remove legacy surface DCs if present (`Landing`, `AppShell`, `Deck`, `Doc`, `Starter`).
+4. Write `docLanguage` and `introDc` on `BOUND_DS.json`.
+
+For the intro DC, apply **technical binding** then **voice + gallery personalization**:
+
+**4a  -  Technical binding**
 
 1. Replace `{{DS_HELMET_BLOCK}}` with the helmet inner content from Phase 3 (indented).
 2. Replace all `{{BOUND_DS_ROOT}}`, `{{BOUND_DS_NAMESPACE}}`, `{{BOUND_DS_NAME}}`,
    `{{BOUND_DS_COMPONENT_COUNT}}` with binding values.
 
-**4b — Communication placeholders** (from `voice` / readme)
+**4b  -  Communication placeholders** (from `voice` / readme)
 
 Replace every voice placeholder with project-specific copy:
 
@@ -117,39 +133,44 @@ Replace every voice placeholder with project-specific copy:
 | `{{BOUND_DS_HERO_SUBHEAD}}` | Product description in brand voice |
 | `{{BOUND_DS_CTA_PRIMARY}}` / `{{BOUND_DS_CTA_SECONDARY}}` | CTAs from readme voice |
 | `{{BOUND_DS_THEME_LABEL}}` | `NOITE · DARK` or `DIA · LIGHT` from readme default theme |
-| `{{BOUND_DS_WELCOME_*}}` | AppShell demo hero — product voice, not Academia filler |
-| `{{BOUND_DS_AREA_SUFFIX}}` / `{{BOUND_DS_SEARCH_PLACEHOLDER}}` | First surface + search hint |
-| `{{BOUND_DS_DECK_COVER_*}}` / `{{BOUND_DS_CLOSING_*}}` | Deck capa + encerramento |
-| `{{BOUND_DS_DOC_TITLE}}` / `{{BOUND_DS_DOC_LEAD}}` | Doc masthead |
+| `{{INTRO_*}}` | Localized intro copy (`scripts/intro-dc.mjs`) |
 | `{{BOUND_DS_LOGO_PATH}}` | Logo from DS assets or `assets/logo-gold.svg` |
 | `{{BOUND_DS_FOOTER_NOTE}}` | Footer line (© + optional Secured by) |
 
-**4c — DS-aware structure** (mirror `scripts/personalize-dc.mjs`)
+**4c  -  DS-aware structure** (mirror `scripts/personalize-dc.mjs`)
 
-1. **Regenerate** `<!-- CDP:SURFACES -->` in `Landing.dc.html` from readme bullet surfaces.
-2. **Regenerate** `<!-- CDP:NAV-LINKS -->` from the same surfaces.
-3. **Regenerate** `// CDP:APP-NAV` items in `AppShell.dc.html` script from surfaces + icons.
-4. **Remove** blocks wrapped in `<!-- CDP:REQUIRES:ComponentName -->` when that component is
-   **not** in `components` (e.g. drop `BookCard` shelf if manifest has no BookCard).
-5. **Prune** `Starter.dc.html` gallery cards whose `CardTitle` names a component missing from manifest.
-6. Set `theme.default` in each DC script props to `voice.themeDefault`.
+1. Inject localized prompt script at `<!-- CDP:INTRO-SCRIPT -->`.
+2. **Remove** blocks wrapped in `<!-- CDP:REQUIRES:ComponentName -->` when that component is
+   **not** in `components`.
+3. **Prune** intro gallery cards whose `CardTitle` names a component missing from manifest.
+4. Set `theme.default` in the intro script props to `voice.themeDefault`.
 
-Do not delete template DCs (`AppShell`, `Landing`, `Deck`, `Doc`) — personalize in place.
-Never leave Academia/Lendária demo copy when the bound DS is a different product.
+Never leave demo copy from a previous binding when the bound DS is a different product.
 
-### Phase 5 — Synthesize `DESIGN.md`
+**4d  -  Write showcase brief**
+
+Mirror `scripts/showcase-brief.mjs`: write `.cdp/showcase-brief.json` with manifest inventory,
+voice, and assembly contract. Set `showcaseAssembled: false` on `BOUND_DS.json`.
+
+### Phase 4b  -  Model assembles showcase (mandatory before UI deliverables)
+
+If `design-system.dc.html` contains `<!-- CDP:SHOWCASE:PENDING -->`, read
+`skills/assemble-design-system-showcase.skill.md` and **assemble the full vitrine** in the same
+session. This step is for the active model (Opus/Sonnet/etc.) — not deterministic JS.
+
+### Phase 5  -  Synthesize `DESIGN.md`
 
 **Mandatory.** Mirror `scripts/synthesize-design-md.mjs` exactly (read the script, apply its output
 shape). Do not leave the template stub in place.
 
-Source priority: readme → manifest → token CSS (`extract-ds-tokens`) → voice defaults.
+Source priority: readme -> manifest -> token CSS (`extract-ds-tokens`) -> voice defaults.
 
 Required: all 7 sections filled, header names the real DS, no `CDP:UNCONFIGURED`, no
 `Describe the product's visual register` filler.
 
-When readme and tokens disagree, **tokens win** — note mismatches inline (see `CLAUDE.md` § Token truth).
+When readme and tokens disagree, **tokens win**  -  note mismatches inline (see `CLAUDE.md` § Token truth).
 
-### Phase 6 — Verify & report
+### Phase 6  -  Verify & report
 
 1. Re-read `BOUND_DS.json` and confirm no `{{` placeholders remain in DCs.
 2. Run native `check_design_system` if available.
@@ -170,11 +191,12 @@ After setup, output:
 - personalize-dc: [yes/no]
 
 ## HARNESS AUTO-SETUP
+- Host mode: [builder | consumer]
 - DS detected: [name] (`[root]`)
 - Namespace: [namespace]
-- Components: [count] — [comma-separated list]
+- Components: [count]  -  [comma-separated list]
 - Files written: BOUND_DS.json, styles.css, ds-helmet.snippet.html, DESIGN.md
-- Files patched: [N] *.dc.html (binding + voice + component pruning)
+- Intro DC: [introDc filename] ([docLanguage])
 - DESIGN.md: synthesized from [readme? tokens? cards?]
 - Blockers: [none | list]
 
@@ -188,11 +210,12 @@ Do not output the full SKILLS APPLIED block on setup-only turns unless UI was al
 
 - **Skipping setup on a greeting:** User says "oi" but harness is unbound. -> Run setup first anyway.
 - **Skipping scripts:** Canvas executes `scripts/*.mjs` by reading and applying their JS logic. ->
-  Run pipeline steps 0–4 in order per `docs/script-pipeline.md`.
+  Run pipeline steps 0 - 4 in order per `docs/script-pipeline.md`.
 - **Asking user to run shell/npm:** No `node`/`npm`/`git` shell in canvas. -> Execute script algorithms
   directly; write file outputs.
 - **Template DESIGN.md left in place:** §1 still says "Describe...". -> Phase 5 is mandatory.
-- **Gallery shows missing components:** BookCard in Starter but not in manifest. -> Prune gallery.
+- **Specimen shows missing components:** page lists a component not in manifest. -> Regenerate from
+  manifest and prune missing entries.
 - **Inventing tokens:** DESIGN.md must reference real `var(--*)` from token CSS, not guesses.
 - **Hard-coding a previous project's DS:** Always read _ds/ in *this* folder.
 

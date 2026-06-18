@@ -102,7 +102,7 @@ Namespace from `BOUND_DS.json` → `namespace`. For voice, variants, and composi
 
 1. `BOUND_DS.json` → `components`
 2. Bound DS readme and specimen cards (`_ds_manifest.json` → `cards`)
-3. `Starter.dc.html` — live gallery for this binding
+3. Intro DC (`BOUND_DS.json` -> `introDc`) — live gallery for this binding
 
 Document any project-specific component usage notes below as they crystallize:
 

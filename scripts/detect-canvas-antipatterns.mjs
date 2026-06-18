@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * detect-canvas-antipatterns.mjs - v2 (recalibrated)
+ * detect-canvas-antipatterns.mjs
  *
  * Deterministic, dependency-free preflight for measurable AI-design, a11y,
  * and mobile tells in static canvas files. Node built-ins only.
@@ -98,13 +98,17 @@ function isNativeCard(text) {
   return /@dsCard\b/.test(text);
 }
 
+function isHtmlFragment(text) {
+  return !/<!DOCTYPE\b/i.test(text) && !/<html\b/i.test(text);
+}
+
 const rules = [
   {
     id: 'missing-viewport-meta',
     severity: 'P1',
     files: ['.html'],
     message: 'HTML previews need a mobile viewport meta tag.',
-    test: (text) => (!isNativeCard(text) && !/<meta\s+name=["']viewport["'][^>]*width=device-width/i.test(text)
+    test: (text) => (!isNativeCard(text) && !isHtmlFragment(text) && !/<meta\s+name=["']viewport["'][^>]*width=device-width/i.test(text)
       ? 'no <meta name="viewport" width=device-width>'
       : null),
   },
@@ -113,7 +117,7 @@ const rules = [
     severity: 'P1',
     files: ['.html'],
     message: 'HTML documents need a lang attribute for screen readers and translation.',
-    test: (text) => (!isNativeCard(text) && !/<html\b[^>]*\blang=["'][^"']+["']/i.test(text)
+    test: (text) => (!isNativeCard(text) && !isHtmlFragment(text) && !/<html\b[^>]*\blang=["'][^"']+["']/i.test(text)
       ? '<html> has no lang attribute'
       : null),
   },
@@ -122,7 +126,7 @@ const rules = [
     severity: 'P1',
     files: ['.html'],
     message: 'HTML documents need a non-empty title.',
-    test: (text) => (!isNativeCard(text) && !/<title>\s*[^<\s][^<]*<\/title>/i.test(text)
+    test: (text) => (!isNativeCard(text) && !isHtmlFragment(text) && !/<title>\s*[^<\s][^<]*<\/title>/i.test(text)
       ? 'empty or missing <title>'
       : null),
   },
@@ -266,7 +270,13 @@ function walkTarget(target, files = []) {
   const stat = fs.statSync(abs);
   if (stat.isDirectory()) {
     for (const ent of fs.readdirSync(abs, { withFileTypes: true })) {
-      if (['node_modules', '.git', 'dist', 'build', '.next'].includes(ent.name)) continue;
+      if (
+        ['node_modules', '.git', 'dist', 'build', '.next', '_archive', 'scripts', '_ds'].includes(
+          ent.name,
+        )
+      ) {
+        continue;
+      }
       walkTarget(path.join(target, ent.name), files);
     }
     return files;

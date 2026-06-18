@@ -6,6 +6,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { importPath } from './ds-paths.mjs';
 
 function read(cwd, rel) {
   try {
@@ -42,9 +43,17 @@ function detectThemeFromCss(cssText) {
 export function extractDsTokens(binding, cwd = process.cwd()) {
   const paths = (binding.globalCssPaths ?? []).slice(0, 4);
   let corpus = '';
+  let found = 0;
 
   for (const rel of paths) {
-    corpus += `${read(cwd, rel)}\n`;
+    const content = read(cwd, importPath(binding, rel));
+    if (content) found += 1;
+    corpus += `${content}\n`;
+  }
+
+  if (!found) {
+    const listed = paths.length ? paths.join(', ') : '(none listed)';
+    process.stderr.write(`Warning: no token CSS found in: ${listed}\n`);
   }
 
   const allVars = uniqueSorted([...corpus.matchAll(/--([a-z0-9-]+)/gi)].map((m) => `--${m[1]}`));
@@ -58,6 +67,7 @@ export function extractDsTokens(binding, cwd = process.cwd()) {
 
   return {
     cssPathsSampled: paths,
+    tokenCssFilesFound: found,
     varCount: allVars.length,
     colors: colors.length ? colors : allVars.filter((v) => /color|background|foreground|primary|hairline|border/.test(v)).slice(0, 10),
     fonts: fonts.length ? fonts : allVars.filter((v) => v.startsWith('--font-')).slice(0, 6),

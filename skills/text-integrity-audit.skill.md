@@ -28,14 +28,14 @@ syntax, and plain punctuation before it is treated as final.
 2. **Load voice context**: Read `DESIGN.md`, relevant product context, and any existing copy samples.
    If no voice exists, flag the gap instead of inventing a fake voice.
 3. **First sentence test**: The opening must start with substance. Remove acknowledgments, throat
-   clearing, broad claims, and "in this section" style framing unless the format truly needs it.
+   clearing, broad claims, and section-overview framing unless the format truly needs it.
 4. **Last sentence test**: The ending should land a decision, next action, or concrete implication.
    Avoid reflexive recaps unless the user explicitly asked for a summary.
 5. **Specificity pass**: Replace abstract praise with concrete nouns, constraints, stakes, numbers,
    examples, or product behavior. If a sentence could fit any SaaS, course, dashboard, or portfolio,
    rewrite it.
 6. **Syntax variation pass**: Mix sentence length and paragraph shape. Avoid repeated claim-support-
-   wrap paragraphs, repeated three-part lists, and repeated "not X but Y" constructions.
+   wrap paragraphs, repeated three-part lists, and repeated binary-contrast constructions.
 7. **Punctuation and typography pass**: Use plain ASCII punctuation in active project docs. Avoid
    typographic shortcuts banned by `CONTRIBUTING.md`. Use colons, commas, periods, and simple
    parentheses instead.

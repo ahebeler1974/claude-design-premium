@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { applyTokenHintsToVoice, extractDsTokens } from './extract-ds-tokens.mjs';
+import { detectDocLanguage } from './intro-dc.mjs';
 
 const SURFACE_ICONS = ['book', 'graduation-cap', 'brain', 'group', 'bookmark', 'settings'];
 
@@ -29,7 +30,8 @@ function firstMatch(text, patterns) {
 
 function extractSurfaces(readmeText) {
   const surfaces = [];
-  for (const m of readmeText.matchAll(/^\s*-\s*\*\*([^*]+)\*\*\s*[—–-]/gm)) {
+  const intro = readmeText.split(/\n---\n/)[0] ?? readmeText;
+  for (const m of intro.matchAll(/^\s*-\s*\*\*([^*]+)\*\*\s*[—–-]/gm)) {
     const name = m[1].trim();
     if (!surfaces.includes(name)) surfaces.push(name);
   }
@@ -118,7 +120,7 @@ function applyDefaults(voice, binding, readmeText = '') {
   }
   if (!voice.searchPlaceholder) {
     voice.searchPlaceholder =
-      voice.language === 'en' ? `Search ${name}…` : `Buscar em ${name}…`;
+      voice.language === 'en' ? `Search ${name}...` : `Buscar em ${name}...`;
   }
   const securedBy = firstMatch(readmeText, [/Secured by ([A-Za-z]+)/i]);
   if (!voice.footerNote) {
@@ -140,7 +142,7 @@ export function extractDsVoice(binding, cwd = process.cwd()) {
   const readmeHadTheme = /light.*default|dark.*default|dark mode is the default/i.test(readmeText);
 
   const voice = {
-    language: /english/i.test(readmeText) && !/pt-BR|português brasileiro/i.test(readmeText) ? 'en' : 'pt-BR',
+    language: detectDocLanguage(cwd, { readmePath: binding.readme }),
     themeDefault: /light.*default/i.test(readmeText) ? 'light' : 'dark',
     themeLabel: /light.*default/i.test(readmeText) ? 'DIA · LIGHT' : 'NOITE · DARK',
     tagline: firstMatch(readmeText, [/^>\s*["']?(.+?)["']?\s*$/m]),

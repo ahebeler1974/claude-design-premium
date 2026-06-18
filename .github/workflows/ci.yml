@@ -50,6 +50,10 @@ jobs:
             node --check "$f"
           done
 
+      # GATE: builder-mode bootstrap using committed fixtures/builder-ds/
+      - name: Builder bootstrap fixture (gate)
+        run: node scripts/test-builder-bootstrap.mjs
+
       # GATE: context-signals must run and emit valid JSON. A crash or
       # malformed JSON here is a real failure (the harness self-diagnostic
       # is broken). dsDetected:false is expected — the host project ships _ds/.
@@ -61,14 +65,14 @@ jobs:
           echo "--- health signals ---"
           cat context-signals.json
 
-      # ADVISORY: surface canvas anti-patterns (missing lang/title, etc.).
-      # Non-blocking during soft-rollout — *.dc.html are template fragments.
+      # ADVISORY: canvas anti-patterns. P1 on root *.dc.html is a release blocker;
+      # other hits (deck-stage.js, _ds/ when present locally) are informational.
       - name: Canvas anti-patterns (advisory)
         continue-on-error: true
         run: node scripts/detect-canvas-antipatterns.mjs .
 
-      # ADVISORY: surface AI-slop text patterns (em-dashes, filler).
-      # Non-blocking during soft-rollout — CLAUDE.md documents the protocol.
+      # ADVISORY: text anti-patterns (Unicode arrows/dashes in protocol tables).
+      # Non-blocking until protocol copy is normalized to ASCII.
       - name: Text anti-patterns (advisory)
         continue-on-error: true
         run: node scripts/detect-text-antipatterns.mjs CLAUDE.md DESIGN.md skills

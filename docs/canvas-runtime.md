@@ -129,28 +129,26 @@ make critical design data depend on it. `[AGENT-OBSERVED]`
   production build. `[OFFICIAL]`
 - Refuted: handoff is **not** done by passing a URL pointing at the prototype's files. `[killed 0-2]`
 
-## Bootstrap pattern (empty canvas)
+## Bootstrap pattern
 
-An empty Claude Design Web project cannot start from an uploaded folder, so:
+Upload the harness ZIP, copy files to project root, send `GO`. Auto-setup detects **builder**
+(DS at root) or **consumer** (`_ds/<bundle>/`). See [`PLAYBOOK.md`](../PLAYBOOK.md).
 
-- **Seed file**: attach `CLAUDE-DESIGN-SEED.md` and ask Claude to create the structure (write root
-  `CLAUDE.md` first, then the static scaffold, then ask opening questions).
-- **Cross-project replication**: point Claude at a readable source starter project/folder and ask it
-  to replicate the real files (do not reinterpret from memory).
-- **Hybrid (strongest)**: the seed gives the governance/brain; the source project gives the proven
-  files.
+**Empty canvas:** use [`activation-prompt.md`](../activation-prompt.md) or point Claude at a readable
+source folder and replicate real files (do not reinterpret from memory).
 
 ## Token runtime
 
-- In this starter's greenfield scaffold, `starter-kit/static/tokens.css` is the initial active token
-  source for the canvas.
-- In brownfield Claude Design exports, use the existing CSS token source instead, commonly
-  `colors_and_type.css` or the files listed in `_ds_manifest.json.globalCssPaths`.
-- The canvas **cannot import JSON into CSS**, so static pages consume CSS custom properties from
-  the active token CSS file.
-- `design-tokens.json` is a generated/reference artifact for documentation and Astro/Vite/Next
-  handoff. Outside the canvas, regenerate it from CSS with
-  `node scripts/generate-design-tokens.mjs --write`.
+- The active token source is the bound DS CSS: the files listed in `_ds_manifest.json` ->
+  `globalCssPaths` (commonly `colors_and_type.css` or a `tokens/` directory), re-exported by root
+  `styles.css`.
+- The canvas **cannot import JSON into CSS**, so static pages consume CSS custom properties from the
+  bound token CSS, never from a JSON file.
+- `BOUND_DS.json` is a machine-readable cache of the binding (namespace, components, bundle,
+  `globalCssPaths`). It is not the token source; when `_ds/` changes, re-run `harness-auto-setup` to
+  refresh it.
+- Older greenfield starter flows used standalone `tokens.css` plus generated `design-tokens.json`.
+  The brownfield harness always binds to a host DS manifest and bundle instead.
 
 ## Access
 
