@@ -1,0 +1,1671 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#4283cc">
+<meta name="description" content="Chase the Case — jornada gamificada de hematologia (HORIBA Yumizen + CellaVision). Arquivo único, offline.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Chase the Case · Jornada de Hematologia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* =============================================================================
+   Chase the Case — Jornada de Hematologia
+   Tema CLARO, alinhado à identidade visual HORIBA (azul #4283cc, base branca,
+   estética clínica/corporativa). Layout original — não usa logos/imagens da marca.
+   Mobile-first, self-contained.
+   ============================================================================= */
+
+:root {
+  /* base — clinical light */
+  --bg:        #eaf0f7;
+  --bg-soft:   #f4f7fb;
+  --surface:   #ffffff;
+  --surface-2: #eef3f9;
+  --line:      #d9e2ee;
+  --line-soft: #e9eff6;
+
+  --txt:       #112138;
+  --txt-dim:   #4d5e78;
+  --txt-mute:  #8595ab;
+
+  /* HORIBA blue family */
+  --brand:     #4283cc;   /* cor oficial HORIBA */
+  --brand-d:   #2f6fb8;   /* mais escura p/ contraste em branco */
+  --brand-dd:  #1f5394;   /* headers / banner */
+  --accent:    #2f6fb8;   /* alias usado pela engine */
+  --accent-2:  #5aa0e0;
+
+  --gold:      #b9770a;   /* âmbar legível em branco (XP/streak) */
+  --good:      #18895f;
+  --bad:       #d23b4a;
+  --violet:    #6b4ee6;
+
+  --r-sm: 10px;
+  --r:    14px;
+  --r-lg: 20px;
+  --r-xl: 26px;
+
+  --shadow:    0 1px 2px rgba(16,33,56,.04), 0 8px 24px -14px rgba(31,83,148,.28);
+  --shadow-lg: 0 18px 50px -20px rgba(31,83,148,.4);
+  --glow:      0 0 0 1px rgba(66,131,204,.18), 0 10px 26px -12px rgba(66,131,204,.45);
+
+  --ff: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --maxw: 480px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--ff);
+  background:
+    radial-gradient(1100px 520px at 50% -8%, #dceaf8 0%, transparent 60%),
+    var(--bg);
+  color: var(--txt);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* App frame ----------------------------------------------------------------- */
+#app {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: calc(92px + var(--safe-b));
+  background: var(--bg);
+  box-shadow: 0 0 60px -30px rgba(31,83,148,.35);
+}
+
+/* Top bar ------------------------------------------------------------------- */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 18px;
+  background: rgba(255,255,255,.86);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.brand .dot {
+  width: 32px; height: 32px; border-radius: 9px; flex: none;
+  background: linear-gradient(150deg, var(--brand), var(--brand-dd));
+  box-shadow: var(--glow);
+  display: grid; place-items: center; font-size: 16px;
+}
+.brand b { font-size: 15px; letter-spacing: -.2px; color: var(--txt); }
+.brand small { display: block; font-size: 10px; color: var(--brand-d); letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+
+.xp-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface-2); border: 1px solid var(--line);
+  padding: 6px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 700; color: var(--txt);
+}
+.xp-chip .lv { color: var(--brand-d); }
+.xp-chip .flame { font-size: 13px; }
+
+/* Generic ------------------------------------------------------------------- */
+.screen { padding: 8px 18px 8px; animation: fade .32s ease both; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.eyebrow { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-d); font-weight: 800; }
+.h1 { font-size: 25px; font-weight: 800; letter-spacing: -.5px; margin: 4px 0 6px; line-height: 1.12; color: var(--txt); }
+.lead { color: var(--txt-dim); font-size: 14px; }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700;
+  padding: 4px 9px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); color: var(--txt-dim); }
+
+/* Progress bar -------------------------------------------------------------- */
+.xpbar { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; border: 1px solid var(--line); }
+.xpbar > i { display: block; height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand), var(--accent-2)); transition: width .6s cubic-bezier(.22,1,.36,1); }
+
+/* Hero (home) — HORIBA blue banner ------------------------------------------ */
+.hero {
+  margin: 10px 0 18px; padding: 22px 20px; border-radius: var(--r-xl);
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(255,255,255,.16), transparent 55%),
+    linear-gradient(155deg, var(--brand) 0%, var(--brand-dd) 100%);
+  color: #fff; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.hero::after { content:""; position:absolute; inset:0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.10) 1px, transparent 0);
+  background-size: 18px 18px; pointer-events:none; opacity:.5; }
+.hero .eyebrow { color: rgba(255,255,255,.85); position: relative; }
+.hero h2 { font-size: 22px; font-weight: 800; letter-spacing: -.4px; line-height: 1.16; position: relative; margin-top: 6px; }
+.hero p { color: rgba(255,255,255,.9); font-size: 13.5px; margin-top: 9px; position: relative; }
+.hero .stats { display: flex; gap: 8px; margin-top: 18px; position: relative; }
+.hero .stat { flex: 1; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); border-radius: var(--r); padding: 11px 12px; backdrop-filter: blur(4px); }
+.hero .stat b { font-size: 19px; display: block; color: #fff; }
+.hero .stat span { font-size: 10px; color: rgba(255,255,255,.8); text-transform: uppercase; letter-spacing: .05em; }
+.hero .xpbar { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.25); position: relative; }
+.hero .xpbar > i { background: #fff; }
+
+/* Section heading ----------------------------------------------------------- */
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; margin: 22px 2px 12px; }
+.sec-head h3 { font-size: 16px; font-weight: 800; letter-spacing: -.2px; color: var(--txt); }
+.sec-head span { font-size: 12px; color: var(--txt-mute); }
+
+/* Track cards (journey) ----------------------------------------------------- */
+.track {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 15px; margin-bottom: 12px; cursor: pointer; color: inherit; box-shadow: var(--shadow);
+  transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.track:active { transform: scale(.985); }
+.track .ico { width: 50px; height: 50px; flex: none; border-radius: 15px; display: grid; place-items: center;
+  font-size: 24px; background: var(--surface-2); border: 1px solid var(--line); }
+.track .meta { flex: 1; min-width: 0; }
+.track .meta b { font-size: 15px; display: block; letter-spacing: -.2px; color: var(--txt); }
+.track .meta p { font-size: 12px; color: var(--txt-mute); margin-top: 2px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.track .prog { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
+.track .prog .xpbar { flex: 1; height: 6px; }
+.track .prog small { font-size: 11px; color: var(--txt-dim); font-weight: 700; white-space: nowrap; }
+.track .chev { color: var(--txt-mute); font-size: 22px; flex: none; }
+
+/* Case list inside track ---------------------------------------------------- */
+.case-card {
+  position: relative; width: 100%; text-align: left; color: inherit; cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 16px 16px 15px; margin-bottom: 13px; overflow: hidden; box-shadow: var(--shadow);
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s;
+}
+.case-card:active { transform: scale(.985); }
+.case-card .ribbon { position: absolute; top: 0; left: 0; height: 100%; width: 5px; }
+.case-card .row1 { display: flex; align-items: center; gap: 10px; }
+.case-card .num { font-size: 11px; font-weight: 800; letter-spacing: .06em; color: var(--brand-d);
+  background: rgba(66,131,204,.1); border: 1px solid rgba(66,131,204,.22); padding: 3px 8px; border-radius: 7px; }
+.case-card h4 { font-size: 17px; font-weight: 800; letter-spacing: -.3px; margin: 10px 0 4px; line-height: 1.2; color: var(--txt); }
+.case-card .ctx { font-size: 12.5px; color: var(--txt-dim);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.case-card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.tag-eq { font-size: 10.5px; font-weight: 600; color: var(--txt-dim);
+  background: var(--surface-2); border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px; }
+.status-dot { margin-left: auto; font-size: 11px; font-weight: 800; padding: 4px 9px; border-radius: 999px; }
+.status-dot.done { color: var(--good); background: rgba(24,137,95,.1); border: 1px solid rgba(24,137,95,.26); }
+.status-dot.new  { color: var(--gold); background: rgba(185,119,10,.1); border: 1px solid rgba(185,119,10,.24); }
+.diff { display: inline-flex; gap: 2px; }
+.diff i { width: 6px; height: 6px; border-radius: 999px; background: var(--line); }
+.diff i.on { background: var(--gold); }
+
+/* Case study screen --------------------------------------------------------- */
+.cs-hero { border-radius: var(--r-xl); padding: 20px; margin: 8px 0 16px;
+  background: linear-gradient(155deg, var(--brand), var(--brand-dd)); color: #fff; box-shadow: var(--shadow); }
+.cs-hero .num { font-size: 11px; font-weight: 800; letter-spacing: .08em; color: rgba(255,255,255,.85); }
+.cs-hero h2 { font-size: 24px; font-weight: 800; letter-spacing: -.5px; margin: 6px 0 10px; line-height: 1.12; color: #fff; }
+.cs-hero .ctx { font-size: 14px; color: rgba(255,255,255,.92); }
+.cs-hero .tag-eq { color: #fff; background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.25); }
+.cs-hero small { color: rgba(255,255,255,.85) !important; }
+.cs-hero .xpbar { background: rgba(255,255,255,.22); border-color: rgba(255,255,255,.25); }
+.cs-hero .xpbar > i { background: #fff !important; }
+
+.block { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 16px; margin-bottom: 13px; box-shadow: var(--shadow); }
+.block > .bt { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 800;
+  letter-spacing: .01em; margin-bottom: 12px; color: var(--txt); }
+.block > .bt .bi { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--surface-2); border: 1px solid var(--line); font-size: 14px; }
+
+/* asset placeholder slot (drop official HORIBA image here) */
+.asset-slot { border: 1.5px dashed var(--line); border-radius: var(--r); padding: 18px 14px;
+  text-align: center; color: var(--txt-mute); font-size: 11.5px; background: var(--bg-soft); }
+.asset-slot.has-img { border-style: solid; padding: 0; overflow: hidden; }
+.asset-slot img { width: 100%; display: block; }
+.asset-slot .ph-ic { font-size: 22px; display: block; margin-bottom: 6px; opacity: .55; }
+
+/* param table */
+.params { display: flex; flex-direction: column; gap: 9px; }
+.param { display: flex; align-items: center; gap: 11px; }
+.param .nm { font-size: 13px; font-weight: 700; width: 96px; flex: none; color: var(--txt); }
+.param .tr { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; font-size: 14px; font-weight: 800; flex: none; }
+.param .tr.up { color: var(--bad); background: rgba(210,59,74,.1); }
+.param .tr.down { color: var(--brand-d); background: rgba(66,131,204,.12); }
+.param .tr.flat { color: var(--txt-mute); background: var(--surface-2); }
+.param .note { font-size: 12px; color: var(--txt-dim); }
+
+/* flags / chips list */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.flag-chip { font-size: 12px; font-weight: 700; color: var(--gold);
+  background: rgba(185,119,10,.09); border: 1px solid rgba(185,119,10,.24); padding: 6px 11px; border-radius: 9px; }
+.morph-li { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; color: var(--txt-dim); }
+.morph-li:last-child { border-bottom: 0; }
+.morph-li::before { content: "🔬"; flex: none; }
+
+.learn { font-size: 14px; line-height: 1.6; color: var(--txt); }
+.learn-box { background: linear-gradient(180deg, rgba(66,131,204,.07), var(--surface)); border-color: rgba(66,131,204,.28); }
+
+/* Buttons ------------------------------------------------------------------- */
+.btn { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%;
+  border: none; cursor: pointer; font-family: inherit; font-weight: 800; font-size: 15px;
+  padding: 16px; border-radius: var(--r); color: #fff;
+  background: linear-gradient(180deg, var(--brand), var(--brand-d));
+  box-shadow: 0 10px 24px -12px rgba(31,83,148,.7); transition: transform .12s ease, filter .2s; }
+.btn:active { transform: scale(.98); }
+.btn.ghost { background: var(--surface); color: var(--txt); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.btn.lg { font-size: 16px; padding: 17px; }
+.btn[disabled] { opacity: .45; pointer-events: none; }
+
+.backlink { display: inline-flex; align-items: center; gap: 7px; color: var(--brand-d);
+  font-size: 13px; font-weight: 700; padding: 8px 0; cursor: pointer; background: none; border: none; font-family: inherit; }
+
+/* Quiz ---------------------------------------------------------------------- */
+.quiz-top { display: flex; align-items: center; gap: 10px; margin: 6px 0 18px; }
+.quiz-top .xpbar { flex: 1; }
+.quiz-top small { font-size: 12px; font-weight: 700; color: var(--txt-dim); white-space: nowrap; }
+.q-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-xl);
+  padding: 22px 18px; box-shadow: var(--shadow); }
+.q-card .qn { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-d); }
+.q-card .qq { font-size: 19px; font-weight: 800; letter-spacing: -.3px; line-height: 1.3; margin: 8px 0 20px; color: var(--txt); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; cursor: pointer;
+  font-family: inherit; font-size: 14.5px; font-weight: 600; color: var(--txt);
+  background: var(--bg-soft); border: 1.5px solid var(--line); border-radius: var(--r);
+  padding: 15px; margin-bottom: 11px; transition: border-color .15s, background .15s, transform .1s; }
+.opt:active { transform: scale(.99); }
+.opt .key { width: 26px; height: 26px; border-radius: 8px; flex: none; display: grid; place-items: center;
+  font-size: 13px; font-weight: 800; background: var(--surface-2); border: 1px solid var(--line); color: var(--txt-dim); }
+.opt.correct { border-color: var(--good); background: rgba(24,137,95,.09); }
+.opt.correct .key { background: var(--good); color: #fff; border-color: var(--good); }
+.opt.wrong { border-color: var(--bad); background: rgba(210,59,74,.09); }
+.opt.wrong .key { background: var(--bad); color: #fff; border-color: var(--bad); }
+.opt[disabled] { cursor: default; }
+
+.explain { margin-top: 4px; border-radius: var(--r); padding: 15px; font-size: 13.5px; line-height: 1.55;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--txt); animation: fade .3s ease both; }
+.explain b { color: var(--brand-d); }
+.explain.ok b { color: var(--good); }
+.explain.no b { color: var(--bad); }
+
+/* Result -------------------------------------------------------------------- */
+.result { text-align: center; padding: 26px 18px; }
+.result .badge { width: 110px; height: 110px; margin: 6px auto 18px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 52px; position: relative;
+  background: radial-gradient(circle at 50% 35%, #fff, var(--surface-2)); border: 1px solid var(--line);
+  box-shadow: var(--glow); }
+.result h2 { font-size: 26px; font-weight: 800; letter-spacing: -.5px; color: var(--txt); }
+.result .sub { color: var(--txt-dim); font-size: 14px; margin-top: 6px; }
+.result .score { font-size: 46px; font-weight: 800; margin: 18px 0 4px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-dd)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.result .rewards { display: flex; gap: 10px; margin: 22px 0; }
+.result .reward { flex: 1; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 10px; box-shadow: var(--shadow); }
+.result .reward b { display: block; font-size: 20px; color: var(--gold); }
+.result .reward span { font-size: 11px; color: var(--txt-mute); }
+
+/* Bottom nav ---------------------------------------------------------------- */
+.tabbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; z-index: 50;
+  width: 100%; max-width: var(--maxw);
+  display: flex; padding: 8px 14px calc(8px + var(--safe-b));
+  background: linear-gradient(180deg, transparent, rgba(234,240,247,.95) 35%); }
+.tabbar .inner { display: flex; flex: 1; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 18px; padding: 6px; box-shadow: var(--shadow-lg); }
+.tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer;
+  background: none; border: none; font-family: inherit; color: var(--txt-mute); padding: 8px 4px; border-radius: 13px;
+  font-size: 10px; font-weight: 700; transition: color .15s, background .15s; }
+.tab .ti { font-size: 19px; }
+.tab.active { color: var(--brand-d); background: var(--surface-2); }
+
+/* About / sources ----------------------------------------------------------- */
+.note-card { border-left: 3px solid var(--brand); background: rgba(66,131,204,.06);
+  padding: 14px 16px; border-radius: 0 var(--r) var(--r) 0; font-size: 13px; color: var(--txt-dim); line-height: 1.55; margin-bottom: 12px; }
+.note-card b { color: var(--txt); }
+.src-li { display: block; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r); margin-bottom: 9px; color: var(--txt); text-decoration: none; font-size: 13px; box-shadow: var(--shadow); }
+.src-li b { color: var(--brand-d); }
+.src-li small { display: block; color: var(--txt-mute); font-size: 11px; margin-top: 3px; word-break: break-all; }
+
+/* deck / collection grid ---------------------------------------------------- */
+.deck-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px; }
+.mini { aspect-ratio: 3/4; border-radius: var(--r); padding: 13px; display: flex; flex-direction: column;
+  border: 1px solid var(--line); background: var(--surface); cursor: pointer; box-shadow: var(--shadow);
+  position: relative; overflow: hidden; transition: transform .15s; }
+.mini:active { transform: scale(.97); }
+.mini.locked { opacity: .6; background: var(--bg-soft); }
+.mini .num { font-size: 10px; font-weight: 800; color: var(--brand-d); letter-spacing: .06em; }
+.mini h5 { font-size: 13px; font-weight: 800; margin-top: auto; line-height: 1.2; letter-spacing: -.2px; color: var(--txt); }
+.mini .emoji { font-size: 26px; }
+.mini .seal { position: absolute; top: 10px; right: 10px; font-size: 14px; }
+
+.empty { text-align: center; color: var(--txt-mute); padding: 40px 20px; font-size: 13px; }
+
+hr.sep { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
+
+/* toast */
+#toast { position: fixed; left: 50%; bottom: calc(96px + var(--safe-b)); transform: translateX(-50%) translateY(20px);
+  background: var(--txt); border: 1px solid var(--txt); color: #fff; font-size: 13px; font-weight: 700;
+  padding: 11px 18px; border-radius: 999px; box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none;
+  transition: all .3s cubic-bezier(.22,1,.36,1); z-index: 80; max-width: 90%; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* =============================================================================
+   v2 — onboarding, anel, continuar, prova final, busca, visualizações, confete
+   ============================================================================= */
+
+/* Onboarding ---------------------------------------------------------------- */
+.ob { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 18px calc(24px + var(--safe-b));
+  background: linear-gradient(165deg, var(--brand) 0%, var(--brand-dd) 100%); }
+.ob-card { background: var(--surface); border-radius: var(--r-xl); padding: 30px 22px 22px; max-width: 360px; width: 100%;
+  text-align: center; box-shadow: var(--shadow-lg); animation: fade .4s ease both; }
+.ob-ic { font-size: 56px; line-height: 1; margin-bottom: 8px; }
+.ob-card h2 { font-size: 23px; font-weight: 800; letter-spacing: -.4px; color: var(--txt); }
+.ob-card p { color: var(--txt-dim); font-size: 14px; margin: 10px 0 18px; line-height: 1.6; }
+.ob-dots { display: flex; gap: 7px; justify-content: center; margin-bottom: 20px; }
+.ob-dots i { width: 7px; height: 7px; border-radius: 999px; background: var(--line); transition: all .25s; }
+.ob-dots i.on { width: 22px; background: var(--brand); }
+.ob-disc { font-size: 11px; color: var(--txt-mute); margin-top: 14px; line-height: 1.5; }
+
+/* Hero row + ring ----------------------------------------------------------- */
+.hero-row { display: flex; align-items: center; gap: 16px; position: relative; }
+.hero-txt { flex: 1; min-width: 0; }
+.hero-txt h2 { font-size: 22px; font-weight: 800; letter-spacing: -.4px; line-height: 1.14; }
+.ring { position: relative; flex: none; }
+.ring svg { width: 100%; height: 100%; display: block; }
+.ring-c { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+.ring-c b { font-size: 19px; font-weight: 800; line-height: 1; }
+.ring-c span { font-size: 8.5px; text-transform: uppercase; letter-spacing: .04em; opacity: .85; margin-top: 2px; }
+
+/* Continuar ----------------------------------------------------------------- */
+.continue { display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); padding: 14px; margin-bottom: 12px;
+  box-shadow: var(--shadow); color: inherit; transition: transform .15s; }
+.continue:active { transform: scale(.985); }
+.continue.done { cursor: default; }
+.continue .ci { width: 46px; height: 46px; flex: none; border-radius: 13px; display: grid; place-items: center; font-size: 22px;
+  background: var(--surface-2); border: 1px solid var(--line); }
+.continue .cc { flex: 1; min-width: 0; }
+.continue .cc small { font-size: 9.5px; font-weight: 800; letter-spacing: .08em; color: var(--brand-d); }
+.continue .cc b { display: block; font-size: 14.5px; letter-spacing: -.2px; color: var(--txt); margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.continue .cgo { color: var(--brand); font-size: 16px; flex: none; }
+
+/* Prova Final CTA ----------------------------------------------------------- */
+.exam-cta { display: flex; align-items: center; gap: 13px; width: 100%; text-align: left; cursor: pointer; margin-bottom: 16px;
+  border: none; border-radius: var(--r-lg); padding: 15px 16px; color: #fff;
+  background: linear-gradient(120deg, #6b4ee6, #2f6fb8); box-shadow: 0 12px 28px -14px rgba(107,78,230,.7); transition: transform .15s; }
+.exam-cta:active { transform: scale(.985); }
+.exam-cta.lock { background: var(--surface-2); color: var(--txt-mute); border: 1px solid var(--line); box-shadow: none; cursor: default; }
+.exam-cta .ex-ic { font-size: 26px; flex: none; }
+.exam-cta .ex-tx { flex: 1; }
+.exam-cta .ex-tx b { display: block; font-size: 15px; }
+.exam-cta .ex-tx span { font-size: 11.5px; opacity: .9; }
+.exam-cta .ex-go { font-size: 12px; font-weight: 800; flex: none; opacity: .95; }
+
+/* Busca --------------------------------------------------------------------- */
+.search { display: flex; align-items: center; gap: 9px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; padding: 11px 14px; margin-bottom: 14px; box-shadow: var(--shadow); }
+.search span { color: var(--txt-mute); }
+.search input { flex: 1; border: none; outline: none; background: none; font-family: inherit; font-size: 14px; color: var(--txt); }
+.search input::placeholder { color: var(--txt-mute); }
+
+/* Visualizações ------------------------------------------------------------- */
+.bt-note { font-size: 9.5px; font-weight: 700; letter-spacing: .02em; color: var(--txt-mute); margin-left: auto;
+  background: var(--surface-2); border: 1px solid var(--line); padding: 2px 7px; border-radius: 6px; text-transform: uppercase; }
+.viz-frame { background: #fbfdff; border: 1px solid var(--line); border-radius: var(--r); padding: 8px; overflow: hidden; }
+.viz-svg { width: 100%; height: auto; display: block; }
+.viz-cap { font-size: 11.5px; color: var(--txt-dim); line-height: 1.5; margin-top: 9px; }
+.viz-tag { font-weight: 700; white-space: nowrap; }
+
+/* Pistas -------------------------------------------------------------------- */
+.pista { display: flex; gap: 10px; font-size: 13.5px; color: var(--txt-dim); line-height: 1.5; padding: 5px 0; }
+.pista span:first-child { color: var(--brand); flex: none; font-weight: 800; }
+
+/* Prova — certificado ------------------------------------------------------- */
+.q-card.exam { border-color: rgba(107,78,230,.3); }
+.cert { margin: 22px 0; padding: 3px; border-radius: var(--r-lg);
+  background: linear-gradient(120deg, #6b4ee6, #2f6fb8); box-shadow: var(--shadow); }
+.cert-in { background: var(--surface); border-radius: 17px; padding: 18px; }
+.cert-in small { font-size: 10px; font-weight: 800; letter-spacing: .14em; color: var(--brand-d); }
+.cert-in b { display: block; font-size: 19px; font-weight: 800; letter-spacing: -.3px; color: var(--txt); margin: 6px 0 4px; }
+.cert-in span { font-size: 12px; color: var(--txt-dim); }
+
+/* Confete ------------------------------------------------------------------- */
+canvas.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 90; }
+
+</style>
+</head>
+<body>
+<main id="app"><div id="app-root"></div></main>
+<div id="toast"></div>
+<script>
+/* =============================================================================
+   cases.js — Conteúdo educacional do "Chase the Case Game"
+
+   IMPORTANTE — PROVENIÊNCIA DO CONTEÚDO
+   -------------------------------------
+   • O índice de casos (número + patologia + equipamento) é REAL e verificado a
+     partir das publicações públicas da HORIBA Medical ("Chase the Case").
+   • O conteúdo de ensino (morfologia, flags, parâmetros, achados de lâmina) é
+     uma SÍNTESE EDUCACIONAL ORIGINAL baseada em hematologia laboratorial
+     consolidada, alinhada à patologia de cada caso real.
+   • NÃO reproduzimos os números exatos de paciente, as imagens de histograma/
+     matriz, nem as fotos de lâmina dos PDFs oficiais (material protegido).
+     Cada caso tem `assets` vazios e campos `realData:false` — preencha com os
+     ativos oficiais da HORIBA (ver CONTENT-SOURCES.md).
+   • Os valores de CBC mostrados como "padrão típico" são FAIXAS DIDÁTICAS da
+     literatura, marcados como tal — não são o laudo do paciente real.
+   ============================================================================= */
+
+window.CHASE_TRACKS = [
+  {
+    id: 'fundamentos',
+    nome: 'Fundamentos do Laboratório',
+    emoji: '🧪',
+    cor: '#2f6fb8',
+    descricao: 'Como o analisador "enxerga" o sangue: histogramas, matriz LMNE, flags e a lâmina no CellaVision.',
+  },
+  {
+    id: 'hemoglobinopatias',
+    nome: 'Hemoglobinopatias & Anemias',
+    emoji: '🩸',
+    cor: '#d23b4a',
+    descricao: 'Quando a hemácia muda de forma — falciforme e a leitura do eritrograma.',
+  },
+  {
+    id: 'infeccoes',
+    nome: 'Infecções & Reativos',
+    emoji: '🦟',
+    cor: '#138a6e',
+    descricao: 'Malária, dengue e mononucleose: o que dispara os flags de linfócito variante e plaquetopenia.',
+  },
+  {
+    id: 'leucemias-agudas',
+    nome: 'Leucemias Agudas',
+    emoji: '⚡',
+    cor: '#6b4ee6',
+    descricao: 'Blastos na matriz: LLA, LMA, monoblástica e a promielocítica que é uma emergência.',
+  },
+  {
+    id: 'cronicas-mieloides',
+    nome: 'Crônicas & Mielodisplasias',
+    emoji: '🧬',
+    cor: '#c2820a',
+    descricao: 'LMC, LLC, LMMC e SMD — proliferação madura, displasia e a curva que desloca para a esquerda.',
+  },
+  {
+    id: 'morfologia',
+    nome: 'Morfologia & Casos Raros',
+    emoji: '🔭',
+    cor: '#0e8a9b',
+    descricao: 'Esquizócitos, eritroblastos e grânulos gigantes — quando a forma da célula é o diagnóstico.',
+  },
+  {
+    id: 'solidos',
+    nome: 'Sinais no Hemograma',
+    emoji: '🔬',
+    cor: '#3a6ea5',
+    descricao: 'Quando o hemograma levanta a bandeira de uma doença que não é do sangue.',
+  },
+];
+
+/* Equipamentos reais citados pela HORIBA na série */
+window.CHASE_EQUIPAMENTOS = {
+  'Yumizen H2500': 'Analisador hematológico de alto volume (5-diff) — matriz LMNE, flags e contagem de reticulócitos.',
+  'Yumizen H550':  'Analisador 5-diff de bancada para rotina de média demanda.',
+  'Yumizen H500':  'Analisador 5-diff compacto para laboratórios de menor volume.',
+  'CellaVision DC-1': 'Sistema de morfologia celular digital: localiza, fotografa e pré-classifica as células da lâmina.',
+};
+
+/*
+  Modelo de um caso:
+  {
+    id, numero, patologia, track, dificuldade(1-3),
+    realData: false,                 // vire true ao inserir o laudo oficial
+    equipamento: [...],
+    contexto: 'sinopse clínica (genérica/didática)',
+    pistas: [ 'o que o analisador sinalizou — conceitual' ],
+    parametros: [ {nome, tendencia:'↑|↓|→', nota} ],  // padrão típico didático
+    flags: [ 'Blast?', 'NRBC', ... ],
+    histograma: 'o que esperar na curva/matriz',
+    cellavision: [ 'achados de lâmina esperados' ],
+    aprendizado: 'parágrafo-chave',
+    quiz: [ {p, opcoes:[...], correta:idx, explica} ],
+    assets: { matriz:'', histograma:'', lamina:'' },  // caminhos p/ ativos oficiais
+    fonte: 'URL pública HORIBA'
+  }
+*/
+window.CHASE_CASES = [
+
+  /* ---------------------------------------------------------------- FUNDAMENTOS */
+  {
+    id: 'f-matriz', numero: '00', patologia: 'A Matriz LMNE', track: 'fundamentos', dificuldade: 1,
+    realData: true, equipamento: ['Yumizen H2500'],
+    contexto: 'Antes de caçar um caso, é preciso ler o mapa. O 5-diff separa os leucócitos em uma matriz por tamanho e estrutura.',
+    pistas: ['Cada nuvem de pontos é uma população: Linfócitos, Monócitos, Neutrófilos, Eosinófilos.', 'Pontos fora das nuvens = a máquina levanta um flag.'],
+    parametros: [
+      {nome: 'WBC', tendencia: '→', nota: 'contagem global de leucócitos'},
+      {nome: 'NEU/LYM/MONO/EOS/BASO', tendencia: '→', nota: 'as 5 populações do differential'},
+    ],
+    flags: ['Blast?', 'Atypical Lympho?', 'Left shift', 'NRBC', 'Imm Granulocytes'],
+    histograma: 'No 5-diff, a matriz LMNE posiciona cada população em uma região esperada. Células anormais (blastos, linfócitos variantes) caem em zonas "proibidas" e disparam flags.',
+    cellavision: ['Quando o flag acende, a lâmina vai ao CellaVision para confirmar a morfologia célula a célula.'],
+    aprendizado: 'O analisador não dá diagnóstico — ele dá um padrão e um alarme. O flag é um convite para olhar a lâmina. Caçar o caso = juntar matriz + flag + morfologia + clínica.',
+    quiz: [
+      {p: 'O que um "flag" do analisador realmente significa?', opcoes: ['Diagnóstico fechado', 'Um alerta para revisar a lâmina', 'Erro do equipamento', 'Amostra coagulada sempre'], correta: 1, explica: 'O flag sinaliza uma população atípica ou fora da região esperada — é um convite para a revisão morfológica, não um diagnóstico.'},
+      {p: 'A matriz LMNE separa os leucócitos principalmente por:', opcoes: ['Cor da rolha do tubo', 'Tamanho e complexidade/estrutura', 'Ordem de chegada', 'Peso do paciente'], correta: 1, explica: 'O 5-diff posiciona cada população por características físicas (tamanho, granularidade/estrutura), formando as nuvens da matriz.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/chase-the-case/',
+  },
+
+  /* ---------------------------------------------------------- HEMOGLOBINOPATIAS */
+  {
+    id: 'c3', numero: '03', patologia: 'Anemia Falciforme', track: 'hemoglobinopatias', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Anemia hemolítica crônica por hemoglobina S. A hemácia desoxigenada polimeriza e assume a forma de foice.',
+    pistas: ['Anemia com sinais de hemólise e regeneração medular.', 'O eritrograma e a lâmina contam histórias diferentes — por isso a revisão importa.'],
+    parametros: [
+      {nome: 'Hb', tendencia: '↓', nota: 'anemia, frequentemente moderada a grave'},
+      {nome: 'Reticulócitos', tendencia: '↑', nota: 'resposta regenerativa à hemólise'},
+      {nome: 'RDW', tendencia: '↑', nota: 'anisocitose'},
+    ],
+    flags: ['RBC abnormal distribution', 'Anisocytosis', 'NRBC'],
+    histograma: 'Histograma de hemácias alargado/bimodal pela presença de drepanócitos, células-alvo e, em crises, eritroblastos (NRBC).',
+    cellavision: ['Drepanócitos (células em foice)', 'Células-alvo (codócitos)', 'Corpúsculos de Howell-Jolly (asplenia funcional)', 'Policromasia'],
+    aprendizado: 'A foice é o sinal patognomônico, mas o conjunto — alvo + Howell-Jolly + policromasia + reticulocitose — confirma hemólise crônica com hipoesplenismo. O analisador anuncia "tem algo errado nas hemácias"; o CellaVision nomeia a forma.',
+    quiz: [
+      {p: 'Qual achado de lâmina é o mais característico da anemia falciforme?', opcoes: ['Drepanócito (hemácia em foice)', 'Linfócito atípico', 'Blasto', 'Plaqueta gigante'], correta: 0, explica: 'O drepanócito é a marca morfológica — resultado da polimerização da HbS na desoxigenação.'},
+      {p: 'Corpúsculos de Howell-Jolly na falciforme indicam principalmente:', opcoes: ['Deficiência de ferro', 'Hipoesplenismo / asplenia funcional', 'Infecção viral', 'Leucemia'], correta: 1, explica: 'Os infartos esplênicos repetidos levam à asplenia funcional; sem o baço filtrando, restos nucleares (Howell-Jolly) sobram nas hemácias.'},
+      {p: 'Por que os reticulócitos sobem na falciforme?', opcoes: ['A medula desliga', 'Resposta regenerativa à hemólise crônica', 'Desidratação', 'Erro de calibração'], correta: 1, explica: 'A destruição acelerada de hemácias estimula a medula a liberar reticulócitos — sinal de hemólise compensada.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/chase-the-case/chase-the-case-3-sickle-cell-anemia/',
+  },
+  {
+    id: 'c19', numero: '19', patologia: 'Anemia Falciforme (crise)', track: 'hemoglobinopatias', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Homem jovem com falcização — a HORIBA mostra como o H2500 acompanha a crise vaso-oclusiva e hemolítica.',
+    pistas: ['Em crise, a regeneração medular pode jogar eritroblastos para a circulação.', 'Watch a contagem de leucócitos: o NRBC pode "inflar" a contagem se não for corrigido.'],
+    parametros: [
+      {nome: 'Hb', tendencia: '↓', nota: 'piora na crise'},
+      {nome: 'NRBC', tendencia: '↑', nota: 'eritroblastos circulantes'},
+      {nome: 'WBC', tendencia: '↑', nota: 'leucocitose reativa / por estresse'},
+    ],
+    flags: ['NRBC', 'WBC abnormal', 'Anisocytosis'],
+    histograma: 'A presença de NRBC exige correção da contagem de leucócitos — o analisador sinaliza e separa os eritroblastos da nuvem de linfócitos.',
+    cellavision: ['Drepanócitos', 'Eritroblastos (NRBC)', 'Policromasia intensa'],
+    aprendizado: 'Eritroblastos circulantes (NRBC) são contados como falsos leucócitos por contadores antigos. O 5-diff moderno detecta e corrige — entender o flag NRBC evita superestimar a leucometria numa crise.',
+    quiz: [
+      {p: 'Por que o flag NRBC importa para a contagem de leucócitos?', opcoes: ['Não importa', 'Eritroblastos podem ser contados como leucócitos, exigindo correção', 'Diminui as plaquetas', 'Aumenta a Hb falsamente'], correta: 1, explica: 'NRBC (hemácias nucleadas) têm tamanho próximo ao de linfócitos; sem correção, inflam a leucometria. O analisador sinaliza para corrigir.'},
+      {p: 'NRBC na circulação geralmente reflete:', opcoes: ['Medula preguiçosa', 'Estímulo regenerativo/estresse medular intenso', 'Hidratação excessiva', 'Hemoglobina normal'], correta: 1, explica: 'Eritroblastos saem para o sangue quando a medula é fortemente estimulada (hemólise, hipóxia, crise) — sinal de regeneração ativa.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/chase-the-case/chase-the-case-19-sickle-cell-anemia/',
+  },
+  {
+    id: 'c32', numero: '32', patologia: 'Anemia Falciforme (adolescente)', track: 'hemoglobinopatias', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Adolescente internado com anemia hemolítica e doença falciforme — o foco é o monitoramento laboratorial da hemólise.',
+    pistas: ['A reticulocitose quantifica a resposta da medula.', 'Comparar parâmetros entre internações revela a gravidade da hemólise.'],
+    parametros: [
+      {nome: 'Hb', tendencia: '↓', nota: 'anemia'},
+      {nome: 'Reticulócitos', tendencia: '↑', nota: 'hemólise compensada'},
+      {nome: 'MCV', tendencia: '→', nota: 'normo/levemente alterado pela reticulocitose'},
+    ],
+    flags: ['Anisocytosis', 'RBC abnormal', 'NRBC'],
+    histograma: 'A reticulocitose desvia levemente o MCV; o canal de reticulócitos do H2500 quantifica a fração imatura.',
+    cellavision: ['Drepanócitos', 'Células-alvo', 'Policromasia / reticulócitos policromáticos'],
+    aprendizado: 'Na falciforme, a contagem de reticulócitos é o termômetro da hemólise — queda abrupta pode indicar crise aplástica (ex.: parvovírus B19), uma virada perigosa que o hemograma denuncia antes da clínica.',
+    quiz: [
+      {p: 'Uma QUEDA súbita dos reticulócitos num paciente falciforme sugere:', opcoes: ['Melhora', 'Possível crise aplástica (ex.: parvovírus B19)', 'Desidratação leve', 'Erro sem importância'], correta: 1, explica: 'Se a medula para de produzir (crise aplástica), os reticulócitos despencam mesmo com anemia grave — emergência que o reticulograma flagra cedo.'},
+      {p: 'O canal de reticulócitos serve para:', opcoes: ['Contar plaquetas', 'Medir a fração de hemácias jovens (resposta medular)', 'Dosar ferro', 'Avaliar coagulação'], correta: 1, explica: 'Reticulócitos são hemácias recém-liberadas; sua fração mede o quanto a medula está respondendo.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/medical/news/news-press-release/detail/news/5/2024/sickle-cell-anemia-yumizen-hematology-clinical-cases-chase-the-case-32/',
+  },
+  {
+    id: 'c38', numero: '38', patologia: 'Anemia Falciforme (adulto)', track: 'hemoglobinopatias', dificuldade: 1,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Adulto com fadiga progressiva e dor articular leve — diagnóstico de anemia falciforme acompanhado pelo H2500.',
+    pistas: ['Fadiga = anemia crônica.', 'A lâmina confirma o que o eritrograma sugere.'],
+    parametros: [
+      {nome: 'Hb', tendencia: '↓', nota: 'anemia crônica'},
+      {nome: 'RDW', tendencia: '↑', nota: 'anisocitose'},
+      {nome: 'Reticulócitos', tendencia: '↑', nota: 'compensação'},
+    ],
+    flags: ['Anisocytosis', 'RBC abnormal'],
+    histograma: 'Curva de hemácias alargada (RDW alto) com cauda de microcitose das células-alvo.',
+    cellavision: ['Drepanócitos', 'Células-alvo', 'Howell-Jolly ocasionais'],
+    aprendizado: 'Mesmo em apresentação "leve", a assinatura morfológica é a mesma. O valor do fluxo HORIBA é a triagem (analisador) → confirmação (CellaVision) sem depender só do olhar manual.',
+    quiz: [
+      {p: 'RDW elevado indica:', opcoes: ['Hemácias todas iguais', 'Variação de tamanho das hemácias (anisocitose)', 'Plaquetas baixas', 'Leucocitose'], correta: 1, explica: 'RDW (Red cell Distribution Width) mede a heterogeneidade de tamanho — alto = anisocitose, comum na falciforme.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/company/news/detail/news/11/2024/sickle-cell-anemia-yumizen-hematology-clinical-case-chase-the-case-38/',
+  },
+
+  /* --------------------------------------------------------------- INFECÇÕES */
+  {
+    id: 'c8', numero: '08', patologia: 'Malária (Plasmodium)', track: 'infeccoes', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Homem de 36 anos com febre — interpretação do hemograma na infecção por Plasmodium.',
+    pistas: ['Trombocitopenia é uma das pistas mais constantes da malária.', 'Pode haver anormalidades na matriz por hemólise e parasitas intra-eritrocitários.'],
+    parametros: [
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'trombocitopenia frequente'},
+      {nome: 'Hb', tendencia: '↓', nota: 'anemia hemolítica'},
+      {nome: 'WBC', tendencia: '→', nota: 'variável'},
+    ],
+    flags: ['PLT low', 'RBC abnormal', 'Anomalia no canal de reticulócitos/RBC'],
+    histograma: 'Parasitas intra-eritrocitários podem gerar sinais atípicos nos canais de hemácia/reticulócito; trombocitopenia evidente no histograma de plaquetas.',
+    cellavision: ['Formas intra-eritrocitárias (trofozoítos em anel)', 'Hemácias parasitadas', 'Policromasia'],
+    aprendizado: 'O hemograma não fecha malária — mas a tríade febre + trombocitopenia + anemia em área endêmica acende o alerta. A confirmação é a gota espessa/esfregaço; o CellaVision ajuda a flagrar o parasita na lâmina fina.',
+    quiz: [
+      {p: 'Qual alteração do hemograma é mais consistentemente associada à malária?', opcoes: ['Trombocitose', 'Trombocitopenia', 'Eosinofilia', 'Linfocitose'], correta: 1, explica: 'A trombocitopenia é um dos achados mais constantes e precoces na malária, útil como sinal de alerta.'},
+      {p: 'A confirmação diagnóstica da malária no laboratório é feita por:', opcoes: ['Apenas a contagem automatizada', 'Esfregaço/gota espessa com identificação do parasita', 'Dosagem de ferro', 'RDW'], correta: 1, explica: 'O analisador levanta a suspeita; o diagnóstico definitivo exige visualizar o Plasmodium (gota espessa/esfregaço ou teste rápido/PCR).'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/usa/company/news/detail/news/1/2022/malaria-interpretation-clinical-cases-of-yumizen-h2500-hematology-analyzers-chase-the-case-8/',
+  },
+  {
+    id: 'c23', numero: '23', patologia: 'Dengue', track: 'infeccoes', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Infecção viral por dengue — o hemograma é peça central na vigilância de gravidade.',
+    pistas: ['A dupla clássica: trombocitopenia + hemoconcentração (hematócrito subindo).', 'Linfócitos atípicos/reativos podem aparecer e disparar flag.'],
+    parametros: [
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'queda é sinal de alarme'},
+      {nome: 'Hematócrito', tendencia: '↑', nota: 'hemoconcentração por extravasamento'},
+      {nome: 'Leucócitos', tendencia: '↓', nota: 'leucopenia comum'},
+    ],
+    flags: ['PLT low', 'Atypical Lympho?', 'WBC low'],
+    histograma: 'Trombocitopenia clara no histograma de plaquetas; linfócitos reativos podem deslocar a nuvem de linfócitos e acender "Atypical Lympho?".',
+    cellavision: ['Linfócitos reativos/atípicos', 'Plaquetas reduzidas no campo', 'Possível ativação linfocitária'],
+    aprendizado: 'Na dengue, o hemograma seriado é prognóstico: plaqueta caindo + hematócrito subindo = risco de extravasamento plasmático (dengue grave). O laboratório vira radar de gravidade, não só de diagnóstico.',
+    quiz: [
+      {p: 'Qual combinação no hemograma sinaliza ALERTA de gravidade na dengue?', opcoes: ['Plaquetas ↑ e Ht ↓', 'Plaquetas ↓ e hematócrito ↑ (hemoconcentração)', 'Eosinofilia', 'Hb ↑'], correta: 1, explica: 'Queda de plaquetas com aumento do hematócrito sugere extravasamento plasmático — marca da progressão para dengue grave.'},
+      {p: 'O flag "Atypical Lympho?" na dengue corresponde a:', opcoes: ['Blastos', 'Linfócitos reativos à infecção viral', 'Neutrófilos tóxicos', 'Hemácias em foice'], correta: 1, explica: 'Infecções virais geram linfócitos reativos (grandes, citoplasma basofílico) que caem fora da nuvem normal e disparam o flag.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/chase-the-case/chase-the-case-23-dengue/',
+  },
+  {
+    id: 'c46', numero: '46', patologia: 'Mononucleose Infecciosa', track: 'infeccoes', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H550', 'CellaVision DC-1'],
+    contexto: 'Mulher de 21 anos — quadro de mononucleose infecciosa (EBV).',
+    pistas: ['Linfocitose com muitos linfócitos atípicos (células de Downey).', '"Atypical Lympho?" / "Variant Lympho?" é o flag estrela aqui.'],
+    parametros: [
+      {nome: 'Linfócitos', tendencia: '↑', nota: 'linfocitose'},
+      {nome: 'WBC', tendencia: '↑', nota: 'às custas de linfócitos'},
+      {nome: 'Atípicos', tendencia: '↑', nota: 'linfócitos reativos abundantes'},
+    ],
+    flags: ['Atypical Lympho?', 'Variant Lympho?'],
+    histograma: 'Os linfócitos reativos são grandes e mais granulares — deslocam a nuvem linfocitária para cima/direita na matriz, invadindo a região de monócitos e disparando o flag.',
+    cellavision: ['Linfócitos atípicos / reativos (Downey II)', 'Citoplasma abundante e basofílico que "abraça" hemácias vizinhas'],
+    aprendizado: 'O grande truque é diferenciar linfócito REATIVO (mononucleose) de linfócito NEOPLÁSICO (leucemia/linfoma). Reativos são heterogêneos e têm contexto viral; blastos/clones são monótonos. A matriz + lâmina + clínica resolvem.',
+    quiz: [
+      {p: 'O achado clássico da mononucleose no sangue periférico é:', opcoes: ['Blastos monótonos', 'Linfócitos atípicos/reativos (heterogêneos)', 'Drepanócitos', 'Eosinofilia'], correta: 1, explica: 'A mononucleose por EBV cursa com linfocitose de células reativas heterogêneas — o oposto da monotonia clonal de uma leucemia.'},
+      {p: 'Como o analisador costuma reagir aos linfócitos reativos?', opcoes: ['Ignora', 'Dispara "Atypical/Variant Lympho?" pois eles saem da nuvem normal', 'Conta como plaquetas', 'Apaga'], correta: 1, explica: 'Por serem maiores e mais estruturados, os reativos caem fora da região esperada de linfócitos e acionam o flag de linfócito atípico/variante.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/company/news/detail/news/6/2025/infectious-mononucleosis-hematology-clinical-case-chase-the-case-46/',
+  },
+
+  /* ----------------------------------------------------------- LEUCEMIAS AGUDAS */
+  {
+    id: 'c26', numero: '26', patologia: 'Leucemia Aguda', track: 'leucemias-agudas', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Apresentação de leucemia aguda — proliferação de blastos invadindo o sangue periférico.',
+    pistas: ['O flag "Blast?" é o gatilho.', 'Costuma vir com a tríade: anemia + plaquetopenia + leucócitos alterados.'],
+    parametros: [
+      {nome: 'Blastos', tendencia: '↑', nota: 'células imaturas circulantes'},
+      {nome: 'Hb', tendencia: '↓', nota: 'falência medular'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'falência medular'},
+    ],
+    flags: ['Blast?', 'WBC abnormal', 'Imm cells'],
+    histograma: 'Os blastos formam uma nuvem anômala na matriz, fora das regiões maduras — o "Blast?" acende e a contagem diferencial fica não confiável até a revisão.',
+    cellavision: ['Blastos (alta relação núcleo/citoplasma, cromatina fina, nucléolos)', 'Hiato leucêmico (poucas formas intermediárias)'],
+    aprendizado: 'A regra de ouro: hemograma com blastos + citopenias = revisão de lâmina IMEDIATA e contato clínico. O analisador não diferencia o tipo de leucemia — ele dispara o alarme; imunofenotipagem e citogenética definem o subtipo.',
+    quiz: [
+      {p: 'A tríade que mais sugere leucemia aguda no hemograma é:', opcoes: ['Eosinofilia + basofilia + Hb alta', 'Anemia + plaquetopenia + blastos circulantes', 'RDW baixo isolado', 'Plaquetas altas'], correta: 1, explica: 'A infiltração medular por blastos derruba hemácias e plaquetas e libera células imaturas — anemia + plaquetopenia + blastos.'},
+      {p: 'O "hiato leucêmico" significa:', opcoes: ['Muitos estágios intermediários', 'Blastos e células maduras, com poucos estágios intermediários', 'Ausência de blastos', 'Excesso de plaquetas'], correta: 1, explica: 'Na leucemia aguda há um salto entre blastos e células maduras residuais, faltando as formas intermediárias — o hiato leucêmico.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/usa/medical/chase-the-case/chase-the-case-26-leukemia/',
+  },
+  {
+    id: 'c34', numero: '34', patologia: 'Leucemia Monoblástica Aguda', track: 'leucemias-agudas', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Leucemia aguda de linhagem monocítica — proliferação de monoblastos/promonócitos.',
+    pistas: ['A nuvem de monócitos "explode" e fica atípica.', 'Pode haver acometimento gengival e de pele (infiltração) na clínica.'],
+    parametros: [
+      {nome: 'Monócitos/monoblastos', tendencia: '↑', nota: 'expansão monocítica'},
+      {nome: 'Hb', tendencia: '↓', nota: 'falência medular'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'falência medular'},
+    ],
+    flags: ['Blast?', 'Monocytosis', 'Atypical cells'],
+    histograma: 'A região de monócitos na matriz aparece expandida e deslocada; o flag de blasto/monócito anormal acende.',
+    cellavision: ['Monoblastos (cromatina fina, citoplasma cinza-azulado)', 'Promonócitos com núcleo dobrado/convoluto'],
+    aprendizado: 'Distinguir uma monocitose REATIVA de uma proliferação monoblástica MALIGNA é o desafio. A morfologia (núcleo convoluto, blastos) e a imunofenotipagem decidem — o analisador só aponta a região monocítica anormal.',
+    quiz: [
+      {p: 'Na leucemia monoblástica, qual população está expandida na matriz?', opcoes: ['Eosinófilos', 'Monócitos/monoblastos', 'Plaquetas', 'Hemácias'], correta: 1, explica: 'É uma leucemia de linhagem monocítica — a nuvem de monócitos se expande e fica atípica.'},
+      {p: 'O que separa monocitose reativa de monoblástica maligna?', opcoes: ['Só a idade', 'Morfologia (blastos/promonócitos) + imunofenotipagem', 'A cor do tubo', 'O RDW'], correta: 1, explica: 'Reativa traz monócitos maduros; maligna traz monoblastos/promonócitos imaturos confirmados por imunofenotipagem.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/news/news-press-release/detail/news/7/2024/acute-monoblastic-leukemia-yumizen-hematology-clinical-cases-chase-the-case-34/',
+  },
+  {
+    id: 'c39', numero: '39', patologia: 'Leucemia Mieloide Aguda (M5)', track: 'leucemias-agudas', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'LMA M5 (monocítica) na classificação FAB — variante monocítica da leucemia mieloide aguda.',
+    pistas: ['Componente monocítico proeminente, como na monoblástica.', 'Diferenciação fina entre M4 e M5 depende de citoquímica/imunofenótipo.'],
+    parametros: [
+      {nome: 'Blastos/monócitos', tendencia: '↑', nota: 'linhagem monocítica'},
+      {nome: 'Hb', tendencia: '↓', nota: 'falência medular'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'falência medular'},
+    ],
+    flags: ['Blast?', 'Monocytosis', 'Atypical cells'],
+    histograma: 'Expansão e atipia da região monocítica na matriz; flag de blasto.',
+    cellavision: ['Monoblastos e promonócitos', 'Atividade de esterase inespecífica positiva (citoquímica)'],
+    aprendizado: 'A classificação FAB (M0–M7) e a atual (OMS) organizam as LMAs por linhagem e maturação. O hemograma é o ponto de partida; a definição do subtipo (M5) precisa de morfologia + citoquímica + imunofenotipagem + genética.',
+    quiz: [
+      {p: 'LMA "M5" na classificação FAB refere-se a leucemia de qual linhagem?', opcoes: ['Linfoide', 'Monocítica', 'Eritroide', 'Megacariocítica'], correta: 1, explica: 'M5 é a LMA monocítica/monoblástica — predomínio de células da linhagem monocítica.'},
+      {p: 'O hemograma sozinho define o subtipo exato de LMA?', opcoes: ['Sim, sempre', 'Não — exige citoquímica, imunofenótipo e genética', 'Só com o RDW', 'Apenas com a Hb'], correta: 1, explica: 'O analisador e a morfologia levantam a suspeita; a classificação precisa combina imunofenotipagem e citogenética/molecular.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/company/news/detail/news/12/2024/acute-myeloid-leukemia-m5-monocytic-hematology-clinical-case-chase-the-case-39/',
+  },
+  {
+    id: 'c55', numero: '55', patologia: 'Leucemia Promielocítica Aguda (LPA)', track: 'leucemias-agudas', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'LMA M3 / promielocítica — uma EMERGÊNCIA hematológica pelo risco de coagulação intravascular disseminada (CIVD).',
+    pistas: ['Promielócitos anormais hipergranulares + bastonetes de Auer (às vezes em "feixes").', 'Plaquetopenia + alterações de coagulação = sinal vermelho.'],
+    parametros: [
+      {nome: 'Promielócitos anormais', tendencia: '↑', nota: 'células hipergranulares'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'consumo / CIVD'},
+      {nome: 'Hb', tendencia: '↓', nota: 'falência medular'},
+    ],
+    flags: ['Blast?', 'Atypical/Imm cells', 'PLT low'],
+    histograma: 'A granularidade intensa dos promielócitos gera sinais atípicos na matriz; o flag de blasto/imaturo acende.',
+    cellavision: ['Promielócitos hipergranulares', 'Bastonetes de Auer (inclusive em feixes — "faggot cells")', 'Citoplasma repleto de grânulos'],
+    aprendizado: 'A LPA é a leucemia que NÃO pode esperar: o risco de CIVD e hemorragia fatal exige reconhecimento imediato e início de ATRA. Reconhecer promielócitos hipergranulares + Auer em feixes na lâmina pode salvar a vida — um caso onde a velocidade da morfologia importa de verdade.',
+    quiz: [
+      {p: 'Por que a leucemia promielocítica aguda é uma emergência?', opcoes: ['É indolente', 'Alto risco de CIVD e hemorragia grave', 'Não precisa de tratamento', 'Só afeta idosos'], correta: 1, explica: 'Os grânulos dos promielócitos são pró-coagulantes; a LPA cursa com CIVD e sangramento potencialmente fatal — reconhecimento e ATRA são urgentes.'},
+      {p: 'Qual achado de lâmina é típico da LPA?', opcoes: ['Drepanócitos', 'Promielócitos hipergranulares com bastonetes de Auer em feixes', 'Linfócitos reativos', 'Esferócitos'], correta: 1, explica: 'As "faggot cells" (promielócitos com feixes de bastonetes de Auer) são altamente sugestivas de LPA.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/company/news/detail/news/4/2026/acute-promyelocytic-leukemia-hematology-clinical-case-chase-the-case-55/',
+  },
+  {
+    id: 'c50', numero: '50', patologia: 'Leucemia Linfoblástica Aguda (LLA)', track: 'leucemias-agudas', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H500', 'CellaVision DC-1'],
+    contexto: 'Criança de 6 anos — LLA, a leucemia mais comum da infância. Resultados apoiados pelo Yumizen H500.',
+    pistas: ['Linfoblastos circulantes + citopenias.', 'Pico de incidência na infância (2–5 anos).'],
+    parametros: [
+      {nome: 'Linfoblastos', tendencia: '↑', nota: 'blastos de linhagem linfoide'},
+      {nome: 'Hb', tendencia: '↓', nota: 'falência medular'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'falência medular'},
+    ],
+    flags: ['Blast?', 'Atypical Lympho?', 'WBC abnormal'],
+    histograma: 'Linfoblastos caem fora da nuvem de linfócitos maduros; o analisador sinaliza blasto/linfócito atípico.',
+    cellavision: ['Linfoblastos (cromatina homogênea, citoplasma escasso)', 'Pouca granulação, alta relação núcleo/citoplasma'],
+    aprendizado: 'LLA é a neoplasia pediátrica mais frequente e, hoje, com altas taxas de cura. O hemograma + lâmina abrem a investigação; imunofenotipagem (B vs T) e genética estratificam o risco e guiam o tratamento.',
+    quiz: [
+      {p: 'A LLA é a leucemia mais comum em qual faixa etária?', opcoes: ['Idosos', 'Crianças (pico 2–5 anos)', 'Recém-nascidos só', 'Adolescentes só'], correta: 1, explica: 'A leucemia linfoblástica aguda tem pico na infância e é a neoplasia maligna mais comum em crianças.'},
+      {p: 'Linfoblasto difere de linfócito reativo principalmente por ser:', opcoes: ['Maduro e heterogêneo', 'Imaturo, monótono, com alta relação núcleo/citoplasma', 'Cheio de grânulos', 'Uma plaqueta grande'], correta: 1, explica: 'O blasto é imaturo e clonal (monótono); o reativo é maduro e heterogêneo, com contexto infeccioso.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/usa/company/news/detail/news/11/2025/acute-lymphoblastic-leukemia-hematology-clinical-case-chase-the-case-50/',
+  },
+
+  /* -------------------------------------------------------- CRÔNICAS & MIELODISPLASIAS */
+  {
+    id: 'c51', numero: '51', patologia: 'Leucemia Mieloide Crônica (LMC)', track: 'cronicas-mieloides', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'LMC — doença mieloproliferativa com o cromossomo Philadelphia (BCR-ABL1).',
+    pistas: ['Leucocitose acentuada com TODO o espectro mieloide (desvio à esquerda escalonado).', 'Basofilia e eosinofilia frequentes.'],
+    parametros: [
+      {nome: 'WBC', tendencia: '↑', nota: 'leucocitose marcada (às vezes >100 mil)'},
+      {nome: 'Basófilos', tendencia: '↑', nota: 'basofilia é pista forte'},
+      {nome: 'Plaquetas', tendencia: '↑', nota: 'frequentemente elevadas'},
+    ],
+    flags: ['Imm Granulocytes', 'Left shift', 'Basophilia', 'Blast? (na progressão)'],
+    histograma: 'A matriz mostra o espectro completo da granulopoese (mielócitos, metamielócitos, bastões) — um desvio à esquerda "escalonado", diferente do hiato leucêmico das agudas.',
+    cellavision: ['Toda a série granulocítica em maturação', 'Basofilia/eosinofilia', 'Poucos blastos na fase crônica'],
+    aprendizado: 'A pegada da LMC é o desvio à esquerda CONTÍNUO (todas as etapas presentes) + basofilia — diferente da leucemia aguda (hiato leucêmico). A confirmação é o BCR-ABL1/Philadelphia, alvo dos inibidores de tirosina-quinase que transformaram o prognóstico.',
+    quiz: [
+      {p: 'O que distingue o quadro leucocitário da LMC de uma leucemia aguda?', opcoes: ['Hiato leucêmico', 'Desvio à esquerda escalonado (toda a série mieloide presente)', 'Só blastos', 'Ausência de leucócitos'], correta: 1, explica: 'A LMC mostra todas as etapas da maturação mieloide (escalonado); a aguda tem o salto blasto→maduro (hiato leucêmico).'},
+      {p: 'A alteração genética característica da LMC é:', opcoes: ['JAK2 sempre', 'Cromossomo Philadelphia / BCR-ABL1', 'Trissomia do 21', 'Fator V Leiden'], correta: 1, explica: 'A translocação t(9;22) cria o gene BCR-ABL1 (cromossomo Philadelphia), alvo dos inibidores de tirosina-quinase.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/company/news/detail/news/12/2025/chronic-myeloid-leukemia-hematology-clinical-case-chase-the-case-51/',
+  },
+  {
+    id: 'c41', numero: '41', patologia: 'Leucemia Mielomonocítica Crônica (LMMC)', track: 'cronicas-mieloides', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Homem de 65 anos com anemia e bicitopenia — diagnóstico de LMMC, uma neoplasia mielodisplásica/mieloproliferativa.',
+    pistas: ['Monocitose PERSISTENTE é o critério-chave (monócitos sustentadamente elevados).', 'Displasia + proliferação convivem no mesmo quadro.'],
+    parametros: [
+      {nome: 'Monócitos', tendencia: '↑', nota: 'monocitose persistente — pista central'},
+      {nome: 'Hb', tendencia: '↓', nota: 'anemia (componente displásico)'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'bicitopenia'},
+    ],
+    flags: ['Monocytosis', 'Dysplasia / abnormal cells', 'Blast? (variável)'],
+    histograma: 'Região monocítica expandida e persistente na matriz; podem coexistir sinais de displasia granulocítica.',
+    cellavision: ['Monócitos aumentados (alguns displásicos)', 'Displasia em neutrófilos (hipogranulação, Pelger-Huët)', 'Eventuais blastos'],
+    aprendizado: 'A LMMC vive na fronteira: tem displasia (como SMD) E proliferação (como DMP). A chave diagnóstica é a monocitose persistente. O analisador que separa bem os monócitos ajuda a flagrar exatamente esse critério no acompanhamento.',
+    quiz: [
+      {p: 'Qual o achado-chave para suspeitar de LMMC?', opcoes: ['Eosinofilia transitória', 'Monocitose persistente', 'Plaquetose isolada', 'Linfocitose'], correta: 1, explica: 'A monocitose persistente é o critério central da LMMC, que combina características displásicas e proliferativas.'},
+      {p: 'A LMMC é classificada como:', opcoes: ['Anemia ferropriva', 'Neoplasia mielodisplásica/mieloproliferativa (sobreposição)', 'Infecção viral', 'Hemoglobinopatia'], correta: 1, explica: 'A LMMC fica na sobreposição SMD/DMP — tem displasia e proliferação simultâneas.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/company/news/detail/news/2/2025/chronic-myelomonocytic-leukemia-hematology-clinical-case-chase-the-case-41/',
+  },
+  {
+    id: 'c6', numero: '06', patologia: 'Mielodisplasia (Secundária)', track: 'cronicas-mieloides', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Síndrome mielodisplásica secundária — hematopoese ineficaz com citopenias e displasia.',
+    pistas: ['Citopenia(s) com células displásicas.', 'Neutrófilos hipogranulares e hipossegmentados (Pelger-Huët adquirida) são pistas.'],
+    parametros: [
+      {nome: 'Hb', tendencia: '↓', nota: 'anemia macro/normocítica frequente'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'pode haver plaquetopenia'},
+      {nome: 'Neutrófilos', tendencia: '↓', nota: 'displásicos/hipogranulares'},
+    ],
+    flags: ['Dysplasia', 'Left shift', 'Blast? (se excesso)'],
+    histograma: 'Displasia altera a estrutura dos neutrófilos — a matriz pode mostrar população granulocítica deslocada por hipogranulação.',
+    cellavision: ['Pseudo-Pelger-Huët (neutrófilos bilobados)', 'Hipogranulação', 'Hemácias displásicas / dimórficas', 'Eventuais blastos'],
+    aprendizado: 'SMD = "a fábrica está estragada": produz muito, mas defeituoso (hematopoese ineficaz). A displasia morfológica + citopenias guiam o diagnóstico; a contagem de blastos estratifica o risco. O analisador detecta a anormalidade granulocítica que pede a lâmina.',
+    quiz: [
+      {p: 'A síndrome mielodisplásica caracteriza-se por:', opcoes: ['Medula normal', 'Hematopoese ineficaz com displasia e citopenias', 'Só excesso de plaquetas', 'Infecção aguda'], correta: 1, explica: 'A SMD produz células displásicas e em quantidade insuficiente — citopenias apesar de medula muitas vezes celular.'},
+      {p: 'O neutrófilo "pseudo-Pelger-Huët" displásico apresenta:', opcoes: ['Núcleo hipersegmentado', 'Núcleo hipossegmentado/bilobado e hipogranulação', 'Muitos grânulos tóxicos', 'Bastonetes de Auer em feixe'], correta: 1, explica: 'A displasia granulocítica gera núcleos hipossegmentados (pseudo-Pelger) e citoplasma hipogranular.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/medical/news/news-press-release/detail/news/11/2021/secondary-myelodysplasia-clinical-cases-of-yumizen-h2500-hematology-analyzers-chase-the-case-6/',
+  },
+  {
+    id: 'c31', numero: '31', patologia: 'Leucemia Linfocítica Crônica (LLC)', track: 'cronicas-mieloides', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'LLC — acúmulo de linfócitos B maduros, clonais. A leucemia crônica mais comum no Ocidente, típica de idosos.',
+    pistas: ['Linfocitose absoluta e SUSTENTADA de linfócitos maduros.', 'Manchas de Gümprecht (smudge cells) na lâmina.'],
+    parametros: [
+      {nome: 'Linfócitos', tendencia: '↑', nota: 'linfocitose absoluta e persistente'},
+      {nome: 'WBC', tendencia: '↑', nota: 'às custas de linfócitos'},
+      {nome: 'Hb/Plaquetas', tendencia: '→', nota: 'normais no início; caem com progressão'},
+    ],
+    flags: ['Lymphocytosis', 'Atypical Lympho? (variável)'],
+    histograma: 'Nuvem de linfócitos densamente aumentada; os linfócitos são pequenos e maduros (não disparam blasto, mas a linfocitose é evidente).',
+    cellavision: ['Linfócitos pequenos e maduros, monótonos', 'Manchas de Gümprecht (smudge cells) — núcleos rompidos no preparo'],
+    aprendizado: 'A LLC mostra linfócitos maduros e MONÓTONOS — o contraste com a mononucleose (reativa, heterogênea) é o ponto de ensino. As smudge cells são frágeis e típicas. A imunofenotipagem confirma a clonalidade B (CD5+, CD23+).',
+    quiz: [
+      {p: 'As "smudge cells" (manchas de Gümprecht) são típicas de:', opcoes: ['Malária', 'Leucemia linfocítica crônica (LLC)', 'Anemia ferropriva', 'LPA'], correta: 1, explica: 'Os linfócitos frágeis da LLC se rompem no esfregaço, formando as smudge cells — pista clássica.'},
+      {p: 'O linfócito da LLC, comparado ao reativo da mononucleose, é:', opcoes: ['Heterogêneo e ativado', 'Pequeno, maduro e monótono (clonal)', 'Um blasto', 'Cheio de grânulos'], correta: 1, explica: 'A LLC é uma proliferação clonal monótona de linfócitos maduros; a mononucleose é reativa e heterogênea.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/bra/healthcare/news/news-press-release/detail/news/4/2024/chronic-lymphoid-leukemia-cll-yumizen-hematology-clinical-cases-chase-the-case-31/',
+  },
+  {
+    id: 'c20', numero: '20', patologia: 'Síndrome Linfoproliferativa', track: 'cronicas-mieloides', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Homem de 64 anos com síndrome linfoproliferativa — expansão de população linfoide madura.',
+    pistas: ['Linfocitose com linfócitos atípicos/anormais.', 'A matriz desloca a nuvem linfocitária e dispara o flag.'],
+    parametros: [
+      {nome: 'Linfócitos', tendencia: '↑', nota: 'expansão linfoide'},
+      {nome: 'WBC', tendencia: '↑', nota: 'linfocitose'},
+    ],
+    flags: ['Lymphocytosis', 'Atypical Lympho?'],
+    histograma: 'A população linfoide clonal desloca a nuvem na matriz; o flag de linfócito atípico orienta a revisão.',
+    cellavision: ['Linfócitos atípicos / de aspecto monótono', 'Possíveis células com nucléolo / fendas conforme o subtipo'],
+    aprendizado: 'As síndromes linfoproliferativas crônicas (LLC, linfomas leucemizados, leucemia prolinfocítica, tricoleucemia…) compartilham a linfocitose, mas a morfologia + imunofenotipagem separam os subtipos. O hemograma é o primeiro fio do novelo.',
+    quiz: [
+      {p: 'Diante de linfocitose persistente em idoso, o próximo passo laboratorial-chave é:', opcoes: ['Ignorar', 'Revisão de lâmina + imunofenotipagem', 'Repetir só a glicemia', 'Dosar ferro apenas'], correta: 1, explica: 'A imunofenotipagem (citometria de fluxo) caracteriza o clone e distingue os subtipos de síndrome linfoproliferativa.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/chase-the-case/chase-the-case-20-lymphoproliferative-syndrome/',
+  },
+
+  {
+    id: 'c15', numero: '15', patologia: 'Leucemia Mieloblástica Aguda', track: 'leucemias-agudas', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Homem idoso internado em unidade coronariana — o hemograma revela leucemia mieloblástica aguda como achado.',
+    pistas: ['Blastos mieloides com bastonetes de Auer apontam linhagem mieloide.', 'Citopenias acompanham a infiltração medular.'],
+    parametros: [
+      {nome: 'Blastos', tendencia: '↑', nota: 'mieloblastos circulantes'},
+      {nome: 'Hb', tendencia: '↓', nota: 'falência medular'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'falência medular'},
+    ],
+    flags: ['Blast?', 'WBC abnormal', 'Imm Granulocytes'],
+    histograma: 'Nuvem blástica anômala na matriz, fora das regiões maduras; o flag de blasto orienta a revisão obrigatória da lâmina.',
+    cellavision: ['Mieloblastos (cromatina fina, nucléolos)', 'Bastonetes de Auer (marcador de linhagem mieloide)', 'Hiato leucêmico'],
+    aprendizado: 'O bastonete de Auer é o crachá da linhagem mieloide — sua presença move o diagnóstico de LLA para LMA. Em paciente grave (ex.: cardíaco), o hemograma pode ser o primeiro a gritar "leucemia".',
+    quiz: [
+      {p: 'O bastonete de Auer indica linhagem:', opcoes: ['Linfoide', 'Mieloide', 'Megacariocítica', 'Eritroide'], correta: 1, explica: 'Bastonetes de Auer são condensações de grânulos azurófilos — marcadores de blastos mieloides (LMA), ausentes na LLA.'},
+      {p: 'Diante de "Blast?" + citopenias, a conduta laboratorial é:', opcoes: ['Liberar sem revisão', 'Revisar a lâmina e acionar o clínico com urgência', 'Repetir só a glicemia', 'Ignorar'], correta: 1, explica: 'Blastos com anemia e plaquetopenia exigem revisão imediata e comunicação — pode ser uma leucemia aguda recém-diagnosticada.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/chase-the-case/',
+  },
+  {
+    id: 'c17', numero: '17', patologia: 'Leucemia Promielocítica (monitoramento)', track: 'leucemias-agudas', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Mulher de meia-idade com leucemia promielocítica aguda — foco no reconhecimento precoce e na vigilância da coagulopatia.',
+    pistas: ['Promielócitos hipergranulares + risco de CIVD.', 'O laboratório acompanha plaquetas e coagulação ao longo do tratamento com ATRA.'],
+    parametros: [
+      {nome: 'Promielócitos anormais', tendencia: '↑', nota: 'hipergranulares'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'consumo / CIVD'},
+      {nome: 'Fibrinogênio', tendencia: '↓', nota: 'coagulopatia de consumo'},
+    ],
+    flags: ['Blast?', 'Atypical/Imm cells', 'PLT low'],
+    histograma: 'Granularidade intensa gera sinais atípicos na matriz; o monitoramento seriado mostra a recuperação das plaquetas conforme a doença responde.',
+    cellavision: ['Promielócitos hipergranulares', 'Faggot cells (Auer em feixes)', 'Redução progressiva sob tratamento'],
+    aprendizado: 'Na LPA, o laboratório tem dois papéis: reconhecer rápido (morfologia) e vigiar a coagulação (plaquetas, fibrinogênio, D-dímero). A normalização desses parâmetros sob ATRA é parte do acompanhamento — o hemograma vira termômetro da resposta.',
+    quiz: [
+      {p: 'Além da morfologia, o que o laboratório vigia de perto na LPA?', opcoes: ['Apenas a glicemia', 'Coagulação/plaquetas pelo risco de CIVD', 'Só o colesterol', 'A cor da urina'], correta: 1, explica: 'A coagulopatia (CIVD) é a maior ameaça precoce da LPA; plaquetas, fibrinogênio e D-dímero guiam o suporte.'},
+      {p: 'O tratamento que mudou o prognóstico da LPA baseia-se em:', opcoes: ['Apenas transfusão', 'ATRA (ácido all-trans-retinoico) ± arsênico', 'Antibiótico', 'Reposição de ferro'], correta: 1, explica: 'O ATRA induz a diferenciação dos promielócitos e, com arsênico, tornou a LPA uma das leucemias mais curáveis.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/chase-the-case/chase-the-case-17-acute-promyelocytic-leukemia/',
+  },
+  {
+    id: 'c14', numero: '14', patologia: 'LLC com Transformação (Richter)', track: 'cronicas-mieloides', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Leucemia linfocítica crônica que evolui com transformação para linfoma não-Hodgkin — uma virada clínica importante.',
+    pistas: ['Linfocitose madura de base (LLC) que muda de comportamento.', 'Surgem células maiores/atípicas, sinalizando transformação.'],
+    parametros: [
+      {nome: 'Linfócitos', tendencia: '↑', nota: 'linfocitose clonal de base'},
+      {nome: 'LDH', tendencia: '↑', nota: 'alta carga/transformação'},
+      {nome: 'Hb', tendencia: '↓', nota: 'progressão / infiltração'},
+    ],
+    flags: ['Lymphocytosis', 'Atypical Lympho?'],
+    histograma: 'A população linfoide clonal domina a matriz; o aparecimento de células maiores e mais atípicas levanta a suspeita de transformação.',
+    cellavision: ['Linfócitos pequenos e maduros (LLC)', 'Smudge cells', 'Células grandes/atípicas surgindo (transformação)'],
+    aprendizado: 'A síndrome de Richter é a transformação da LLC indolente em linfoma agressivo. Morfologia + LDH + clínica (linfonodos, sintomas B) acendem o alerta. O hemograma seriado ajuda a flagrar a mudança de comportamento de um clone antes conhecido.',
+    quiz: [
+      {p: 'A "transformação de Richter" é a evolução da LLC para:', opcoes: ['Anemia ferropriva', 'Linfoma agressivo (não-Hodgkin)', 'Cura espontânea', 'Trombocitose benigna'], correta: 1, explica: 'É a transformação de uma LLC indolente em um linfoma agressivo — muda o prognóstico e a conduta.'},
+      {p: 'Que pista laboratorial acompanha a transformação?', opcoes: ['LDH em queda', 'LDH elevado + células maiores/atípicas', 'RDW baixo', 'Eosinofilia'], correta: 1, explica: 'A maior carga e proliferação elevam a LDH, e a lâmina mostra células maiores e mais atípicas que a LLC de base.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/healthcare/chase-the-case/',
+  },
+  {
+    id: 'c42', numero: '42', patologia: 'Leucemia Linfocítica Crônica (LLC)', track: 'cronicas-mieloides', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Homem de 65 anos, laboratório no Brasil — caso de LLC acompanhado pelo H2500.',
+    pistas: ['Linfocitose absoluta e persistente de linfócitos pequenos e maduros.', 'Smudge cells abundantes na lâmina.'],
+    parametros: [
+      {nome: 'Linfócitos', tendencia: '↑', nota: 'linfocitose absoluta sustentada'},
+      {nome: 'WBC', tendencia: '↑', nota: 'às custas de linfócitos'},
+      {nome: 'Hb/Plaquetas', tendencia: '→', nota: 'estágio inicial preservado'},
+    ],
+    flags: ['Lymphocytosis'],
+    histograma: 'Nuvem de linfócitos densamente aumentada na matriz; células pequenas e maduras, sem flag de blasto.',
+    cellavision: ['Linfócitos pequenos, maduros e monótonos', 'Manchas de Gümprecht (smudge cells)'],
+    aprendizado: 'A LLC é frequentemente um achado incidental num hemograma de rotina. O reconhecimento da linfocitose madura persistente + smudge cells, confirmado por imunofenotipagem (CD5+/CD23+), evita confundir com causas reativas.',
+    quiz: [
+      {p: 'O que sustenta a suspeita de LLC num hemograma de rotina?', opcoes: ['Linfocitose madura absoluta e persistente', 'Eosinofilia transitória', 'Plaquetose isolada', 'Neutrofilia'], correta: 0, explica: 'A linfocitose absoluta sustentada de linfócitos maduros é a assinatura da LLC, confirmada por imunofenotipagem.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/usa/healthcare/chase-the-case/chase-the-case-42-chronic-lymphocytic-leukemia/',
+  },
+
+  /* ------------------------------------------------------- MORFOLOGIA & RAROS */
+  {
+    id: 'c12', numero: '12', patologia: 'Eritroblastose & Esquizócitos', track: 'morfologia', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Caso com eritroblastos circulantes e esquizócitos — a assinatura da hemólise mecânica (microangiopatia).',
+    pistas: ['Esquizócitos = hemácias fragmentadas por dano mecânico.', 'Eritroblastos (NRBC) circulantes indicam estresse medular intenso.'],
+    parametros: [
+      {nome: 'Esquizócitos', tendencia: '↑', nota: 'fragmentos de hemácia'},
+      {nome: 'NRBC', tendencia: '↑', nota: 'eritroblastos circulantes'},
+      {nome: 'Plaquetas', tendencia: '↓', nota: 'consumo (microangiopatia)'},
+    ],
+    flags: ['RBC fragments', 'NRBC', 'PLT low'],
+    histograma: 'Fragmentos de hemácia geram uma cauda à esquerda no histograma de hemácias (microcitose por fragmentação) e podem interferir na contagem de plaquetas; NRBC sinalizado e corrigido.',
+    cellavision: ['Esquizócitos (capacetes, fragmentos triangulares)', 'Eritroblastos (NRBC)', 'Policromasia'],
+    aprendizado: 'Esquizócitos + plaquetopenia = pense em microangiopatia (PTT, SHU, CIVD) — uma emergência. Contar esquizócitos na lâmina é decisivo, e o analisador entrega o gatilho (fragmentos de hemácia + NRBC) para a revisão imediata.',
+    quiz: [
+      {p: 'A presença de esquizócitos + plaquetopenia deve fazer pensar em:', opcoes: ['Anemia ferropriva', 'Microangiopatia trombótica (PTT/SHU/CIVD)', 'Alergia', 'Desidratação'], correta: 1, explica: 'Hemácias fragmentadas por trombos na microcirculação + consumo de plaquetas caracterizam a microangiopatia — emergência diagnóstica.'},
+      {p: 'O esquizócito se forma por:', opcoes: ['Excesso de ferro', 'Fragmentação mecânica da hemácia', 'Falta de vitamina C', 'Infecção viral leve'], correta: 1, explica: 'A hemácia se rompe ao passar por fibrina/próteses/microtrombos, gerando os fragmentos (capacetes, triângulos).'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/company/news/detail/news/6/2022/erythroblastosis-and-schizocytes-clinical-cases-of-yumizen-h2500-hematology-analyzers-chase-the-case-12/',
+  },
+  {
+    id: 'c16', numero: '16', patologia: 'Síndrome de Chediak-Higashi', track: 'morfologia', dificuldade: 3,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Menina de 2 anos (caso brasileiro) — síndrome de Chediak-Higashi, doença congênita rara com grânulos gigantes.',
+    pistas: ['Grânulos citoplasmáticos GIGANTES em neutrófilos e outros leucócitos.', 'Imunodeficiência + albinismo parcial no quadro clínico.'],
+    parametros: [
+      {nome: 'Neutrófilos', tendencia: '↓', nota: 'neutropenia frequente'},
+      {nome: 'Grânulos gigantes', tendencia: '↑', nota: 'inclusões características'},
+    ],
+    flags: ['Abnormal granulocytes', 'Atypical cells'],
+    histograma: 'Os grânulos gigantes alteram a estrutura/complexidade dos leucócitos — a matriz pode mostrar a população granulocítica deslocada por essa granularidade anômala.',
+    cellavision: ['Grânulos azurófilos gigantes em neutrófilos', 'Inclusões em linfócitos e outras células', 'Achado morfológico patognomônico'],
+    aprendizado: 'Chediak-Higashi é um caso onde a MORFOLOGIA fecha o raciocínio: os grânulos gigantes são praticamente patognomônicos. Mostra por que, mesmo na era automatizada, a lâmina (CellaVision) continua insubstituível para o achado raro que o número não conta.',
+    quiz: [
+      {p: 'O achado morfológico característico da síndrome de Chediak-Higashi é:', opcoes: ['Drepanócitos', 'Grânulos citoplasmáticos gigantes nos leucócitos', 'Esquizócitos', 'Smudge cells'], correta: 1, explica: 'Os grânulos gigantes (fusão de lisossomos) em neutrófilos e outras células são a marca quase patognomônica da doença.'},
+      {p: 'O que este caso ilustra sobre o papel da lâmina?', opcoes: ['Que o número basta', 'Que a morfologia revela o que a contagem não mostra', 'Que o CellaVision é dispensável', 'Que flags não importam'], correta: 1, explica: 'O diagnóstico depende de ver o grânulo gigante — a automação levanta a suspeita, mas a morfologia digital confirma o achado raro.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/int/company/news/detail/news/9/2022/chediak-higashi-syndrome-clinical-cases-of-yumizen-h2500-hematology-analyzers-chase-the-case-16/',
+  },
+
+  /* ----------------------------------------------------------------- SÓLIDOS */
+  {
+    id: 'c18', numero: '18', patologia: 'Câncer de Pulmão (no hemograma)', track: 'solidos', dificuldade: 2,
+    realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
+    contexto: 'Câncer de pulmão — quando uma neoplasia sólida deixa rastros no hemograma.',
+    pistas: ['Reação leucoeritroblástica: NRBC + desvio à esquerda + dacriócitos.', 'Pode haver anemia de doença crônica e trombocitose reativa.'],
+    parametros: [
+      {nome: 'NRBC', tendencia: '↑', nota: 'eritroblastos circulantes (infiltração medular)'},
+      {nome: 'Plaquetas', tendencia: '↑', nota: 'trombocitose reativa possível'},
+      {nome: 'Hb', tendencia: '↓', nota: 'anemia de doença crônica'},
+    ],
+    flags: ['NRBC', 'Left shift', 'RBC abnormal'],
+    histograma: 'O quadro leucoeritroblástico mostra NRBC + granulócitos imaturos — a matriz e o flag de NRBC chamam atenção para infiltração medular.',
+    cellavision: ['Dacriócitos (hemácias em lágrima)', 'Eritroblastos', 'Granulócitos imaturos (reação leucoeritroblástica)'],
+    aprendizado: 'Um padrão leucoeritroblástico (NRBC + imaturos + dacriócitos) sem leucemia óbvia deve levantar a suspeita de mielofibrose ou infiltração medular por tumor sólido (ex.: pulmão). O hemograma vira pista de uma doença que não nasceu no sangue.',
+    quiz: [
+      {p: 'A "reação leucoeritroblástica" é caracterizada por:', opcoes: ['Só plaquetas baixas', 'NRBC + granulócitos imaturos + dacriócitos no sangue', 'Eosinofilia isolada', 'Hb alta'], correta: 1, explica: 'É a saída de precursores eritroides e mieloides para o sangue — sugere infiltração/estresse medular (tumor, mielofibrose).'},
+      {p: 'Um padrão leucoeritroblástico sem leucemia deve fazer pensar em:', opcoes: ['Gripe comum', 'Infiltração medular (tumor sólido) ou mielofibrose', 'Desidratação leve', 'Alergia'], correta: 1, explica: 'A medula "espremida" por fibrose ou metástase libera precursores imaturos — pista para investigar a causa de base.'},
+    ],
+    assets: { matriz: '', histograma: '', lamina: '' },
+    fonte: 'https://www.horiba.com/usa/healthcare/news/news-press-release/detail/news/2/2023/lung-cancer-clinical-cases-of-yumizen-h2500-hematology-analyzers-chase-the-case-18/',
+  },
+];
+
+</script>
+<script>
+/* =============================================================================
+   app.js — engine do Chase the Case Game (vanilla JS, sem build)
+   Recursos: trilhas, casos, quiz, XP/nível/streak, coleção, busca,
+   onboarding, Prova Final, visualizações SVG esquemáticas e celebração.
+   ============================================================================= */
+(function () {
+  'use strict';
+
+  var TRACKS = window.CHASE_TRACKS || [];
+  var CASES = window.CHASE_CASES || [];
+  var byId = {};
+  CASES.forEach(function (c) { byId[c.id] = c; });
+
+  /* ---- estado persistido ------------------------------------------------- */
+  var SKEY = 'chase_state_v2';
+  var state = load();
+  function load() {
+    try { var s = JSON.parse(localStorage.getItem(SKEY)); if (s && s.done) return s; } catch (e) {}
+    return { xp: 0, streak: 0, lastDay: null, done: {}, onboarded: false, examBest: 0 };
+  }
+  function save() { try { localStorage.setItem(SKEY, JSON.stringify(state)); } catch (e) {} }
+
+  function level() { return Math.floor(state.xp / 100) + 1; }
+  function levelProgress() { return state.xp % 100; }
+  function totalCases() { return CASES.length; }
+  function masteredCount() { return Object.keys(state.done).filter(function (k) { return state.done[k] && state.done[k].mastered; }).length; }
+  function isMastered(id) { return !!(state.done[id] && state.done[id].mastered); }
+  function casesOfTrack(tid) { return CASES.filter(function (c) { return c.track === tid; }); }
+  function trackProgress(tid) {
+    var cs = casesOfTrack(tid), m = 0;
+    cs.forEach(function (c) { if (isMastered(c.id)) m++; });
+    return { mastered: m, total: cs.length, pct: cs.length ? Math.round((m / cs.length) * 100) : 0 };
+  }
+  function nextUnmastered() { for (var i = 0; i < CASES.length; i++) if (!isMastered(CASES[i].id)) return CASES[i]; return null; }
+
+  function bumpStreak() {
+    var today = new Date().toISOString().slice(0, 10);
+    if (state.lastDay === today) return;
+    var y = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+    state.streak = (state.lastDay === y) ? state.streak + 1 : 1;
+    state.lastDay = today;
+  }
+
+  /* ---- helpers ----------------------------------------------------------- */
+  var app = document.getElementById('app-root');
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (m) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]; }); }
+  function trackById(id) { for (var i = 0; i < TRACKS.length; i++) if (TRACKS[i].id === id) return TRACKS[i]; return null; }
+  function trendClass(t) { return t === '↑' ? 'up' : t === '↓' ? 'down' : 'flat'; }
+  function reduceMotion() { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+  function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+  function toast(msg) {
+    var t = document.getElementById('toast'); if (!t) return;
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._t); t._t = setTimeout(function () { t.classList.remove('show'); }, 1900);
+  }
+  function hexA(hex, a) {
+    hex = (hex || '#4283cc').replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(function (x) { return x + x; }).join('');
+    var n = parseInt(hex, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  /* seeded PRNG (mulberry32) — placement estável das nuvens */
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function seedOf(s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
+
+  /* ====================================================================== *
+   *  VISUALIZAÇÕES ESQUEMÁTICAS (SVG gerado por código — não é a imagem
+   *  oficial do paciente; reflete os flags/parâmetros documentados do caso)
+   * ====================================================================== */
+  function deriveViz(c) {
+    var f = (c.flags || []).join(' ').toLowerCase();
+    var params = c.parametros || [];
+    function pTrend(re) { for (var i = 0; i < params.length; i++) if (re.test(params[i].nome.toLowerCase())) return params[i].tendencia; return null; }
+    var abn = {};
+    if (/blast/.test(f)) abn.blast = true;
+    if (/atypical lympho|variant lympho|lymphocytosis/.test(f)) abn.lymph = true;
+    if (/monocyt/.test(f)) abn.mono = true;
+    if (/nrbc/.test(f)) abn.nrbc = true;
+    if (/left shift|imm granulocyte|imm cell/.test(f)) abn.left = true;
+    if (/basophil/.test(f)) abn.baso = true;
+    if (/abnormal granulocyte/.test(f)) abn.granules = true;
+
+    var plt = 'normal';
+    if (/plt low/.test(f) || pTrend(/plaqueta/) === '↓') plt = 'low';
+    else if (pTrend(/plaqueta/) === '↑') plt = 'high';
+
+    var rbc = 'normal';
+    var name = (c.patologia || '').toLowerCase();
+    if (/falciforme/.test(name)) rbc = 'sickle';
+    else if (/fragment/.test(f) || /esquiz/.test(name)) rbc = 'frag';
+    else if (pTrend(/mcv/) === '↓') rbc = 'micro';
+    else if (pTrend(/mcv/) === '↑') rbc = 'macro';
+    else if (/anisocyt/.test(f) || pTrend(/rdw/) === '↑') rbc = 'wide';
+
+    var wbcHigh = pTrend(/wbc/) === '↑' || pTrend(/blast|linfócit|monócit/) === '↑' || abn.blast || abn.lymph;
+    return { abn: abn, plt: plt, rbc: rbc, wbcHigh: wbcHigh };
+  }
+
+  // nuvem de pontos gaussiana
+  function cloud(cx, cy, n, spread, color, rand, op) {
+    var s = '';
+    for (var i = 0; i < n; i++) {
+      var a = rand() * 6.283, r = (rand() + rand()) / 2 * spread;
+      var x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r * 0.82;
+      s += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="1.5" fill="' + color + '" opacity="' + (op || 0.85) + '"/>';
+    }
+    return s;
+  }
+
+  function svgMatrix(c) {
+    var viz = deriveViz(c);
+    var W = 320, H = 210, padL = 34, padB = 26, x0 = padL, x1 = W - 12, y0 = 14, y1 = H - padB;
+    function X(u) { return x0 + u * (x1 - x0); }
+    function Y(v) { return y1 - v * (y1 - y0); } // v=0 base, 1 topo
+    var rand = rng(seedOf(c.id));
+    var brand = '#2f6fb8', violet = '#6b4ee6', teal = '#138a6e', amber = '#c2820a', mute = '#94a3b8', bad = '#d23b4a';
+    var dens = viz.wbcHigh ? 1.6 : 1;
+    var dots = '';
+    // populações normais
+    dots += cloud(X(0.16), Y(0.30), 26 * dens, 13, viz.abn.lymph ? mute : brand, rand);     // linfócitos
+    dots += cloud(X(0.40), Y(0.52), 16, 12, viz.abn.mono ? mute : violet, rand);             // monócitos
+    dots += cloud(X(0.68), Y(0.62), 24, 15, teal, rand);                                     // neutrófilos
+    dots += cloud(X(0.86), Y(0.70), 8, 8, amber, rand);                                       // eosinófilos
+
+    var marks = '';
+    function highlight(u, v, label, color) {
+      var px = X(u), py = Y(v);
+      marks += '<circle cx="' + px + '" cy="' + py + '" r="20" fill="none" stroke="' + color + '" stroke-width="1.6" stroke-dasharray="3 3" opacity="0.9"/>';
+      marks += '<rect x="' + (px - 30) + '" y="' + (py - 38) + '" width="60" height="15" rx="7" fill="' + color + '"/>';
+      marks += '<text x="' + px + '" y="' + (py - 27) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">' + label + '</text>';
+    }
+    if (viz.abn.blast) { dots += cloud(X(0.32), Y(0.82), 30 * dens, 17, bad, rand, 0.9); highlight(0.32, 0.82, 'BLASTOS', bad); }
+    if (viz.abn.lymph) { dots += cloud(X(0.30), Y(0.46), 28 * dens, 14, bad, rand, 0.9); highlight(0.30, 0.46, 'LINF. ATÍP.', bad); }
+    if (viz.abn.mono) { dots += cloud(X(0.42), Y(0.55), 26 * dens, 15, bad, rand, 0.9); highlight(0.42, 0.55, 'MONÓCITOS', bad); }
+    if (viz.abn.left) { dots += cloud(X(0.55), Y(0.58), 16, 10, amber, rand, 0.95); highlight(0.55, 0.58, 'IMATUROS', amber); }
+    if (viz.abn.nrbc) { dots += cloud(X(0.07), Y(0.10), 10, 7, '#0e8a9b', rand, 0.95); highlight(0.09, 0.12, 'NRBC', '#0e8a9b'); }
+    if (viz.abn.baso) { highlight(0.24, 0.40, 'BASÓFILOS', amber); }
+    if (viz.abn.granules) { highlight(0.68, 0.62, 'GRÂNULOS', bad); }
+
+    // eixos + grade
+    var grid = '';
+    for (var g = 1; g < 4; g++) { grid += '<line x1="' + X(g / 4) + '" y1="' + y0 + '" x2="' + X(g / 4) + '" y2="' + y1 + '" stroke="#e9eff6"/>'; grid += '<line x1="' + x0 + '" y1="' + Y(g / 4) + '" x2="' + x1 + '" y2="' + Y(g / 4) + '" stroke="#e9eff6"/>'; }
+
+    return '<svg class="viz-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Matriz LMNE esquemática">' +
+      '<rect x="' + x0 + '" y="' + y0 + '" width="' + (x1 - x0) + '" height="' + (y1 - y0) + '" fill="#fbfdff" stroke="#d9e2ee" rx="6"/>' +
+      grid +
+      '<line x1="' + x0 + '" y1="' + y1 + '" x2="' + x1 + '" y2="' + y1 + '" stroke="#94a3b8"/>' +
+      '<line x1="' + x0 + '" y1="' + y0 + '" x2="' + x0 + '" y2="' + y1 + '" stroke="#94a3b8"/>' +
+      dots + marks +
+      '<text x="' + ((x0 + x1) / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="9" fill="#8595ab">complexidade / estrutura →</text>' +
+      '<text x="11" y="' + ((y0 + y1) / 2) + '" text-anchor="middle" font-size="9" fill="#8595ab" transform="rotate(-90 11 ' + ((y0 + y1) / 2) + ')">tamanho →</text>' +
+      '</svg>';
+  }
+
+  function curvePath(fn, x0, x1, y0, y1, n) {
+    var pts = [], i, u, v;
+    for (i = 0; i <= n; i++) { u = i / n; v = fn(u); pts.push([x0 + u * (x1 - x0), y1 - v * (y1 - y0)]); }
+    var d = 'M ' + pts[0][0].toFixed(1) + ' ' + y1;
+    pts.forEach(function (p) { d += ' L ' + p[0].toFixed(1) + ' ' + p[1].toFixed(1); });
+    d += ' L ' + pts[pts.length - 1][0].toFixed(1) + ' ' + y1 + ' Z';
+    return d;
+  }
+  function gauss(c, w) { return function (u) { return Math.exp(-Math.pow((u - c) / w, 2)); }; }
+  function svgHisto(c) {
+    var viz = deriveViz(c);
+    var W = 320, H = 120, x0 = 30, x1 = W - 10, y0 = 12, y1 = H - 22;
+    var shapes = {
+      normal: gauss(0.5, 0.13), wide: gauss(0.5, 0.24), micro: gauss(0.33, 0.12),
+      macro: gauss(0.7, 0.13),
+      sickle: function (u) { return Math.max(gauss(0.42, 0.11)(u), 0.7 * gauss(0.66, 0.07)(u)); },
+      frag: function (u) { return Math.max(gauss(0.55, 0.12)(u), 0.5 * gauss(0.2, 0.08)(u)); }
+    };
+    var fn = shapes[viz.rbc] || shapes.normal;
+    var normRef = gauss(0.5, 0.13);
+    var label = { normal: 'distribuição normal', wide: 'anisocitose (RDW alto)', micro: 'microcitose', macro: 'macrocitose', sickle: 'alvo + microcitose (cauda)', frag: 'fragmentos (cauda à esquerda)' }[viz.rbc];
+    return '<svg class="viz-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Histograma de hemácias esquemático">' +
+      '<defs><linearGradient id="hg' + esc(c.id) + '" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#4283cc" stop-opacity="0.55"/><stop offset="1" stop-color="#4283cc" stop-opacity="0.06"/></linearGradient></defs>' +
+      '<line x1="' + x0 + '" y1="' + y1 + '" x2="' + x1 + '" y2="' + y1 + '" stroke="#94a3b8"/>' +
+      '<line x1="' + x0 + '" y1="' + y0 + '" x2="' + x0 + '" y2="' + y1 + '" stroke="#cdd8e6"/>' +
+      '<path d="' + curvePath(normRef, x0, x1, y0, y1, 60) + '" fill="none" stroke="#cdd8e6" stroke-width="1.2" stroke-dasharray="4 3"/>' +
+      '<path d="' + curvePath(fn, x0, x1, y0, y1, 60) + '" fill="url(#hg' + esc(c.id) + ')" stroke="#2f6fb8" stroke-width="1.6"/>' +
+      '<text x="' + ((x0 + x1) / 2) + '" y="' + (H - 6) + '" text-anchor="middle" font-size="9" fill="#8595ab">volume (fL) — ' + esc(label) + '</text>' +
+      '</svg>';
+  }
+  function pltBadge(c) {
+    var v = deriveViz(c).plt;
+    if (v === 'normal') return '';
+    var cfg = v === 'low' ? ['Plaquetas ↓', 'var(--bad)'] : ['Plaquetas ↑', 'var(--brand-d)'];
+    return '<span class="viz-tag" style="color:' + cfg[1] + '">📉 ' + cfg[0] + '</span>';
+  }
+
+  /* ---- router ------------------------------------------------------------ */
+  var route = { name: 'home', param: null };
+  var searchTerm = '';
+  function go(name, param) { route = { name: name, param: param }; window.scrollTo(0, 0); render(); try { history.replaceState(null, '', '#' + name + (param ? '/' + param : '')); } catch (e) {} }
+
+  /* ---- top bar / tabs ---------------------------------------------------- */
+  function topbar() {
+    return '<div class="topbar"><div class="brand"><div class="dot">🩸</div>' +
+      '<div><b>Chase the Case</b><small>Jornada de Hematologia</small></div></div>' +
+      '<div class="xp-chip"><span class="flame">🔥</span>' + state.streak + '<span class="lv">· Nv ' + level() + '</span></div></div>';
+  }
+  function tabbar() {
+    var tabs = [{ id: 'home', ic: '🗺️', label: 'Jornada' }, { id: 'deck', ic: '🃏', label: 'Coleção' }, { id: 'about', ic: 'ℹ️', label: 'Sobre' }];
+    var active = (['deck', 'about'].indexOf(route.name) >= 0) ? route.name : 'home';
+    return '<div class="tabbar"><div class="inner">' + tabs.map(function (t) {
+      return '<button class="tab ' + (active === t.id ? 'active' : '') + '" data-tab="' + t.id + '"><span class="ti">' + t.ic + '</span>' + t.label + '</button>';
+    }).join('') + '</div></div>';
+  }
+
+  /* ---- ONBOARDING -------------------------------------------------------- */
+  var obSlide = 0;
+  var OB = [
+    { ic: '🩸', t: 'Bem-vindo à caçada', p: 'Cada carta é um caso clínico real da série HORIBA "Chase the Case". Você vai decifrar o que o analisador viu e fechar o raciocínio.' },
+    { ic: '🧭', t: 'Leia a máquina', p: 'Matriz LMNE, histogramas, flags e a lâmina no CellaVision — visualizações esquemáticas geradas a partir dos achados de cada caso.' },
+    { ic: '🏆', t: 'Aprenda jogando', p: 'Resolva o desafio (≥70%) para dominar a carta, ganhe XP, mantenha a sequência e enfrente a Prova Final. Sem perceber, você domina hematologia.' }
+  ];
+  function viewOnboard() {
+    var s = OB[obSlide];
+    var dots = OB.map(function (_, i) { return '<i class="' + (i === obSlide ? 'on' : '') + '"></i>'; }).join('');
+    return '<div class="ob"><div class="ob-card">' +
+      '<div class="ob-ic">' + s.ic + '</div><h2>' + esc(s.t) + '</h2><p>' + esc(s.p) + '</p>' +
+      '<div class="ob-dots">' + dots + '</div>' +
+      '<button class="btn lg" id="ob-next">' + (obSlide < OB.length - 1 ? 'Continuar' : 'Começar a caçar 🔎') + '</button>' +
+      (obSlide < OB.length - 1 ? '<button class="backlink" id="ob-skip" style="justify-content:center;width:100%;margin-top:6px">Pular</button>' : '') +
+      '<div class="ob-disc">⚕️ Material de estudo baseado em casos públicos HORIBA. Não substitui laudo ou diretriz clínica.</div>' +
+      '</div></div>';
+  }
+
+  /* ---- ring helper ------------------------------------------------------- */
+  function ring(pct, size, label) {
+    var r = (size - 10) / 2, c = 2 * Math.PI * r, off = c * (1 - pct / 100);
+    return '<div class="ring" style="width:' + size + 'px;height:' + size + 'px">' +
+      '<svg viewBox="0 0 ' + size + ' ' + size + '"><circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" stroke="rgba(255,255,255,.25)" stroke-width="6" fill="none"/>' +
+      '<circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '" transform="rotate(-90 ' + size / 2 + ' ' + size / 2 + ')"/></svg>' +
+      '<div class="ring-c"><b>' + pct + '%</b><span>' + label + '</span></div></div>';
+  }
+
+  /* ---- HOME -------------------------------------------------------------- */
+  function viewHome() {
+    var lp = levelProgress();
+    var pct = Math.round(masteredCount() / totalCases() * 100);
+    var nxt = nextUnmastered();
+    var s = '<div class="screen">';
+    // hero com anel
+    s += '<div class="hero"><div class="hero-row">' +
+      '<div class="hero-txt"><div class="eyebrow">Estudo gamificado · casos reais HORIBA</div>' +
+      '<h2>Resolva o caso.<br>Leia a lâmina.</h2>' +
+      '<p>' + masteredCount() + ' de ' + totalCases() + ' casos dominados · Nível ' + level() + '</p></div>' +
+      ring(pct, 88, 'dominado') + '</div>' +
+      '<div class="xpbar" style="margin-top:16px"><i style="width:' + lp + '%"></i></div></div>';
+
+    // continuar
+    if (nxt) {
+      var tk = trackById(nxt.track);
+      s += '<button class="continue" data-case="' + nxt.id + '"><div class="ci" style="color:' + tk.cor + '">' + tk.emoji + '</div>' +
+        '<div class="cc"><small>CONTINUAR DE ONDE PAROU</small><b>Case #' + esc(nxt.numero) + ' · ' + esc(nxt.patologia) + '</b></div><span class="cgo">▶</span></button>';
+    } else {
+      s += '<div class="continue done"><div class="ci">🏆</div><div class="cc"><small>PARABÉNS</small><b>Todos os casos dominados!</b></div></div>';
+    }
+
+    // prova final
+    var unlocked = masteredCount() >= 3;
+    s += '<button class="exam-cta ' + (unlocked ? '' : 'lock') + '" ' + (unlocked ? 'data-exam="1"' : '') + '>' +
+      '<div class="ex-ic">🎓</div><div class="ex-tx"><b>Prova Final</b><span>' + (unlocked ? '10 perguntas embaralhadas de todos os casos' : 'Domine 3 casos para desbloquear') + '</span></div>' +
+      '<span class="ex-go">' + (unlocked ? (state.examBest ? 'recorde ' + state.examBest + '%' : 'iniciar') : '🔒') + '</span></button>';
+
+    // busca
+    s += '<div class="search"><span>🔎</span><input id="search-in" type="search" placeholder="Buscar patologia, flag, parâmetro..." value="' + esc(searchTerm) + '" autocomplete="off"></div>';
+    s += '<div id="search-results"></div>';
+
+    // trilhas (escondidas quando buscando)
+    s += '<div id="tracks-wrap"><div class="sec-head"><h3>Trilhas de conhecimento</h3><span>' + TRACKS.length + ' trilhas</span></div>';
+    TRACKS.forEach(function (t) {
+      var p = trackProgress(t.id);
+      s += '<button class="track" data-track="' + t.id + '"><div class="ico" style="color:' + t.cor + ';background:' + hexA(t.cor, .1) + ';border-color:' + hexA(t.cor, .3) + '">' + t.emoji + '</div>' +
+        '<div class="meta"><b>' + esc(t.nome) + '</b><p>' + esc(t.descricao) + '</p>' +
+        '<div class="prog"><div class="xpbar"><i style="width:' + p.pct + '%;background:' + t.cor + '"></i></div><small>' + p.mastered + '/' + p.total + '</small></div></div><div class="chev">›</div></button>';
+    });
+    s += '<hr class="sep"><div class="note-card">⚕️ <b>Material de estudo.</b> Índice de casos real (HORIBA); conteúdo e visualizações são síntese didática. Veja <b>Sobre</b>.</div></div>';
+    s += '</div>';
+    return s;
+  }
+
+  function renderSearch() {
+    var box = document.getElementById('search-results');
+    var wrap = document.getElementById('tracks-wrap');
+    if (!box) return;
+    var q = searchTerm.trim().toLowerCase();
+    if (!q) { box.innerHTML = ''; if (wrap) wrap.style.display = ''; return; }
+    if (wrap) wrap.style.display = 'none';
+    var res = CASES.filter(function (c) {
+      return (c.patologia + ' ' + c.contexto + ' ' + (c.flags || []).join(' ') + ' ' + (c.parametros || []).map(function (p) { return p.nome; }).join(' ')).toLowerCase().indexOf(q) >= 0;
+    });
+    if (!res.length) { box.innerHTML = '<div class="empty">Nenhum caso encontrado para "' + esc(searchTerm) + '".</div>'; return; }
+    box.innerHTML = '<div class="sec-head"><h3>Resultados</h3><span>' + res.length + '</span></div>' + res.map(function (c) {
+      var t = trackById(c.track);
+      return '<button class="case-card" data-case="' + c.id + '"><div class="ribbon" style="background:' + t.cor + '"></div>' +
+        '<div class="row1"><span class="num">CASE #' + esc(c.numero) + '</span>' + (isMastered(c.id) ? '<span class="status-dot done">✓</span>' : '') + '</div>' +
+        '<h4>' + esc(c.patologia) + '</h4><div class="ctx">' + esc(c.contexto) + '</div></button>';
+    }).join('');
+    bindCaseButtons(box);
+  }
+
+  /* ---- TRACK ------------------------------------------------------------- */
+  function viewTrack(tid) {
+    var t = trackById(tid); if (!t) return viewHome();
+    var cs = casesOfTrack(tid), p = trackProgress(tid);
+    var s = '<div class="screen"><button class="backlink" data-go="home">‹ Jornada</button>';
+    s += '<div class="cs-hero" style="background:linear-gradient(155deg,' + t.cor + ',' + shade(t.cor, -28) + ')">' +
+      '<div class="num">' + t.emoji + ' TRILHA</div><h2>' + esc(t.nome) + '</h2><div class="ctx">' + esc(t.descricao) + '</div>' +
+      '<div style="margin-top:14px;display:flex;align-items:center;gap:8px"><div class="xpbar" style="flex:1"><i style="width:' + p.pct + '%"></i></div>' +
+      '<small style="font-size:11px;font-weight:700">' + p.mastered + '/' + p.total + ' dominados</small></div></div>';
+    s += '<div class="sec-head"><h3>Casos</h3><span>' + cs.length + ' cartas</span></div>';
+    cs.forEach(function (c) {
+      var status = isMastered(c.id) ? '<span class="status-dot done">✓ Dominado</span>' : '<span class="status-dot new">Novo</span>';
+      var diff = '<span class="diff">' + [1, 2, 3].map(function (n) { return '<i class="' + (n <= c.dificuldade ? 'on' : '') + '"></i>'; }).join('') + '</span>';
+      s += '<button class="case-card" data-case="' + c.id + '"><div class="ribbon" style="background:' + t.cor + '"></div>' +
+        '<div class="row1"><span class="num">CASE #' + esc(c.numero) + '</span>' + diff + status + '</div>' +
+        '<h4>' + esc(c.patologia) + '</h4><div class="ctx">' + esc(c.contexto) + '</div>' +
+        '<div class="tags">' + (c.equipamento || []).map(function (e) { return '<span class="tag-eq">🔌 ' + esc(e) + '</span>'; }).join('') + '</div></button>';
+    });
+    s += '</div>';
+    return s;
+  }
+
+  /* ---- CASE STUDY -------------------------------------------------------- */
+  function viewCase(cid) {
+    var c = byId[cid]; if (!c) return viewHome();
+    var t = trackById(c.track);
+    var s = '<div class="screen"><button class="backlink" data-go="track" data-param="' + c.track + '">‹ ' + esc(t ? t.nome : 'Voltar') + '</button>';
+    s += '<div class="cs-hero"><div class="num">CASE #' + esc(c.numero) + (isMastered(c.id) ? ' · ✓ DOMINADO' : '') + '</div>' +
+      '<h2>' + esc(c.patologia) + '</h2><div class="ctx">' + esc(c.contexto) + '</div>' +
+      '<div class="tags" style="margin-top:13px">' + (c.equipamento || []).map(function (e) { return '<span class="tag-eq">🔌 ' + esc(e) + '</span>'; }).join('') + '</div></div>';
+
+    if (c.pistas && c.pistas.length) {
+      s += block('🔎', 'O que o analisador apontou',
+        c.pistas.map(function (p) { return '<div class="pista"><span>➤</span><span>' + esc(p) + '</span></div>'; }).join(''));
+    }
+
+    // matriz LMNE esquemática
+    s += block('🧭', 'Matriz LMNE <span class="bt-note">esquema didático</span>',
+      '<div class="viz-frame">' + svgMatrix(c) + '</div>' +
+      '<p class="viz-cap">Representação gerada a partir dos flags do caso — não é a matriz real do paciente. ' + pltBadge(c) + '</p>' +
+      (c.assets && c.assets.matriz ? '<div class="asset-slot has-img" style="margin-top:10px"><img src="' + esc(c.assets.matriz) + '" alt="matriz oficial"></div>' : ''));
+
+    // histograma esquemático
+    s += block('📈', 'Histograma de hemácias <span class="bt-note">esquema didático</span>',
+      '<div class="viz-frame">' + svgHisto(c) + '</div>' +
+      '<p class="viz-cap">Curva esquemática (linha tracejada = referência normal). ' + esc(c.histograma) + '</p>');
+
+    if (c.parametros && c.parametros.length) {
+      s += block('📊', 'Parâmetros-chave <span class="bt-note">padrão típico</span>',
+        '<div class="params">' + c.parametros.map(function (p) {
+          return '<div class="param"><span class="nm">' + esc(p.nome) + '</span><span class="tr ' + trendClass(p.tendencia) + '">' + esc(p.tendencia) + '</span><span class="note">' + esc(p.nota) + '</span></div>';
+        }).join('') + '</div>');
+    }
+    if (c.flags && c.flags.length) s += block('🚩', 'Flags / Alarmes', '<div class="chips">' + c.flags.map(function (f) { return '<span class="flag-chip">⚑ ' + esc(f) + '</span>'; }).join('') + '</div>');
+    if (c.cellavision && c.cellavision.length) s += block('🔬', 'Lâmina no CellaVision',
+      (c.assets && c.assets.lamina ? '<div class="asset-slot has-img"><img src="' + esc(c.assets.lamina) + '" alt="lâmina oficial"></div>' : '<div class="asset-slot"><span class="ph-ic">🔬</span>Foto de lâmina oficial — inserir via assets</div>') +
+      '<div style="margin-top:12px">' + c.cellavision.map(function (m) { return '<div class="morph-li">' + esc(m) + '</div>'; }).join('') + '</div>');
+
+    s += '<div class="block learn-box"><div class="bt"><span class="bi">💡</span>O insight do caso</div><div class="learn">' + esc(c.aprendizado) + '</div></div>';
+    var nq = (c.quiz || []).length;
+    s += '<button class="btn lg" data-quiz="' + c.id + '">⚡ ' + (isMastered(c.id) ? 'Refazer desafio' : 'Aceitar o desafio') + ' · ' + nq + ' perguntas</button>';
+    if (c.fonte) s += '<div style="text-align:center;margin-top:14px"><a class="backlink" href="' + esc(c.fonte) + '" target="_blank" rel="noopener">Caso oficial HORIBA ↗</a></div>';
+    s += '</div>';
+    return s;
+  }
+  function block(ic, title, body) { return '<div class="block"><div class="bt"><span class="bi">' + ic + '</span>' + title + '</div>' + body + '</div>'; }
+
+  /* ---- QUIZ (caso) ------------------------------------------------------- */
+  var quizState = null;
+  function startQuiz(cid) { var c = byId[cid]; quizState = { cid: cid, i: 0, correct: 0, answered: false, questions: c.quiz || [] }; go('quiz', cid); }
+  function viewQuiz() {
+    var c = byId[quizState.cid], qs = quizState.questions, q = qs[quizState.i];
+    var pct = Math.round((quizState.i / qs.length) * 100);
+    return '<div class="screen"><button class="backlink" data-case="' + c.id + '">‹ Sair do desafio</button>' +
+      '<div class="quiz-top"><div class="xpbar"><i style="width:' + pct + '%"></i></div><small>' + (quizState.i + 1) + '/' + qs.length + '</small></div>' +
+      '<div class="q-card"><div class="qn">CASE #' + esc(c.numero) + ' · ' + esc(c.patologia) + '</div><div class="qq">' + esc(q.p) + '</div>' +
+      q.opcoes.map(function (o, idx) { return '<button class="opt" data-opt="' + idx + '"><span class="key">' + String.fromCharCode(65 + idx) + '</span>' + esc(o) + '</button>'; }).join('') +
+      '<div id="explain-slot"></div></div></div>';
+  }
+  function answer(idx) {
+    if (quizState.answered) return; quizState.answered = true;
+    var q = quizState.questions[quizState.i], correct = q.correta;
+    app.querySelectorAll('.opt').forEach(function (o, i) { o.setAttribute('disabled', ''); if (i === correct) o.classList.add('correct'); if (i === idx && idx !== correct) o.classList.add('wrong'); });
+    var ok = idx === correct; if (ok) quizState.correct++; buzz(ok ? 12 : [6, 30, 6]);
+    var slot = document.getElementById('explain-slot');
+    slot.innerHTML = '<div class="explain ' + (ok ? 'ok' : 'no') + '"><b>' + (ok ? '✓ Acertou!' : '✗ Quase lá.') + '</b> ' + esc(q.explica) +
+      '<button class="btn" style="margin-top:14px" id="next-q">' + (quizState.i + 1 < quizState.questions.length ? 'Próxima pergunta' : 'Ver resultado') + ' →</button></div>';
+    slot.querySelector('#next-q').addEventListener('click', nextQuestion);
+    slot.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'nearest' });
+  }
+  function nextQuestion() { if (quizState.i + 1 < quizState.questions.length) { quizState.i++; quizState.answered = false; render(); } else finishQuiz(); }
+  function finishQuiz() {
+    var total = quizState.questions.length, correct = quizState.correct, pct = total ? Math.round((correct / total) * 100) : 0;
+    var mastered = pct >= 70, firstMastery = mastered && !isMastered(quizState.cid);
+    var gained = correct * 10 + (mastered ? 20 : 0); state.xp += gained;
+    var best = Math.max(pct, (state.done[quizState.cid] && state.done[quizState.cid].best) || 0);
+    state.done[quizState.cid] = { best: best, mastered: isMastered(quizState.cid) || mastered };
+    if (mastered) bumpStreak(); save();
+    quizState.result = { pct: pct, correct: correct, total: total, gained: gained, mastered: mastered, firstMastery: firstMastery };
+    if (mastered) celebrate(pct === 100); buzz(mastered ? [10, 40, 10, 40, 20] : 10);
+    go('result', quizState.cid);
+  }
+  function viewResult() {
+    var c = byId[quizState.cid], r = quizState.result;
+    var emoji = r.pct === 100 ? '🏆' : r.mastered ? '🎉' : '📚';
+    var title = r.pct === 100 ? 'Caso perfeito!' : r.mastered ? 'Caso dominado!' : 'Continue caçando';
+    var sub = r.mastered ? 'Você decifrou ' + esc(c.patologia) + '.' : 'Acerte 70% para dominar a carta. Revise e tente de novo!';
+    var s = '<div class="screen"><div class="result"><div class="badge">' + emoji + '</div><h2>' + title + '</h2><div class="sub">' + sub + '</div>' +
+      '<div class="score">' + r.pct + '%</div><div class="sub">' + r.correct + ' de ' + r.total + ' corretas</div>' +
+      '<div class="rewards"><div class="reward"><b>+' + r.gained + '</b><span>XP</span></div><div class="reward"><b>Nv ' + level() + '</b><span>NÍVEL</span></div><div class="reward"><b>🔥 ' + state.streak + '</b><span>SEQUÊNCIA</span></div></div>';
+    if (r.firstMastery) s += '<div class="note-card" style="border-left-color:var(--good);background:rgba(24,137,95,.08)">🃏 Nova carta na sua <b>Coleção</b>!</div>';
+    s += '<button class="btn lg" data-quiz="' + c.id + '">↻ Refazer</button>' +
+      '<button class="btn ghost" style="margin-top:11px" data-next-case="' + c.id + '">Próximo caso →</button>' +
+      '<button class="backlink" style="justify-content:center;width:100%;margin-top:10px" data-go="track" data-param="' + c.track + '">Voltar à trilha</button></div></div>';
+    return s;
+  }
+  function nextCaseAfter(cid) {
+    var c = byId[cid], cs = casesOfTrack(c.track), idx = cs.findIndex(function (x) { return x.id === cid; });
+    if (idx >= 0 && idx + 1 < cs.length) return go('case', cs[idx + 1].id);
+    var ti = TRACKS.findIndex(function (t) { return t.id === c.track; });
+    if (ti >= 0 && ti + 1 < TRACKS.length) return go('track', TRACKS[ti + 1].id);
+    go('home');
+  }
+
+  /* ---- PROVA FINAL (exam) ------------------------------------------------ */
+  var examState = null;
+  function startExam() {
+    var pool = [];
+    CASES.forEach(function (c) { (c.quiz || []).forEach(function (q) { pool.push({ q: q, c: c }); }); });
+    // embaralha (Fisher-Yates)
+    for (var i = pool.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp; }
+    examState = { items: pool.slice(0, Math.min(10, pool.length)), i: 0, correct: 0, answered: false };
+    go('exam');
+  }
+  function viewExam() {
+    var it = examState.items[examState.i], q = it.q;
+    var pct = Math.round((examState.i / examState.items.length) * 100);
+    return '<div class="screen"><button class="backlink" data-go="home">‹ Sair da prova</button>' +
+      '<div class="quiz-top"><div class="xpbar"><i style="width:' + pct + '%;background:linear-gradient(90deg,#6b4ee6,#2f6fb8)"></i></div><small>' + (examState.i + 1) + '/' + examState.items.length + '</small></div>' +
+      '<div class="q-card exam"><div class="qn" style="color:#6b4ee6">🎓 PROVA FINAL · Case #' + esc(it.c.numero) + '</div><div class="qq">' + esc(q.p) + '</div>' +
+      q.opcoes.map(function (o, idx) { return '<button class="opt" data-eopt="' + idx + '"><span class="key">' + String.fromCharCode(65 + idx) + '</span>' + esc(o) + '</button>'; }).join('') +
+      '<div id="explain-slot"></div></div></div>';
+  }
+  function examAnswer(idx) {
+    if (examState.answered) return; examState.answered = true;
+    var it = examState.items[examState.i], correct = it.q.correta;
+    app.querySelectorAll('.opt').forEach(function (o, i) { o.setAttribute('disabled', ''); if (i === correct) o.classList.add('correct'); if (i === idx && idx !== correct) o.classList.add('wrong'); });
+    var ok = idx === correct; if (ok) examState.correct++; buzz(ok ? 12 : [6, 30, 6]);
+    var slot = document.getElementById('explain-slot');
+    slot.innerHTML = '<div class="explain ' + (ok ? 'ok' : 'no') + '"><b>' + (ok ? '✓ Correto' : '✗ Incorreto') + ' · ' + esc(it.c.patologia) + '.</b> ' + esc(it.q.explica) +
+      '<button class="btn" style="margin-top:14px" id="next-e">' + (examState.i + 1 < examState.items.length ? 'Próxima' : 'Ver nota final') + ' →</button></div>';
+    slot.querySelector('#next-e').addEventListener('click', function () {
+      if (examState.i + 1 < examState.items.length) { examState.i++; examState.answered = false; render(); } else finishExam();
+    });
+    slot.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'nearest' });
+  }
+  function finishExam() {
+    var total = examState.items.length, correct = examState.correct, pct = Math.round(correct / total * 100);
+    state.xp += correct * 8; if (pct > state.examBest) state.examBest = pct;
+    if (pct >= 70) bumpStreak(); save();
+    examState.result = { pct: pct, correct: correct, total: total };
+    if (pct >= 70) celebrate(pct >= 90);
+    go('examresult');
+  }
+  function viewExamResult() {
+    var r = examState.result;
+    var rank = r.pct >= 90 ? ['🥇', 'Hematologista de elite'] : r.pct >= 70 ? ['🥈', 'Analista aprovado'] : r.pct >= 50 ? ['🥉', 'Em formação'] : ['📚', 'Volte às trilhas'];
+    var s = '<div class="screen"><div class="result"><div class="badge" style="background:radial-gradient(circle at 50% 35%,#efeaff,#fff)">' + rank[0] + '</div>' +
+      '<div class="eyebrow" style="color:#6b4ee6">PROVA FINAL</div><h2>' + esc(rank[1]) + '</h2>' +
+      '<div class="score" style="background:linear-gradient(90deg,#6b4ee6,#2f6fb8);-webkit-background-clip:text;background-clip:text">' + r.pct + '%</div>' +
+      '<div class="sub">' + r.correct + ' de ' + r.total + ' · recorde ' + state.examBest + '%</div>' +
+      '<div class="cert"><div class="cert-in"><small>CHASE THE CASE</small><b>' + esc(rank[1]) + '</b><span>Aproveitamento ' + r.pct + '% · Nível ' + level() + '</span></div></div>' +
+      '<button class="btn lg" data-exam="1">↻ Refazer prova</button>' +
+      '<button class="btn ghost" style="margin-top:11px" data-go="home">Voltar à jornada</button></div></div>';
+    return s;
+  }
+
+  /* ---- DECK -------------------------------------------------------------- */
+  function viewDeck() {
+    var s = '<div class="screen"><div class="eyebrow">Sua coleção</div><h1 class="h1">Cartas dominadas</h1>' +
+      '<p class="lead">Domine um caso (≥70% no desafio) para colecionar a carta.</p>' +
+      '<div class="hero" style="margin:16px 0"><div class="hero-row"><div class="hero-txt"><h2 style="font-size:18px">' + masteredCount() + ' / ' + totalCases() + '</h2><p>cartas reunidas</p></div>' + ring(Math.round(masteredCount() / totalCases() * 100), 76, 'completo') + '</div></div>';
+    s += '<div class="deck-grid">';
+    CASES.forEach(function (c) {
+      var t = trackById(c.track), done = isMastered(c.id);
+      s += '<button class="mini ' + (done ? '' : 'locked') + '" data-case="' + c.id + '" style="border-color:' + (done ? hexA(t.cor, .5) : 'var(--line)') + '">' +
+        '<div style="display:flex;justify-content:space-between;align-items:start"><span class="num">#' + esc(c.numero) + '</span><span class="seal">' + (done ? '✓' : '🔒') + '</span></div>' +
+        '<div class="emoji" style="margin-top:8px">' + (t ? t.emoji : '🩸') + '</div><h5>' + esc(c.patologia) + '</h5>' +
+        '<small style="font-size:10px;color:var(--txt-mute);margin-top:5px">' + esc(t ? t.nome : '') + '</small></button>';
+    });
+    s += '</div></div>';
+    return s;
+  }
+
+  /* ---- ABOUT ------------------------------------------------------------- */
+  function viewAbout() {
+    var seen = {}, sources = [];
+    CASES.forEach(function (c) { if (c.fonte && !seen[c.fonte]) { seen[c.fonte] = 1; sources.push(c); } });
+    var s = '<div class="screen"><div class="eyebrow">Sobre & Fontes</div><h1 class="h1">Como este estudo foi feito</h1>';
+    s += '<div class="note-card">📖 <b>Índice de casos = real.</b> Número, patologia e equipamento (Yumizen H2500/H550/H500, CellaVision DC-1) vêm das publicações públicas da série <b>HORIBA · Chase the Case</b>.</div>';
+    s += '<div class="note-card">✍️ <b>Conteúdo e visualizações = síntese didática.</b> Morfologia, flags, parâmetros, quizzes e os <b>esquemas SVG</b> (matriz/histograma) são gerados a partir de hematologia consolidada — não são as imagens nem os números do laudo oficial.</div>';
+    s += '<div class="note-card">🖼️ <b>Imagens oficiais.</b> Cada caso tem um <b>slot</b> para inserir matriz, histograma e foto de lâmina oficiais (ver <code>CONTENT-SOURCES.md</code>).</div>';
+    s += '<div class="note-card" style="border-left-color:var(--bad);background:rgba(210,59,74,.06)">⚕️ <b>Aviso.</b> Ferramenta de estudo. Não é orientação diagnóstica nem substitui diretrizes, laudos ou os documentos oficiais HORIBA.</div>';
+    s += '<div class="sec-head"><h3>Casos oficiais (fontes)</h3><span>' + sources.length + '</span></div>';
+    sources.forEach(function (c) { s += '<a class="src-li" href="' + esc(c.fonte) + '" target="_blank" rel="noopener"><b>Case #' + esc(c.numero) + '</b> · ' + esc(c.patologia) + '<small>' + esc(c.fonte) + '</small></a>'; });
+    s += '<hr class="sep"><div style="text-align:center;color:var(--txt-mute);font-size:12px">Progresso salvo só no seu aparelho.<br><button class="backlink" id="reset-btn" style="color:var(--bad);justify-content:center;width:100%;margin-top:8px">Apagar meu progresso</button></div></div>';
+    return s;
+  }
+
+  /* ---- celebrate (confetti) --------------------------------------------- */
+  function celebrate(big) {
+    if (reduceMotion()) return;
+    var cv = document.createElement('canvas'); cv.className = 'confetti'; document.body.appendChild(cv);
+    var ctx = cv.getContext('2d'), W = cv.width = innerWidth, H = cv.height = innerHeight;
+    var cols = ['#4283cc', '#6b4ee6', '#138a6e', '#c2820a', '#d23b4a', '#2f6fb8'];
+    var N = big ? 140 : 80, P = [];
+    for (var i = 0; i < N; i++) P.push({ x: W / 2 + (Math.random() - .5) * 120, y: H * 0.32, vx: (Math.random() - .5) * 9, vy: -6 - Math.random() * 8, g: .25 + Math.random() * .12, s: 4 + Math.random() * 5, c: cols[i % cols.length], r: Math.random() * 6, vr: (Math.random() - .5) * .4 });
+    var t0 = performance.now();
+    (function frame(t) {
+      var el = t - t0; ctx.clearRect(0, 0, W, H);
+      P.forEach(function (p) { p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 1.6); ctx.restore(); });
+      if (el < 1500) requestAnimationFrame(frame); else cv.remove();
+    })(t0);
+  }
+
+  /* ---- color shade ------------------------------------------------------- */
+  function shade(hex, amt) {
+    hex = (hex || '#4283cc').replace('#', ''); if (hex.length === 3) hex = hex.split('').map(function (x) { return x + x; }).join('');
+    var n = parseInt(hex, 16), r = Math.max(0, Math.min(255, ((n >> 16) & 255) + amt)), g = Math.max(0, Math.min(255, ((n >> 8) & 255) + amt)), b = Math.max(0, Math.min(255, (n & 255) + amt));
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  /* ---- render ------------------------------------------------------------ */
+  function render() {
+    var v, chrome = true;
+    switch (route.name) {
+      case 'onboard': v = viewOnboard(); chrome = false; break;
+      case 'track': v = viewTrack(route.param); break;
+      case 'case': v = viewCase(route.param); break;
+      case 'quiz': v = viewQuiz(); chrome = false; break;
+      case 'result': v = viewResult(); chrome = false; break;
+      case 'exam': v = viewExam(); chrome = false; break;
+      case 'examresult': v = viewExamResult(); chrome = false; break;
+      case 'deck': v = viewDeck(); break;
+      case 'about': v = viewAbout(); break;
+      default: v = viewHome();
+    }
+    app.innerHTML = (chrome ? topbar() : '') + v + (chrome ? tabbar() : '');
+    bindEvents();
+    if (route.name === 'home') renderSearch();
+  }
+
+  function bindCaseButtons(scope) {
+    (scope || app).querySelectorAll('[data-case]').forEach(function (el) { el.addEventListener('click', function () { go('case', el.getAttribute('data-case')); }); });
+  }
+  function bindEvents() {
+    app.querySelectorAll('[data-tab]').forEach(function (el) { el.addEventListener('click', function () { searchTerm = ''; go(el.getAttribute('data-tab')); }); });
+    app.querySelectorAll('[data-track]').forEach(function (el) { el.addEventListener('click', function () { go('track', el.getAttribute('data-track')); }); });
+    bindCaseButtons(app);
+    app.querySelectorAll('[data-go]').forEach(function (el) { el.addEventListener('click', function () { go(el.getAttribute('data-go'), el.getAttribute('data-param')); }); });
+    app.querySelectorAll('[data-quiz]').forEach(function (el) { el.addEventListener('click', function () { startQuiz(el.getAttribute('data-quiz')); }); });
+    app.querySelectorAll('[data-opt]').forEach(function (el) { el.addEventListener('click', function () { answer(parseInt(el.getAttribute('data-opt'), 10)); }); });
+    app.querySelectorAll('[data-eopt]').forEach(function (el) { el.addEventListener('click', function () { examAnswer(parseInt(el.getAttribute('data-eopt'), 10)); }); });
+    app.querySelectorAll('[data-next-case]').forEach(function (el) { el.addEventListener('click', function () { nextCaseAfter(el.getAttribute('data-next-case')); }); });
+    app.querySelectorAll('[data-exam]').forEach(function (el) { el.addEventListener('click', startExam); });
+
+    var si = document.getElementById('search-in');
+    if (si) si.addEventListener('input', function () { searchTerm = si.value; renderSearch(); });
+
+    var ob = document.getElementById('ob-next');
+    if (ob) ob.addEventListener('click', function () { if (obSlide < OB.length - 1) { obSlide++; render(); } else { state.onboarded = true; save(); go('home'); } });
+    var obs = document.getElementById('ob-skip');
+    if (obs) obs.addEventListener('click', function () { state.onboarded = true; save(); go('home'); });
+
+    var rb = document.getElementById('reset-btn');
+    if (rb) rb.addEventListener('click', function () { if (confirm('Apagar todo o progresso, XP e cartas?')) { state = { xp: 0, streak: 0, lastDay: null, done: {}, onboarded: true, examBest: 0 }; save(); toast('Progresso apagado'); go('home'); } });
+  }
+
+  /* ---- boot -------------------------------------------------------------- */
+  (function boot() {
+    var hash = (location.hash || '').replace('#', '');
+    if (hash) { var p = hash.split('/'); if (['track', 'case', 'deck', 'about'].indexOf(p[0]) >= 0) { route = { name: p[0], param: p[1] || null }; render(); return; } }
+    if (!state.onboarded) { route = { name: 'onboard' }; render(); return; }
+    render();
+  })();
+
+  window.CHASE = { go: go, state: state };
+})();
+
+</script>
+</body>
+</html>
