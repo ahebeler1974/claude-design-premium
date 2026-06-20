@@ -58,8 +58,8 @@ A trilha, a barra de progresso, a coleção e o XP se atualizam sozinhos.
 #03/#19/#32/#38 Anemia falciforme · #06 Mielodisplasia secundária ·
 #08 Malária · #18 Câncer de pulmão · #20 Síndrome linfoproliferativa ·
 #23 Dengue · #26 Leucemia aguda · #31 LLC · #34 Leucemia monoblástica ·
-#39 LMA M5 · #41 LMMC · #46 Mononucleose infecciosa · #47 Leucemia
-promielocítica · #50 LLA · #51 LMC.
+#39 LMA M5 · #41 LMMC · #46 Mononucleose infecciosa · #50 LLA ·
+#51 LMC · #55 Leucemia promielocítica.
 
 Índice oficial: https://www.horiba.com/int/healthcare/chase-the-case/
 

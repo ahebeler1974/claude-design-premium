@@ -327,7 +327,7 @@ window.CHASE_CASES = [
     fonte: 'https://www.horiba.com/int/company/news/detail/news/12/2024/acute-myeloid-leukemia-m5-monocytic-hematology-clinical-case-chase-the-case-39/',
   },
   {
-    id: 'c47', numero: '47', patologia: 'Leucemia Promielocítica Aguda (LPA)', track: 'leucemias-agudas', dificuldade: 3,
+    id: 'c55', numero: '55', patologia: 'Leucemia Promielocítica Aguda (LPA)', track: 'leucemias-agudas', dificuldade: 3,
     realData: false, equipamento: ['Yumizen H2500', 'CellaVision DC-1'],
     contexto: 'LMA M3 / promielocítica — uma EMERGÊNCIA hematológica pelo risco de coagulação intravascular disseminada (CIVD).',
     pistas: ['Promielócitos anormais hipergranulares + bastonetes de Auer (às vezes em "feixes").', 'Plaquetopenia + alterações de coagulação = sinal vermelho.'],
