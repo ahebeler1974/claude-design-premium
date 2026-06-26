@@ -1,6 +1,7 @@
 > **Keyword foco:** melhores lâmpadas inteligentes até R$ 100 com alexa
 > **Status:** QUASE-PRONTO — produtos reais; falta gerar os links de afiliado
 > **Linka para:** /lampada-inteligente-alexa-sem-hub/ (review da lâmpada Positivo sem hub)
+> ⚠️ **Ao gerar cada link:** use o link do **PRODUTO** (Gerador de links → cole a URL do anúncio). **NÃO** use o link da sua **vitrine** (`/social/seu-usuario`) — ele rastreia a comissão, mas joga o leitor numa lista e converte menos.
 
 ---
 
@@ -194,7 +195,7 @@ Se você quer acertar de primeira sem comparar spec por spec, vá de **TP-Link T
 
 ### ☑️ Antes de publicar
 
-- [ ] Gerar os links de afiliado ML no painel (5 produtos + CTA final) e substituir cada `[GERAR LINK DE AFILIADO: ...]`
+- [ ] Gerar os links de afiliado ML **a partir da URL de cada PRODUTO** (Gerador de links) — **nunca o link da vitrine `/social/`** — e substituir cada `[GERAR LINK DE AFILIADO: ...]`
 - [ ] Marcar todos os links como `rel="nofollow sponsored"` e abrir em nova aba
 - [ ] Publicar também o artigo /lampada-inteligente-alexa-sem-hub/ para o link interno funcionar
 - [ ] Confirmar preços reais no anúncio (não verificados aqui; alguns podem passar de R$ 100)

@@ -42,7 +42,13 @@
 
 ## PARTE 3 — Como colocar os links de afiliado (importante)
 
-1. No painel de afiliados do Mercado Livre, **gere o link** do produto (vem com sua tag de comissão).
+> ⚠️ **REGRA DE OURO — link de PRODUTO, não da vitrine.** Gere o link sempre a partir da **URL do anúncio
+> do produto** (Ferramentas → Gerador de links). **Nunca** use o link da sua **vitrine/página social**
+> (`mercadolivre.com.br/social/seu-usuario`). Os dois rastreiam sua comissão, mas o da vitrine cai numa
+> **lista de recomendações** e faz o leitor caçar o item — converte muito menos. O clique tem que abrir
+> **direto o produto**.
+
+1. No painel de afiliados do Mercado Livre, **gere o link do PRODUTO** (cole a URL do anúncio no Gerador de links; vem com sua tag de comissão).
 2. No artigo, selecione o texto do botão/CTA (ex: *"Ver preço atual no Mercado Livre"*) e cole o link.
 3. **Marque o link** com:
    - `Abrir em nova aba` ✔ (não perde o leitor no seu site).

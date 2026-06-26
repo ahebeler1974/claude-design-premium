@@ -9,6 +9,12 @@
 
 ## 🔑 A regra que vale para todo link de afiliado
 
+> ⚠️ **REGRA DE OURO — link de PRODUTO, não da vitrine.** Gere o link sempre a partir da **URL do
+> anúncio do produto** (Gerador de links). **NUNCA** use o link da sua **vitrine/página social**
+> (`mercadolivre.com.br/social/seu-usuario`). Os dois rastreiam sua comissão, mas o da vitrine abre
+> uma **lista de recomendações** e obriga o leitor a caçar o item — converte muito menos. O clique
+> precisa cair **direto no produto**. *(Foi exatamente esse o ajuste pego no teste do artigo 01.)*
+
 Sempre que o texto tiver um campo **`[GERAR LINK DE AFILIADO: Nome do Produto]`**:
 
 1. No **painel de Afiliados do Mercado Livre** → **Ferramentas → Gerador de links**.
@@ -79,7 +85,7 @@ Publique **review (T1) + comparativo (T2) da mesma categoria juntos** — os lin
 
 | Artigo | Produtos para gerar link |
 |---|---|
-| 01 Lâmpada (review) | **Já com link real:** `meli.la/24dPT2v` (Kit Positivo) |
+| 01 Lâmpada (review) | Kit 3 Lâmpadas Positivo — **gerar link do PRODUTO** (o `meli.la/24dPT2v` atual é da **vitrine**, trocar) |
 | 02 Lâmpadas (comparativo) | Tapo L530E · Positivo RGB+ E27 · Intelbras EWS 410 · Multilaser Liv SE239 · Elsys EPGG17 |
 | 03 Fechadura | Intelbras FR 220 · Papaiz SL140B Bio |
 | 04 Robô (pet) | Xiaomi Robot Vacuum S40C · WAP Robot W100 |

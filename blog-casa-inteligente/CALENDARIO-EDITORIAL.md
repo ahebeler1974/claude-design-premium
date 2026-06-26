@@ -15,7 +15,7 @@
 
 | # | Keyword de cauda longa (fundo de funil) | Tipo | Arquivo | Status |
 |---|---|---|---|---|
-| 01 | lâmpada inteligente que funciona com alexa sem precisar de hub | T1 | `artigos/01-lampada-inteligente-alexa-sem-hub.md` | ✅ **PRONTO** (produto + link reais: Kit Positivo / meli.la/24dPT2v) |
+| 01 | lâmpada inteligente que funciona com alexa sem precisar de hub | T1 | `artigos/01-lampada-inteligente-alexa-sem-hub.md` | 🟡 quase-pronto (Kit Positivo definido; gerar link do **produto**, não da vitrine) |
 | 02 | melhores lâmpadas inteligentes até R$ 100 com alexa | T2 | `artigos/02-comparativo-lampadas-inteligentes-ate-100.md` | 🟡 quase-pronto (produtos reais; falta gerar os links) |
 | 03 | melhor fechadura digital com biometria para apartamento até R$ 500 | T1 | `artigos/03-fechadura-digital-biometria-apartamento.md` | 🟡 quase-pronto (produtos reais; falta gerar os links) |
 | 04 | robô aspirador que vale a pena para casa com pelo de cachorro | T1 | `artigos/04-robo-aspirador-casa-com-pelo-de-cachorro.md` | 🟡 quase-pronto (produtos reais; falta gerar os links) |

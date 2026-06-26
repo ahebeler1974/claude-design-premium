@@ -1,7 +1,7 @@
 # Artigo 01 · Tipo 1 (Review / Guia de compra) · Categoria: Iluminação Inteligente
 
 > **Keyword foco:** `lâmpada inteligente que funciona com alexa sem precisar de hub`
-> **Status:** PRONTO PARA PUBLICAR — produto e link reais preenchidos.
+> **Status:** QUASE-PRONTO — produto real definido; gerar o link do **PRODUTO** (o atual `meli.la/24dPT2v` é da vitrine `/social/`, trocar).
 > **Site:** Guia Casa Inteligente · ahebeler.shop · "O guia pra escolher o produto certo pra sua casa"
 > **Linka para:** artigo 02 (comparativo de lâmpadas).
 
@@ -44,7 +44,8 @@ O Kit Positivo é do tipo Wi-Fi sem hub: cada lâmpada conversa direto com o rot
 ### (H2) O produto: Kit 3 Lâmpadas Smart Wi-Fi Positivo
 
 > 📦 **Kit 3 Lâmpadas Smart Wi-Fi Positivo (compatível com Alexa e Google Assistente)**
-> 👉 **Ver preço atual no Mercado Livre:** https://meli.la/24dPT2v
+> 👉 **Ver preço atual no Mercado Livre:** `[COLAR LINK DE AFILIADO DO PRODUTO]`
+> <!-- ⚠️ USE O LINK DO PRODUTO, não o da vitrine. Gere em "Ferramentas > Gerador de links" colando a URL do ANÚNCIO do Kit Positivo. O link meli.la/24dPT2v aponta para /social/alexandrehebeler (sua vitrine) e obriga o leitor a caçar o produto — converte menos. -->
 > <!-- no WordPress: marcar este link como nofollow sponsored + abrir em nova aba -->
 > Soquete: **E27 (rosca comum)** · Conexão: **Wi-Fi 2.4GHz, sem hub** · Cor: **RGB + branco ajustável (2700K–6500K)** · Alimentação: **bivolt (100–240V)**
 
@@ -135,7 +136,7 @@ Não tem mistério, mas a ordem importa:
 > [as melhores lâmpadas inteligentes até R$ 100 com Alexa](/comparativo-lampadas-inteligentes-ate-100/).
 > *(publique também o artigo 02 para o link funcionar)*
 
-> 👉 **Ver preço atual no Mercado Livre:** https://meli.la/24dPT2v
+> 👉 **Ver preço atual no Mercado Livre:** `[COLAR LINK DE AFILIADO DO PRODUTO]`
 > <!-- no WordPress: marcar este link como nofollow sponsored + abrir em nova aba -->
 
 ### (H2) ❓ Perguntas frequentes
@@ -174,7 +175,7 @@ e relatos de desconexão são reais e fazem parte do pacote de qualquer lâmpada
 isso — e conferindo na descrição do anúncio qual versão você está levando — é uma porta de entrada
 barata pra automação.
 
-> 👉 **Ver preço atual e disponibilidade no Mercado Livre:** https://meli.la/24dPT2v
+> 👉 **Ver preço atual e disponibilidade no Mercado Livre:** `[COLAR LINK DE AFILIADO DO PRODUTO]`
 > <!-- no WordPress: marcar este link como nofollow sponsored + abrir em nova aba -->
 
 ---
@@ -188,7 +189,8 @@ ahebeler@gmail.com.*
 
 ### ☑️ Antes de publicar
 - [ ] Confirmei na descrição do anúncio qual versão é (potência, lúmens, RGB+ ou branco) e ajustei o texto se preciso.
-- [ ] Marquei TODOS os 3 links de afiliado como `nofollow sponsored` + abrir em nova aba (ver comentários HTML).
+- [ ] **Gerei o link do PRODUTO** (Gerador de links com a URL do anúncio) e **NÃO** usei o link da vitrine `/social/`.
+- [ ] Marquei TODOS os links de afiliado como `nofollow sponsored` + abrir em nova aba (ver comentários HTML).
 - [ ] Removi/preenchi os marcadores `[SUA EXPERIÊNCIA (opcional)]` (ou deixei só se quiser manter como convite ao leitor).
 - [ ] Troquei a âncora do artigo 02 pela URL real quando ele for publicado.
 - [ ] Conferi se a skill da Alexa "Positivo Casa Inteligente" segue ativa.
