@@ -1,24 +1,26 @@
 > **Keyword foco:** robô aspirador que vale a pena para casa com pelo de cachorro
-> **Status:** rascunho pronto
-> **Linka para:** artigo 07 (comparativo de robôs aspiradores até R$1500) — (LINK-INTERNO-ARTIGO-07)
+> **Status:** QUASE-PRONTO — produtos reais; falta gerar os links de afiliado
+> **Linka para:** /comparativo-robos-aspiradores-ate-1500/ (comparativo completo de robôs aspiradores até R$1500)
 
 ### Campos do Rank Math
 
 - **Título SEO:** Robô Aspirador Que Vale a Pena Para Casa Com Pelo de Cachorro
 - **Slug:** robo-aspirador-casa-com-pelo-de-cachorro
-- **Meta descrição (155 char):** Robô aspirador que vale a pena para casa com pelo de cachorro existe? Testei na prática: sucção, escova que não enrola e o que ninguém te conta.
+- **Meta descrição (155 char):** Robô aspirador que vale a pena para casa com pelo de cachorro: guia honesto de sucção, escova que não enrola e os 2 modelos certos pra cada bolso.
 
 ---
 
-## (H1) Robô Aspirador Que Vale a Pena Para Casa Com Pelo de Cachorro: Testei na Casa Cheia de Pelo
+## (H1) Robô Aspirador Que Vale a Pena Para Casa Com Pelo de Cachorro: O Guia Honesto
 
-Se você tem cachorro que solta pelo o ano inteiro, já sabe: você varre de manhã e à tarde o chão tá cheio de novo. A pergunta não é "robô aspirador limpa?". É: **qual robô aspirador realmente aguenta pelo de cachorro sem entupir toda hora?** Porque a maioria não aguenta. Eu testei um na minha casa, com um cachorro de pelo médio que solta pra caramba, e vou te contar o que funcionou e o que me irritou.
+Se você tem cachorro que solta pelo o ano inteiro, já sabe: você varre de manhã e à tarde o chão tá cheio de novo. A pergunta não é "robô aspirador limpa?". É: **qual robô aspirador realmente aguenta pelo de cachorro sem entupir toda hora?** Porque a maioria não aguenta.
+
+Este é um guia de compra honesto. Não é um relato de uso pessoal — é uma análise baseada em especificação técnica e reputação dos modelos. Abaixo eu mostro o que realmente importa na ficha técnica e dois modelos reais que fazem sentido para casa com pet: um pick principal (mais forte) e uma alternativa de entrada (mais barata).
 
 ### ⚡ Resposta rápida
 
-**Vale a pena?** Sim, mas com ressalva. Para casa com pelo de cachorro, o robô resolve o dia a dia (mantém o chão limpo entre as faxinas de verdade), **desde que você escolha um modelo com sucção de no mínimo 2000 Pa e escova de silicone (não de cerdas)**. Abaixo disso, ou com escova de cerda, você vai passar mais tempo limpando o robô do que economizando.
+**Vale a pena?** Sim, mas com ressalva. Para casa com pelo de cachorro, o robô resolve o dia a dia (mantém o chão limpo entre as faxinas de verdade), **desde que você escolha um modelo com sucção alta medida em Pa e escova com design anti-emaranhamento (não só de cerdas)**. Abaixo disso, você vai passar mais tempo limpando o robô do que economizando.
 
-**A partir de quanto?** Um modelo que dá conta de pelo começa por volta de [R$ XX]. Mais barato que isso geralmente é sucção fraca ou escova que vira novelo de pelo em dois dias.
+**Qual comprar?** O pick principal é o **Xiaomi Robot Vacuum S40C** (5.000 Pa, navegação a laser, reservatório de 520 ml) — robô que dá conta da rotina de quem tem pet que solta muito pelo. A alternativa barata e nacional é o **WAP Robot W100**, que serve como reforço diário de rotina, não como faxina pesada.
 
 ---
 
@@ -26,97 +28,158 @@ Se você tem cachorro que solta pelo o ano inteiro, já sabe: você varre de man
 
 Pelo de cachorro não é poeira. Ele é leve, voa, gruda em tudo e — o pior — **enrola na escova**. Tem três coisas que fazem ou quebram um robô pra pet:
 
-**1. Sucção (medida em Pa — Pascal).** Esquece "potência" genérica em propaganda. O número que importa é o Pa. Pelo curto e solto exige no mínimo **2000 Pa**. Se o cachorro tem pelo mais denso ou você tem tapete, mire em **3000 Pa ou mais**. Robô de 1000-1500 Pa empurra o pelo em vez de sugar.
+**1. Sucção (medida em Pa — Pascal).** Esquece "potência" genérica em propaganda. O número que importa é o Pa. A partir de cerca de **3.000 Pa** o robô começa a tirar pelo incrustado em tapete; **acima de 5.000 Pa** é o patamar confortável pra quem solta muito pelo.
 
-**2. Tipo de escova (esse é o detalhe que ninguém te explica).**
-- **Escova de cerdas:** o pelo enrola no eixo e vira um novelo apertado. Você vai precisar de tesoura toda semana. É um saco.
-- **Escova de silicone (borracha):** o pelo desliza e vai pro reservatório em vez de enrolar. Limpeza muito mais fácil. **Para casa com cachorro, escova de silicone é quase obrigatória.**
+> **Atenção à unidade.** Marcas premium (como a Xiaomi) medem em Pa — 5.000 a 20.000 Pa nos topos de linha. Já vários modelos nacionais de entrada informam potência em **watts ou mbar**. E aqui mora a pegadinha: 8 mbar de um robô básico é ordens de grandeza menor que 5.000 Pa. **Compare Pa com Pa.** Um robô que só informa watts ou mbar quase sempre é de sucção muito mais fraca.
 
-**3. Reservatório.** Pelo ocupa volume. Um reservatório pequeno (300 ml) enche rápido e você esvazia todo dia. Acima de **500 ml** já dá pra deixar uns dias. Se tiver base de autoesvaziamento, melhor ainda — mas isso encarece bastante.
+**2. Tipo de escova (esse é o detalhe que ninguém te explica).** O fator que mais importa contra pelo enrolado é a escova, não só a sucção.
+- **Escova só de cerdas:** o pelo enrola no eixo e vira um novelo apertado. Você vai precisar de tesoura toda semana.
+- **Escova de borracha/silicone ou com design anti-emaranhamento (formato V, pente lateral):** enrola muito menos fio. Limpeza bem mais fácil. **Para casa com cachorro, esse tipo de escova é quase obrigatório.**
 
-Decorou esses três? Então você já filtra 80% dos robôs ruins pra pet só de olhar a ficha técnica.
+**3. Reservatório.** Pelo ocupa volume. Um reservatório pequeno (250 ml, típico de modelos de entrada) enche rápido e você esvazia todo dia. Acima de **500 ml** já dá pra deixar uns dias.
 
----
+**Bônus — navegação e filtro.** Navegação a laser (LDS) cobre a casa de forma metódica e mapeada; modelos de navegação aleatória (típicos de entrada) podem deixar áreas sem passar. E filtro HEPA ajuda a reter alérgenos e pelo fino em suspensão — relevante pra quem tem pet e alergia.
 
-### (H2) O produto que testei
-
-Testei o **[NOME DO PRODUTO]** por algumas semanas na minha casa, que tem piso frio, alguns tapetes baixos e um cachorro que solta pelo o tempo todo.
-
-👉 **[INSERIR LINK DE AFILIADO ML]**
-
-Specs principais:
-- **Sucção:** [XX Pa]
-- **Tipo de escova:** [silicone / cerda — confirmar no anúncio]
-- **Reservatório de pó:** [XXX ml]
-- **Mapeamento:** [tipo de navegação — giroscópio / laser LiDAR]
-- **Autonomia da bateria:** [XX min]
-- **Nível de ruído:** [XX dB]
-- **App / assistente de voz:** [Alexa / Google — confirmar]
-- **Preço aproximado:** [R$ XX]
-
-> Observação honesta: confira a ficha do anúncio antes de comprar. Fabricante muda spec entre lotes e o que vale é o que está descrito na página do produto no Mercado Livre.
+Decorou isso? Então você já filtra 80% dos robôs ruins pra pet só de olhar a ficha técnica.
 
 ---
 
-### (H2) ✅ O que é bom
+### (H2) Pick principal: Xiaomi Robot Vacuum S40C
 
-- **Dá conta do pelo no dia a dia.** Passando uma vez por dia, o chão para de acumular aquela camada de pelo nos cantos e embaixo dos móveis. Essa é a parte que realmente muda a rotina.
-- **A escova [de silicone] não vira novelo.** Diferente da escova de cerda, o pelo não fica enrolado e travado no eixo. A limpeza é rapidinha.
-- **O mapeamento [com LiDAR] funciona de verdade.** Ele faz o caminho organizado, em linhas retas, e não fica batendo aleatório igual robô barato. Cobre a casa toda sem deixar buraco.
-- **Programa e esquece.** Agendou no app, ele limpa enquanto você trabalha. Pra quem tem pet e casa, isso vale ouro.
+O **Xiaomi Robot Vacuum S40C** é o pick principal para casa com pelo de cachorro. Ele combina **sucção de 5.000 Pa** (forte o suficiente pra pelo, ração espalhada e poeira incrustada em piso e tapete fino) com um sistema anti-emaranhamento de verdade: escova principal em **formato V** (cerdas de nylon + lâminas de borracha/TPU) trabalhando junto com pente e escova lateral pra reduzir o enrolamento de fios.
+
+Tem reservatório de pó grande (520 ml), navegação a laser LDS com mapeamento 360 graus e 4 modos de potência. Foi lançado oficialmente no Brasil em outubro de 2025 com preço competitivo. É o tipo de robô que dá conta da rotina de quem tem pet que solta muito pelo — não só uma varrida superficial.
+
+👉 **Ver preço atual no Mercado Livre:** [GERAR LINK DE AFILIADO: Xiaomi Robot Vacuum S40C]
+<!-- no WordPress: marcar nofollow sponsored + nova aba -->
+
+**Specs principais:**
+- **Sucção:** 5.000 Pa, 4 modos (silencioso, padrão, forte, turbo)
+- **Reservatório de pó:** 520 ml — **reservatório de água:** 260 ml
+- **Escova principal mista:** cerdas de nylon + lâminas de borracha/TPU, design em V anti-emaranhamento
+- **Escova lateral:** 1, para cantos e rodapés
+- **Navegação:** laser LDS com mapeamento 360 graus, sensores anti-queda e anticolisão
+- **Autonomia:** cerca de 110 minutos por carga (medição independente; valor oficial Xiaomi pode diferir)
+- **Função 2 em 1:** aspira e passa pano úmido, com 3 níveis de fluxo de água
+
+> **Observação honesta:** confira a ficha do anúncio antes de comprar. Fabricante muda spec entre lotes e o que vale é o que está descrito na página do produto no Mercado Livre. O material exato da escova (se há versão totalmente de borracha) você confirma na descrição do anúncio.
+
+**✅ O que é bom (com base na ficha):**
+- **Sucção de 5.000 Pa** — no patamar confortável pra quem solta muito pelo, inclusive em tapete fino.
+- **Escova em V anti-emaranhamento** — combina borracha/TPU com pente lateral, enrolando bem menos fio que escova só de cerdas.
+- **Reservatório de 520 ml** — grande, vantagem real em casa com pet, porque pelo enche o compartimento rápido.
+- **Navegação a laser LDS** — cobre a casa de forma metódica e mapeada, sem ficar batendo aleatório.
+
+**❌ O que é ruim (sem enrolação):**
+- **A escova não é 100% de borracha** — tem cerdas de nylon, então em pet de pelo muito longo e denso ainda exige checar e limpar a escova **semanalmente**.
+- **Função passa-pano é leve** — reservatório de água de 260 ml e mop por arraste; não substitui esfregão, não tem estação de autolimpeza nem esvaziamento automático.
+- **Não escala degraus altos** e pode embaçar a navegação a laser em ambientes muito escuros.
+- **Modelo recente no Brasil (out/2025)** — rede de assistência e peças de reposição ainda menos pulverizada que marcas nacionais.
+
+[SUA EXPERIÊNCIA (opcional): conte aqui como o S40C se saiu na sua casa — quantas vezes por semana você limpou a escova, como ele foi nos tapetes, se o cachorro estranhou o barulho.]
 
 ---
 
-### (H2) ❌ O que é ruim (sem enrolação)
+### (H2) Alternativa de entrada: WAP Robot W100
 
-- **Você ainda precisa limpar a escova.** Não é mágica. Mesmo com silicone, uma vez por semana eu tiro o pelo acumulado no rolo e nas rodas. Menos que a escova de cerda, mas não é zero manutenção. Quem vende "passa e esquece pra sempre" tá te enganando.
-- **Tapete alto e felpudo é o calcanhar de Aquiles.** Em tapete baixo ele vai bem. Em tapete grosso/peludo, a sucção sofre e às vezes ele sobe e desce sem tirar o pelo enraizado. Robô nenhum nessa faixa resolve tapete felpudo 100%.
-- **O barulho pode assustar o cachorro no começo.** Nas primeiras vezes meu cachorro fugiu do robô. Acostumou em uns dias, mas se o seu pet é muito medroso, comece ligando o robô com ele em outro cômodo.
+Se o orçamento é apertado e você quer só **manutenção diária do pelo** sem gastar muito, o **WAP Robot W100** é a alternativa de entrada, nacional e barata. É um 3 em 1 (varre, aspira e passa pano), bivolt, baixo e silencioso, com sistema anti-queda e anticolisão.
+
+A grande vantagem dele não é potência — é a **rede de assistência e peças de reposição amplas no Brasil** (escovas avulsas fáceis de achar). Funciona como reforço de rotina em casa de pet, tirando poeira, migalhas e pelo leve do dia a dia. **Não é faxina pesada.**
+
+👉 **Ver preço atual no Mercado Livre:** [GERAR LINK DE AFILIADO: WAP Robot W100]
+<!-- no WordPress: marcar nofollow sponsored + nova aba -->
+
+**Specs principais:**
+- **Potência:** 17 W — o fabricante não divulga a sucção em Pa, então não dá pra comparar direto com os modelos a laser (na prática, fica bem abaixo deles)
+- **Reservatório de pó:** 250 ml
+- **Modos de limpeza:** 3 (cantos, aleatório e espiral)
+- **Bivolt**, perfil ultrabaixo para passar embaixo de móveis
+- **Segurança:** sistemas anti-queda e anticolisão
+- **Escovas laterais** varrendo a sujeira para a entrada de sucção
+
+> **Observação honesta:** as fontes divergem se o W100 tem escova central rotativa motorizada efetiva — há peça de escova rotativa vendida para o modelo, mas uma análise o descreve como sucção direta com escovas laterais. **Confirme na descrição do anúncio** se vem com rolo central. O valor da sucção em Pa também não tem conversão oficial divulgada; confirme na descrição do anúncio.
+
+**✅ O que é bom (com base na ficha):**
+- **Preço de entrada** e marca nacional — porta de entrada barata pro mundo dos robôs.
+- **Perfil ultrabaixo e bivolt** — passa embaixo de sofá e cama, liga em qualquer tomada.
+- **Peças e assistência fáceis no Brasil** — escovas avulsas simples de achar.
+
+**❌ O que é ruim (sem enrolação):**
+- **Sucção fraca (cerca de 8 mbar)** — não faz limpeza profunda; falha com sujeira pesada, areia grossa e pelo acumulado/incrustado em tapete.
+- **Navegação aleatória, sem mapeamento a laser** — pode deixar áreas sem cobrir e repetir trajetos.
+- **Reservatório pequeno (250 ml)** — enche rápido em casa que solta muito pelo, exigindo esvaziar com frequência.
+- **Função passa-pano básica** — só umedece o chão.
+
+[SUA EXPERIÊNCIA (opcional): conte como o W100 lidou com o pelo leve do dia a dia e quantas vezes você precisou esvaziar o reservatório.]
 
 ---
 
 ### (H2) 🆚 Vale a pena para o seu caso?
 
-| Se você... | Vale a pena? |
+| Se você... | Qual indicar |
 |---|---|
-| Tem cachorro de pelo curto/médio e piso frio | ✅ Sim, é exatamente pra isso |
-| Tem cachorro de pelo longo/denso (Golden, Husky, etc.) | ✅ Sim, mas mire em sucção de 3000 Pa+ |
-| Tem a casa cheia de tapete alto e felpudo | ⚠️ Resolve parcial — não conte com tapete grosso |
-| Não tem paciência pra NENHUMA manutenção | ❌ Não — todo robô pede limpeza semanal da escova |
-| Tem cachorro muito medroso e mora em apê pequeno | ⚠️ Vale, mas introduza aos poucos pelo barulho |
-| Quer substituir a faxina pesada de vez em quando | ❌ Não — ele mantém, não substitui faxina profunda |
+| Tem cachorro que solta MUITO pelo e quer resolver o dia a dia de verdade | ✅ **Xiaomi S40C** — 5.000 Pa e escova anti-emaranhamento |
+| Tem tapete fino e piso frio | ✅ **Xiaomi S40C** — sucção dá conta de tapete fino |
+| Tem a casa cheia de tapete alto e felpudo | ⚠️ Resolve parcial — nenhum robô dessa faixa zera tapete grosso |
+| Quer só uma manutenção diária leve e gastar pouco | ✅ **WAP W100** — reforço barato de rotina |
+| Quer peças/assistência fáceis no Brasil acima de tudo | ✅ **WAP W100** — rede nacional ampla |
+| Não tem paciência pra NENHUMA manutenção | ❌ Nenhum — todo robô pede limpeza periódica da escova |
+| Quer substituir a faxina pesada de vez em quando | ❌ Nenhum — ele mantém, não substitui faxina profunda |
+
+Se você ainda está em dúvida entre vários modelos nessa faixa de preço, dá uma olhada no nosso [comparativo completo de robôs aspiradores até R$1500](/comparativo-robos-aspiradores-ate-1500/) — lá eu mostro lado a lado quais têm escova anti-emaranhamento e qual a sucção real de cada um. (publique também esse artigo para o link funcionar)
+
+---
+
+### (H2) 🛒 6 cuidados antes de fechar a compra
+
+1. **Confirme a unidade de potência no anúncio.** Compare Pa com Pa. Um robô que só informa watts ou mbar quase sempre é de sucção muito mais fraca que um de milhares de Pa.
+2. **Prefira escova de borracha/silicone ou anti-emaranhamento.** E conte que vai precisar limpar a escova periodicamente (semanalmente em pet de pelo longo), mesmo nos modelos anti-tangle.
+3. **Não espere faxina pesada do passa-pano.** A função é leve, por arraste. Não substitui esfregão.
+4. **Verifique a altura do robô** se quiser que passe embaixo de sofá/cama, e a capacidade de vencer desnível/tapete espesso.
+5. **Planeje a rotina de esvaziar o reservatório.** Modelos sem estação de autoesvaziamento exigem limpeza frequente em casa de pet.
+6. **Cheque peças e assistência no Brasil.** Escovas e filtros são consumíveis e precisam ser trocados.
 
 ---
 
 ### (H2) ❓ Perguntas frequentes
 
 **O pelo enrola na escova mesmo?**
-Na escova de cerdas, sim — vira novelo e você precisa de tesoura toda semana. Na **escova de silicone**, o pelo desliza pro reservatório e quase não enrola. Por isso, pra casa com cachorro, eu só recomendo modelo com escova de silicone. Se ficar em dúvida entre vários modelos nessa faixa, dá uma olhada no nosso comparativo de robôs aspiradores até R$1500 — lá eu mostro lado a lado quais têm escova de silicone e qual sucção real (LINK-INTERNO-ARTIGO-07).
+Na escova só de cerdas, sim — vira novelo e você precisa de tesoura toda semana. Em escova de **borracha/silicone ou com design anti-emaranhamento** (como o formato V do Xiaomi S40C), o pelo desliza pro reservatório e enrola muito menos. Por isso, pra casa com cachorro, eu só indico modelo com esse tipo de escova. Se ficar em dúvida entre vários modelos nessa faixa, veja o [comparativo completo de robôs aspiradores até R$1500](/comparativo-robos-aspiradores-ate-1500/). (publique também esse artigo para o link funcionar)
 
 **O robô aspirador assusta o cachorro?**
 No começo, geralmente sim — o barulho e o movimento estranham o pet. A maioria dos cães acostuma em poucos dias. Dica: nas primeiras vezes, ligue o robô com o cachorro em outro cômodo ou passeando, pra ele ir associando o som à rotina sem stress.
 
+**Qual a diferença entre o Xiaomi S40C e o WAP W100?**
+É a diferença entre força e preço. O **Xiaomi S40C** tem 5.000 Pa, navegação a laser e reservatório de 520 ml — resolve o pelo pesado do dia a dia. O **WAP W100** é bem mais barato e nacional, com sucção fraca (cerca de 8 mbar) e navegação aleatória — serve pra manutenção leve, não pra limpeza profunda. Quem solta muito pelo vai querer o Xiaomi; quem quer só um reforço barato vai no WAP.
+
 **Funciona com Alexa?**
-Depende do modelo. Muitos têm integração com **Alexa e Google Assistente**, aí você liga por comando de voz ("Alexa, ligar o aspirador"). Confirme na ficha do anúncio — nem todo modelo da faixa de entrada tem essa função. O [NOME DO PRODUTO] tem [Alexa / Google — confirmar].
+Depende do modelo e da versão do anúncio. Confirme na descrição do anúncio no Mercado Livre — nem todo modelo da faixa de entrada tem integração com assistente de voz.
 
 ---
 
 ### (H2) Conclusão
 
-Robô aspirador **vale a pena pra casa com pelo de cachorro** — desde que você não compre o mais barato achando que é tudo igual. O que separa o robô que resolve do robô que te dá raiva é simples: **sucção de 2000 Pa pra cima e escova de silicone**. O [NOME DO PRODUTO] entregou isso na minha casa e mudou a rotina de varrer o tempo todo. Não é mágica (você limpa a escova uma vez por semana), mas pra quem convive com pelo todo dia, é uma das melhores compras de casa inteligente que dá pra fazer.
+Robô aspirador **vale a pena pra casa com pelo de cachorro** — desde que você não compre o mais barato achando que é tudo igual. O que separa o robô que resolve do robô que te dá raiva é simples: **sucção alta medida em Pa e escova anti-emaranhamento.**
 
-👉 **Ver preço e disponibilidade no Mercado Livre: [INSERIR LINK DE AFILIADO ML]**
+Se você convive com pet que solta muito pelo, o pick é o **Xiaomi Robot Vacuum S40C** (5.000 Pa, escova em V, 520 ml). Se o orçamento é apertado e você quer só um reforço diário com peças fáceis no Brasil, o **WAP Robot W100** resolve a manutenção leve. Nenhum dos dois é mágica — você ainda limpa a escova de vez em quando — mas, pra quem convive com pelo todo dia, um robô certo é uma das melhores compras de casa inteligente que dá pra fazer.
+
+👉 **Pick principal — Xiaomi Robot Vacuum S40C. Ver preço atual no Mercado Livre:** [GERAR LINK DE AFILIADO: Xiaomi Robot Vacuum S40C]
+<!-- no WordPress: marcar nofollow sponsored + nova aba -->
+
+👉 **Alternativa barata — WAP Robot W100. Ver preço atual no Mercado Livre:** [GERAR LINK DE AFILIADO: WAP Robot W100]
+<!-- no WordPress: marcar nofollow sponsored + nova aba -->
 
 ---
 
 ### ☑️ Antes de publicar
 
-- [ ] Substituir [NOME DO PRODUTO] pelo nome real do anúncio
-- [ ] Inserir [INSERIR LINK DE AFILIADO ML] (todos os pontos)
-- [ ] Confirmar specs reais na ficha do ML (Pa, escova, reservatório, dB, app)
-- [ ] Preencher [R$ XX] com a faixa de preço atual
-- [ ] Trocar (LINK-INTERNO-ARTIGO-07) pelo URL real do comparativo
-- [ ] Confirmar se o modelo tem Alexa/Google e ajustar a FAQ
-- [ ] Adicionar fotos reais do robô e da escova com pelo (prova de teste)
+- [ ] Gerar e inserir o link de afiliado do **Xiaomi Robot Vacuum S40C** (todos os pontos: pick, conclusão)
+- [ ] Gerar e inserir o link de afiliado do **WAP Robot W100** (todos os pontos: alternativa, conclusão)
+- [ ] Confirmar no painel do WordPress: links com nofollow sponsored + nova aba
+- [ ] Confirmar specs reais na ficha do ML (Pa, escova, reservatório, navegação, app/Alexa)
+- [ ] Confirmar na descrição do anúncio: material exato da escova do S40C e se o WAP W100 tem rolo central
+- [ ] Publicar também o artigo do comparativo (/comparativo-robos-aspiradores-ate-1500/) para o link interno funcionar
+- [ ] Adicionar fotos reais dos robôs e da escova com pelo (se/quando tiver os produtos)
+- [ ] Preencher os marcadores [SUA EXPERIÊNCIA (opcional)] se/quando usar os robôs
 - [ ] Revisar keyword foco no H1, meta e primeiro parágrafo
 - [ ] Conferir disclosure de afiliado no rodapé/topo
