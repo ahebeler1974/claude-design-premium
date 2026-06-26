@@ -48,5 +48,6 @@ Os artigos vêm 95% prontos. Os campos entre colchetes `[ ]` são **propositais*
 - ✅ Estratégia: fundo de funil, cauda longa, 3 tipos de artigo (Review / Comparativo / Hype-Promo)
 - ✅ **Setup concluído** (WordPress no ar em `ahebeler.shop`, afiliado ML aprovado) — ver `RELATORIO-EXECUCAO-SETUP.md`
 - ✅ **Artigo 01 PRONTO** (produto + link reais) e **4 páginas institucionais** prontas (ver `paginas/`)
-- ✅ **Artigos 02–10 quase-prontos**: produtos reais pesquisados + links internos em silo; falta só gerar os links de afiliado
-- 👉 **Próximo passo:** publicar. Comece pelo artigo 01 + as páginas institucionais (ver `CALENDARIO-EDITORIAL.md`)
+- ✅ **Artigos 02–20 quase-prontos** (20 no total): produtos reais pesquisados + links internos em silo; falta só gerar os links de afiliado
+- ✅ **Manual de publicação** pronto (`PUBLICAR.md`) — passo a passo turnkey para o WordPress
+- 👉 **Próximo passo:** publicar. Comece pelo artigo 01 + as páginas institucionais (ver `PUBLICAR.md` e `CALENDARIO-EDITORIAL.md`)

@@ -26,20 +26,27 @@
 | 09 | echo dot vale a pena? (com promoção-isca do dia) | T3 | `artigos/09-echo-dot-vale-a-pena-promo.md` | 🟡 quase-pronto (produtos reais; falta gerar os links) |
 | 10 | melhores câmeras de segurança wifi para casa até R$ 300 | T2 | `artigos/10-comparativo-cameras-seguranca-wifi-ate-300.md` | 🟡 quase-pronto (produtos reais; falta gerar os links) |
 
-## 🔜 Lote 2 — próximas ideias (sem rascunho ainda — peça quando quiser)
+## 🟡 Lote 2 (11–20) — quase-prontos em `artigos/` (produtos reais; falta gerar os links)
+
+| # | Keyword de cauda longa | Tipo | Arquivo | Categoria |
+|---|---|---|---|---|
+| 11 | melhor sensor de presença inteligente para acender luz automática | T1 | `artigos/11-sensor-presenca-inteligente-luz-automatica.md` | Iluminação |
+| 12 | interruptor inteligente que funciona sem neutro vale a pena | T1 | `artigos/12-interruptor-inteligente-sem-neutro.md` | Iluminação |
+| 13 | alexa vs google nest: qual o melhor assistente de voz | T2 | `artigos/13-alexa-vs-google-nest-comparativo.md` | Assistentes |
+| 14 | campainha com câmera wifi vale a pena para apartamento | T1 | `artigos/14-campainha-camera-wifi-apartamento.md` | Segurança |
+| 15 | melhor robô aspirador com função passar pano até R$ 2000 | T2 | `artigos/15-robo-aspirador-passa-pano-ate-2000.md` | Robôs |
+| 16 | controle universal inteligente para ar-condicionado e tv | T1 | `artigos/16-controle-universal-inteligente-ar-tv.md` | Assistentes |
+| 17 | melhores fitas de led inteligentes para quarto gamer com alexa | T2 | `artigos/17-fitas-led-inteligentes-quarto-gamer-alexa.md` | Iluminação |
+| 18 | fechadura digital com senha e cartão vale a pena para escritório | T1 | `artigos/18-fechadura-digital-senha-cartao-escritorio.md` | Segurança |
+| 19 | melhor central de automação residencial para casa grande | T1 | `artigos/19-central-automacao-residencial-casa-grande.md` | Guias |
+| 20 | sensor de fumaça e gás inteligente que avisa no celular | T1 | `artigos/20-sensor-fumaca-gas-inteligente-celular.md` | Segurança |
+
+> Silos do Lote 2: 11/12/17 ↔ Iluminação (01/02) · 13/16/19 ↔ Assistentes (08/09) · 14/18/20 ↔ Segurança (03/05/10) · 15 ↔ Robôs (04/07).
+
+## 🔜 Lote 3 — próximas ideias (sem rascunho ainda — peça quando quiser)
 
 | # | Keyword | Tipo |
 |---|---|---|
-| 11 | melhor sensor de presença inteligente para acender luz automática | T1 |
-| 12 | interruptor inteligente que funciona sem neutro vale a pena | T1 |
-| 13 | melhores assistentes de voz: alexa vs google nest comparativo | T2 |
-| 14 | campainha com câmera wifi vale a pena para apartamento | T1 |
-| 15 | melhor robô aspirador com função passar pano até R$ 2000 | T2 |
-| 16 | controle universal inteligente para ar-condicionado e tv | T1 |
-| 17 | melhores fitas de led inteligentes para quarto gamer com alexa | T2 |
-| 18 | fechadura digital com senha e cartão vale a pena para escritório | T1 |
-| 19 | melhor central de automação residencial para casa grande | T1 |
-| 20 | sensor de fumaça e gás inteligente que avisa no celular | T1 |
 | 21 | melhor smart plug com medição de consumo de energia | T1 |
 | 22 | aspirador robô para quem tem alergia: HEPA vale a pena | T1 |
 | 23 | melhores lâmpadas inteligentes que funcionam sem wifi (bluetooth) | T2 |
