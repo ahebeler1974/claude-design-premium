@@ -131,9 +131,9 @@ Não tem mistério, mas a ordem importa:
 | Só tem rede 5GHz / não pode separar as bandas | Vai dar trabalho |
 | Quer automação pesada (cenas, sensores, alta estabilidade) | Melhor um sistema com hub |
 
-<!-- LINK INTERNO PENDENTE: quando o artigo 02 (comparativo de lâmpadas) for publicado, descomente as 2 linhas abaixo e troque COLAR-URL-DO-ARTIGO-02 pela URL real.
-> 🔗 **Quer comparar com outras opções?** Veja [as melhores lâmpadas inteligentes com Alexa](COLAR-URL-DO-ARTIGO-02).
--->
+> 🔗 **Quer comparar com outras opções?** Veja
+> [as melhores lâmpadas inteligentes até R$ 100 com Alexa](/comparativo-lampadas-inteligentes-ate-100/).
+> *(publique também o artigo 02 para o link funcionar)*
 
 > 👉 **Ver preço atual no Mercado Livre:** https://meli.la/24dPT2v
 > <!-- no WordPress: marcar este link como nofollow sponsored + abrir em nova aba -->
