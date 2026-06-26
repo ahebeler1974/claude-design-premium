@@ -29,6 +29,22 @@ Sempre que o texto tiver um campo **`[GERAR LINK DE AFILIADO: Nome do Produto]`*
 
 ---
 
+## FASE 0 — Gerar os links de afiliado (recomendado fazer em bloco, antes de publicar)
+
+É mais eficiente gerar **todos os links de um silo de uma vez** e só depois publicar. Faça assim:
+
+1. Abra a **Tabela de referência de produtos** (mais abaixo) e o **painel de Afiliados** lado a lado.
+2. Para cada produto: **Gerador de links → cole a URL do anúncio do PRODUTO → Link curto → copie**.
+   - ⚠️ **Sempre o link do PRODUTO**, nunca o da vitrine `/social/` (ver Regra de Ouro acima).
+   - Ao gerar, **anote o % de comissão** que o painel mostra para aquele produto.
+3. **Salve os links** num bloco de notas, organizados por artigo (ex.: `02 — Tapo L530E: <link>`).
+4. Só então vá publicar (Partes A e B) — com os links já prontos, é só colar.
+
+> Dica: gere os links **silo por silo** (ex.: primeiro os do artigo 01 + 02), publique o silo, e siga.
+> Evita gerar 80 links de uma vez e se perder.
+
+---
+
 ## PARTE A — Publicar as 4 páginas institucionais (uma vez só)
 
 Arquivos em `paginas/`. Para cada uma: `Páginas → Adicionar nova` → colar o conteúdo → **Publicar**.
@@ -71,7 +87,7 @@ Publique **review (T1) + comparativo (T2) da mesma categoria juntos** — os lin
 
 | Onda | Categoria | Publicar juntos |
 |---|---|---|
-| 1 | Iluminação | **01** (lâmpada, já PRONTO) + **02** (comparativo) |
+| 1 | Iluminação | **01** (lâmpada) + **02** (comparativo) |
 | 2 | Robôs | **04** (robô pet) + **07** (comparativo robôs) |
 | 3 | Segurança | **05** (câmera pet) + **10** (comparativo câmeras) → depois **03** (fechadura) |
 | 4 | Assistentes/Ofertas | **09** (Echo Dot) + **08** (kit) + **06** (tomada) |
@@ -96,8 +112,22 @@ Publique **review (T1) + comparativo (T2) da mesma categoria juntos** — os lin
 | 09 Echo Dot | Echo Dot 5ª ger (c/ e s/ relógio) · Echo Pop · Echo Dot Max · + oferta do dia |
 | 10 Câmeras (comparativo) | Tapo C200 · C210 · C500 (externa) · Intelbras iM3 C · Xiaomi C200 |
 
-> **Lote 2 (11–20):** a tabela de produtos de cada um está no topo do próprio arquivo, no campo
-> `[GERAR LINK DE AFILIADO: ...]`. Mesmo procedimento.
+**Lote 2 (11–20):**
+
+| Artigo | Produtos para gerar link |
+|---|---|
+| 11 Sensor de presença | Sensor Wi-Fi AGL · Sensor PIR Tuya/Smart Life |
+| 12 Interruptor sem neutro | SONOFF ZBMINI-L2 · Interruptor Touch Wi-Fi EKAZA (T3074/T1074) |
+| 13 Alexa vs Nest | Echo Dot 5ª ger · Echo Pop · Echo Dot Max · Echo Show 5 · Google Nest Mini 2ª ger |
+| 14 Campainha com câmera | TP-Link Tapo D230S1 · Intelbras Allo w3 |
+| 15 Robô passa-pano | Xiaomi S20+ · Xiaomi S40 · WAP W3000 · KaBuM! Smart 700 · Mondial RB-04 |
+| 16 Controle universal IR | BroadLink RM4 Pro · Controle IR Tuya/NovaDigital |
+| 17 Fitas LED gamer | Tapo L920-5 (RGBIC) · Govee RGBIC · Tapo L900-5 · Intelbras EFLS 6050 · Positivo Fita LED |
+| 18 Fechadura senha+cartão | Intelbras FR 500 · Yale YDF 30 |
+| 19 Central de automação | Aqara Hub M3 · Intelbras ICA 1001 |
+| 20 Sensor fumaça/gás | Intelbras IDF 620 Izy · Sensor fumaça Tuya/Smart Life |
+
+> Os nomes exatos também estão no topo de cada artigo, no campo `[GERAR LINK DE AFILIADO: ...]`.
 
 ---
 
